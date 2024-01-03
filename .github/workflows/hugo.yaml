@@ -59,7 +59,9 @@ jobs:
           hugo \
             --gc \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"          
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
+        with:
+          path: ./inferara.com
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
