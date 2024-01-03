@@ -1,0 +1,17 @@
+baseURL: "https://inferara.com/"
+languageCode: "en-us"
+title: "Inferara"
+theme: "PaperMod"
+
+params:
+  defaultTheme: light
+  disableThemeToggle: true
+  # defaultTheme: dark
+  # defaultTheme: auto # to switch between dark or light according to browser theme
+
+  profileMode:
+    enabled: true
+    subtitle: "Prove code correctness with automated deduction"
+    imageUrl: "images/logo.png"
+    imageWidth: 500 # custom size
+    imageHeight: 500 # custom size
