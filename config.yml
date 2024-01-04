@@ -4,14 +4,13 @@ title: "Inferara"
 theme: "PaperMod"
 
 params:
-  defaultTheme: light
-  disableThemeToggle: true
-  # defaultTheme: dark
-  # defaultTheme: auto # to switch between dark or light according to browser theme
+  label:
+    # icon: "images/logo.svg"
 
   profileMode:
     enabled: true
     subtitle: "Prove code correctness with automated deduction"
-    imageUrl: "images/logo.png"
-    imageWidth: 500 # custom size
-    imageHeight: 500 # custom size
+    imageUrl: "images/logo.svg"
+    imageWidth: 200 # custom size
+    imageHeight: 200 # custom size
+
