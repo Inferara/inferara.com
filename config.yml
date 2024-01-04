@@ -6,6 +6,10 @@ theme: "PaperMod"
 params:
   label:
     # icon: "images/logo.svg"
+    defaultTheme: light
+    # disableThemeToggle: true
+    # # defaultTheme: dark
+    # # defaultTheme: auto # to switch between dark or light according to browser theme
 
   profileMode:
     enabled: true
