@@ -1,7 +1,6 @@
 +++
 title = 'Test'
 date = 2024-01-18T18:36:56+08:00
-draft = false
 math = "katex"
 +++
 

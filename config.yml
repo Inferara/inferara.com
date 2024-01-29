@@ -2,8 +2,10 @@ baseURL: "https://inferara.com/"
 languageCode: "en-us"
 title: "Inferara"
 theme: "PaperMod"
+favicon: "favicon.ico"
 
 params:
+  
   label:
     # icon: "images/logo.svg"
     defaultTheme: light
@@ -18,6 +20,34 @@ params:
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
 
+  socialIcons:
+    - name: "X"
+      url: "https://www.x.com/Inferara_kk"
+    - name: "email"
+      url: "mailto:inferara@gmail.com"
+    - name: "github"
+      url: "https://www.github.com/inferara"
+    - name: "telegram"
+      url: "https://t.me/inferara"
+
+assets:
+  favicon16x16: "/assets/favicon-16x16.png"
+  favicon32x32: "/assets/favicon-32x32.png"
+  apple_touch_icon: "/assets/apple-touch-icon.png"
+  android_chrome_192x192: "/assets/android-chrome-192x192.png"
+  android_chrome_512x512: "/assets/android-chrome-512x512.png"
+
 services:
   googleAnalytics:
     ID: G-HFSPPHXC3W
+
+menu:
+  main:
+    - identifier: research
+      name: "Research"
+      url: "/research/"
+      weight: 1
+    - identifier: about
+      name: "About"
+      url: "/about/"
+      weight: 2
