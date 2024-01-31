@@ -1,3 +1,5 @@
+# About Inferara
+
 Founded with the vision to fortify the open economy, Inferara is at the forefront of protecting digital assets and blockchain ventures. Our roots are in innovation, our methods backed by rigorous [research and development](/research), and our commitment is to the safety and prosperity of the decentralized world.
 
 Our journey began with a simple, yet profound goal: **to make the open economy a safe and secure environment for all**. Our team comprises the brightest minds with a shared passion for developing cutting-edge solutions to the most pressing security challenges in the #Web3 space.

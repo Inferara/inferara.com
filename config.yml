@@ -47,7 +47,11 @@ menu:
       name: "Research"
       url: "/research/"
       weight: 1
+    - identifier: posts
+      name: "Posts"
+      url: "/posts/"
+      weight: 2
     - identifier: about
       name: "About"
       url: "/about/"
-      weight: 2
+      weight: 3
