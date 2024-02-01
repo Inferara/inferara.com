@@ -5,7 +5,7 @@ theme: "PaperMod"
 favicon: "favicon.ico"
 
 params:
-  
+
   label:
     # icon: "images/logo.svg"
     defaultTheme: light
