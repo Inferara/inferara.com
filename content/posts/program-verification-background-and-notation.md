@@ -63,36 +63,36 @@ In addressing the theoretical delineation of the discrepancy between algorithmic
 With all this in mind, let us define two essential components of every abstract sequential automaton:
 
 - A countably infinite set $M$ of all possible memory states, along with the functions $in : X \to M$ and $out : M \to Y$, defining its interface with the environment;
-- A finite set of operators $Ops = \{op_i : M \to (M \times R_i) \cup \{\blacktriangledown\}, i=\overline{1,n}\}$, representing atomic memory-transforming actions, where each $R_i$ is a finite set of $op_i$ return values and $\blacktriangledown$ is our notation for program halting.
+- A finite set of operators $Ops = \\{op_i : M \to (M \times R_i) \cup \\{\blacktriangledown\\}, i=\overline\{1,n\}\\}$, representing atomic memory-transforming actions, where each $R_i$ is a finite set of $op_i$ return values and $\blacktriangledown$ is our notation for program halting.
 
-In such terms, for a program $p$ every individual run of $\mathfrak M_p$ over a particular input $x$ (in case of its eventual termination) can be represented as a function composition $y = (out \circ \overline{op_{i_k}} \circ \ldots \circ \overline{op_{i_1}} \circ in) (x)$, where $\overline{op_i} : M_i \to M$ projects $op_i$ into its memory effect over $M_i = \{m \in M \mid op_i(m) \neq \blacktriangledown\}$, disregarding the return value. What remains a mystery is how the machine selects the particular sequence $op_{i_1}, \ldots, op_{i_k}$ of operators appropriate for each specific input $x$. Naturally, its behavior is defined by a program, which can be represented as a marked directed multigraph $p = \langle V, P, E, V_\blacktriangle \rangle$, where:
+In such terms, for a program $p$ every individual run of $\mathfrak M_p$ over a particular input $x$ (in case of its eventual termination) can be represented as a function composition $y = (out \circ \overline\{op_\{i_k\}\} \circ \ldots \circ \overline\{op_\{i_1\}\} \circ in) (x)$, where $\overline\{op_i\} : M_i \to M$ projects $op_i$ into its memory effect over $M_i = \\{m \in M \mid op_i(m) \neq \blacktriangledown\\}$, disregarding the return value. What remains a mystery is how the machine selects the particular sequence $op_\{i_1\}, \ldots, op_\{i_k\}$ of operators appropriate for each specific input $x$. Naturally, its behavior is defined by a program, which can be represented as a marked directed multigraph $p = \langle V, P, E, V_\blacktriangle \rangle$, where:
 
 - $V$ is a finite set of vertices representing distinct execution states;
 - The mark $P : V \to Ops$ associates states with operators to be executed upon their activation;
-- A set of marked edges $E \subseteq \{(v, r, w) \mid v, w \in V, r \in R_{P(v)}\}$ represents possible paths of transitions from one active state $v$ to another $w$, depending on the return value $r$ of the executed operator $P(v)$;
+- A set of marked edges $E \subseteq \\{(v, r, w) \mid v, w \in V, r \in R_\{P(v)\}\\}$ represents possible paths of transitions from one active state $v$ to another $w$, depending on the return value $r$ of the executed operator $P(v)$;
 - A subset $V_\blacktriangle \subseteq V$ denotes the potential starting states of the program execution.
 
-If $V_\blacktriangle$ consists of exactly one state, and for each pair $(v,r) \in V \times R_{P(v)}$ there is exactly one $w \in V : (v, r, w) \in E$, then such a program can be called deterministic. Using this notation for an abstract machine and program, we can represent a wide range of automatons across the power hierarchy.
+If $V_\blacktriangle$ consists of exactly one state, and for each pair $(v,r) \in V \times R_\{P(v)\}$ there is exactly one $w \in V : (v, r, w) \in E$, then such a program can be called deterministic. Using this notation for an abstract machine and program, we can represent a wide range of automatons across the power hierarchy.
 
 ### Example 1: Finite Automaton
 
-A class of acceptor finite-state automatons [[9]] over the alphabet $\Sigma$ can be described as a machine $\mathfrak M^F$ with memory $M = \Sigma^* \cup \{\mathbf T, \mathbf F\}$ holding either an arbitrary string or ending states of success/failure. Two operators needed for its execution are:
+A class of acceptor finite-state automatons [[9]] over the alphabet $\Sigma$ can be described as a machine $\mathfrak M^F$ with memory $M = \Sigma^* \cup \\{\mathbf T, \mathbf F\\}$ holding either an arbitrary string or ending states of success/failure. Two operators needed for its execution are:
 
-- $op_{\tt next/t}$ with $R_{\tt next/t} = \Sigma \cup \{\blacktriangledown\}$, which consumes the first symbol from the string in memory and passes it back as a return value, or, in the case of an empty string, sets the memory to the success state $\mathbf T$ and returns $\blacktriangledown$, otherwise, if the memory already holds one of the ending states, terminating the program;
-- $op_{\tt next/f}$ with identical $R_{\tt next/f} = \Sigma \cup \{\blacktriangledown\}$, has the same overall behavior except for setting the memory to the failure state $\mathbf F$;
+- $op_\{\tt next/t\}$ with $R_\{\tt next/t\} = \Sigma \cup \\{\blacktriangledown\\}$, which consumes the first symbol from the string in memory and passes it back as a return value, or, in the case of an empty string, sets the memory to the success state $\mathbf T$ and returns $\blacktriangledown$, otherwise, if the memory already holds one of the ending states, terminating the program;
+- $op_\{\tt next/f\}$ with identical $R_\{\tt next/f\} = \Sigma \cup \\{\blacktriangledown\\}$, has the same overall behavior except for setting the memory to the failure state $\mathbf F$;
 
 The construction of the program graph for this example is straightforward — each state of the finite automaton is represented as exactly one vertex with a looping $\blacktriangledown$-marked edge.
 
 ### Example 2: Turing Machine
 
-Another example too significant to overlook is the Turing machine $\mathfrak M^T$ over an alphabet $\Gamma = \{\gamma_0, \ldots, \gamma_n\}$ with a blank symbol $\gamma_0$, whose memory $M = \cal T \times \Z$ holds both the states of the tape $\bold t \in \cal T \subset \Z \to \Gamma$ and the position of the head $h \in \Z$. The ensemble of operators needed for $\mathfrak M^T$ execution includes:
+Another example too significant to overlook is the Turing machine $\mathfrak M^T$ over an alphabet $\Gamma = \\{\gamma_0, \ldots, \gamma_n\\}$ with a blank symbol $\gamma_0$, whose memory $M = \cal T \times \Z$ holds both the states of the tape $\bold t \in \cal T \subset \Z \to \Gamma$ and the position of the head $h \in \Z$. The ensemble of operators needed for $\mathfrak M^T$ execution includes:
 
-- $op_{\tt read}$ with $R_{\tt read}=\Gamma$, which has no effect on memory and returns $\bold t(h)$, the current symbol on the tape under the head;
-- $op_{\tt write\_0}, \ldots, op_{\tt write\_n}$ with $R_{\tt write\_0} = \ldots = R_{\tt write\_n}=\{\checkmark\}$, writing the corresponding individual symbol $\gamma_i \in \Gamma$ to the tape under the head, and replacing $\bold t$ with $\bold t|_h^{\gamma_i}$;
-- $op_{\tt left}$ and $op_{\tt right}$ with $R_{\tt left} = R_{\tt right} = \{\checkmark\}$, moving the head left and right by decrementing or incrementing $h$ respectively;
-- And obligatory $op_{\blacktriangledown}$, which terminates program execution.
+- $op_\{\tt read\}$ with $R_\{\tt read\}=\Gamma$, which has no effect on memory and returns $\bold t(h)$, the current symbol on the tape under the head;
+- $op_\{\tt write\_0\}, \ldots, op_\{\tt write\_n\}$ with $R_\{\tt write\_0\} = \ldots = R_\{\tt write\_n\}=\\{\checkmark\\}$, writing the corresponding individual symbol $\gamma_i \in \Gamma$ to the tape under the head, and replacing $\bold t$ with $\bold t|_h^\{\gamma_i\}$;
+- $op_\{\tt left\}$ and $op_\{\tt right\}$ with $R_\{\tt left\} = R_\{\tt right\} = \\{\checkmark\\}$, moving the head left and right by decrementing or incrementing $h$ respectively;
+- And obligatory $op_\{\blacktriangledown\}$, which terminates program execution.
 
-Here, constructing a program graph is relatively straightforward as well. When translating arbitrary Turing machines to $\mathfrak M^T$, for each state, one must create a corresponding $op_{\tt read}$ node (or the $op_{\blacktriangledown}$ ​node for the accepting state) and connect these through intersecting chains of $op_{\tt write\_i}$ and $op_{\tt left|right}$ intermediate nodes.
+Here, constructing a program graph is relatively straightforward as well. When translating arbitrary Turing machines to $\mathfrak M^T$, for each state, one must create a corresponding $op_\{\tt read\}$ node (or the $op_\{\blacktriangledown\}$ ​node for the accepting state) and connect these through intersecting chains of $op_\{\tt write\_i\}$ and $op_\{\tt left|right\}$ intermediate nodes.
 
 ## Closing the Gap
 
@@ -106,7 +106,7 @@ Let's state a well-known fact about finite automata, formulated as a property of
 
 This can be proven by simple induction over the length of an input string at any point in $\mathfrak M^F_p$ execution:
 
-1. $\left| x \right| = 0:$ when the active state is marked with $op_{\tt next/t}$ (or $op_{\tt next/f}$), its execution sets the memory to the $\mathbf T$ (or $\mathbf F$) state and triggers a transition through the edge marked with $\blacktriangledown$ marking. Regardless of the subsequent state's marking, the program terminates. The base case is proven.
+1. $\left| x \right| = 0:$ when the active state is marked with $op_\{\tt next/t\}$ (or $op_\{\tt next/f\}$), its execution sets the memory to the $\mathbf T$ (or $\mathbf F$) state and triggers a transition through the edge marked with $\blacktriangledown$ marking. Regardless of the subsequent state's marking, the program terminates. The base case is proven.
 2. $\left| x \right| = l+1:$ irrespective of the active state's marking, the first letter $x$ will be consumed during its execution. For the subsequent active state, the memory holds a string of length $l$, and thus, the induction step is also proven. $\Box$
 
 This informal proof serves as a principal demonstration of the reasoning that assures us about facts not just for one particular input or one particular program, but for a whole class of automata operating on arbitrary programs and inputs.
