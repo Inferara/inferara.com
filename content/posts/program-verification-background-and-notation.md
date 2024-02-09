@@ -140,3 +140,7 @@ The ongoing evolution of program verification methodologies and tools will undou
 [7]: https://encyclopediaofmath.org/wiki/Regular_event
 [8]: https://encyclopediaofmath.org/wiki/Formal_languages_and_automata
 [9]: https://encyclopediaofmath.org/wiki/Automaton,_finite
+
+---
+
+Discuss [this post](https://t.me/inferara/4) in our telegram channel [@inferara](https://t.me/inferara/).
