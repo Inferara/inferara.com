@@ -1,26 +1,30 @@
 # Research at Inferara
 
-At the core of Inferara's mission lies a steadfast commitment to advancing the field of #Web3 security through continuous and rigorous research. Our research efforts are both the heartbeat and the braintrust of our operations, driving innovation and ensuring that the solutions we provide are not just current, but also future-ready.
+We research because we believe that the rigorous foundational justification and theoretical evaluation together form the key to future success. We do not speculate, rather, prove our thoughts by pedantic analysis of existing literature, publications, and other available sources.
 
 ## Our Research Domains
 
+**Web3 Security**
+
+Web3 security domain consists of but is not limited security of the blockchain code itself along with the DApps code security. And these two we consider as our research result target application area.
+
 **Mathematical Theorem Proving**
 
-We delve into the complexities of mathematical theorem proving with a focus on creating airtight security protocols for blockchain applications. Our work seeks to push the boundaries of what is possible in automated reasoning systems and formal verification methods. We use Rocq (Coq) as our primary theorem prover.
+Our work seeks to extend what is possible in automated reasoning systems and formal verification methods. We use Rocq (Coq) and TLA+ as our main tools.
 
 **Code Correctness**
 
-Code is the bedrock of all digital systems, and its correctness is non-negotiable. Our research centers on developing methodologies that ensure code operates exactly as intended, eliminating vulnerabilities and enhancing reliability.
+We concentrate on developing methodologies that ensure code operates exactly as intended, eliminating vulnerabilities and enhancing reliability. The approach we push is to use formal specifications and formal proofs for the critical code segments from the very first development stage.
 
-**Smart Contract Security**
+## Our Vision
 
-As smart contracts become the backbone of an increasing number of digital transactions, their integrity is paramount. Our team investigates new ways to secure these contracts through formal methods to certify the correctness of implementations according to specifications, thereby eliminating flaws in contract logic.
+1. We want to prove the formal properties of code on the models we develop using inductive reasoning.
 
-## Our Approach
+2. We want to support abstract parameters as well as an instantiation of those parameters.
 
-We believe in a collaborative approach to research, often partnering with academic institutions, technology think tanks, and industry experts to challenge, inspire, and elevate our work. Inferara is not just about solving the problems of today; we are also constantly thinking ahead to preempt the security challenges of tomorrow and building the systems to withstand them.
+3. We want to build proofs in a minimalistic and clear way using a small trusted codebase; excluding machinery code generation.
 
-Our dedication to research and development is unwavering, and we regularly publish our findings to contribute to the collective knowledge of the #Web3 community. At Inferara, we're not just observing the evolution of digital security; we're defining it.
+4. We would like to have a framework that not only provides these things but also has good support for “programming in the large” and building abstractions.
 
 ---
 
