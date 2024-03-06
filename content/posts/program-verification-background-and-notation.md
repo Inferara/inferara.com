@@ -6,7 +6,7 @@ math = "katex"
 summary = "This article examines the field of program verification, emphasizing the precise implementation of algorithms through computational models like finite automata and Turing machines."
 +++
 
-_Tags: #mathematics #program-verification #foundations_
+_Tags: [#mathematics]({{< ref "/tags/mathematics" >}}) [#program-verification]({{< ref "/tags/program-verification" >}}) [#foundations]({{< ref "/tags/foundations" >}})_
 
 ## Table of Contents
 
