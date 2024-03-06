@@ -108,3 +108,7 @@ The development workflow described here can be called **verification-driven prog
 [2]: https://ozaner.github.io/iverson-bracket/
 [3]: https://www.oreilly.com/library/view/mythical-man-month-the/0201835959/
 [4]: https://compcert.org/man/manual001.html#sec3
+
+---
+
+Discuss [this post](https://t.me/inferara/8) in our telegram channel [@inferara](https://t.me/inferara/).
