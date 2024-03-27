@@ -55,3 +55,6 @@ Keeping in mind: LTL synthesis and the problem of verification of games against 
 
 We think these logics can be used to verify; hence, cover high-level logical scenarios for smart-contract as within a single transaction as in a sequence of blocks.
 
+---
+
+Discuss [this post](https://t.me/inferara/10) in our telegram channel [@inferara](https://t.me/inferara/).
