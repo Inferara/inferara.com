@@ -1,7 +1,7 @@
 +++
 title = 'Small and Big Step Semantics'
-date = 2024-03-27T16:14:37+13:00
-draft = true
+date = 2024-03-21T16:16:06+13:00
+draft = false
 math = "katex"
 tags = ["Formal Methods", "Formal Semantics"]
 summary = "This blog introduces small-step and big-step semantics, what the differences between them are, and their different applications when it comes to analyzing computer programs."
