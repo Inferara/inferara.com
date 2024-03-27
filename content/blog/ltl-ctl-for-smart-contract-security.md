@@ -3,7 +3,7 @@ title = 'Ltl and Ctl Applications for Smart Contracts Security'
 date = 2024-03-26T17:30:15+13:00
 draft = true
 math = "katex"
-summary = "todo summary"
+summary = "In this blog we explore linear temporal logic as well as computation tree logic, and how we could use them to verify smart-contracts."
 tags = ["Temporal Logic", "LTL", "CTL"]
 +++
 
