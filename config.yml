@@ -15,7 +15,7 @@ params:
 
   profileMode:
     enabled: true
-    subtitle: "We prove theorems to safeguard the open economy."
+    subtitle: "We use formal methods to prove the correctness of Rust code on the blockchain."
     imageUrl: "images/logo.svg"
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
