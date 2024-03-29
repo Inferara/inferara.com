@@ -3,7 +3,7 @@ title = 'Why use formal specification'
 date = 2024-03-04T20:02:48+08:00
 draft = false
 math = "katex"
-summary = "Why do we need to use formal methods in software development? This blog explores the benefits of formal specification in the context of program verification."
+summary = "This blog explores the benefits of formal specification in the context of program verification."
 +++
 
 _Tags: [#program-verification]({{< ref "/tags/program-verification" >}})_
