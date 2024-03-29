@@ -3,10 +3,9 @@ title = 'Program Verification: background and notation'
 date = 2024-02-01T19:34:48+08:00
 draft = false
 math = "katex"
+tags = ["Mathematics", "Program Verification", "Foundations"]
 summary = "This article examines the field of program verification, emphasizing the precise implementation of algorithms through computational models like finite automata and Turing machines."
 +++
-
-_Tags: [#mathematics]({{< ref "/tags/mathematics" >}}) [#program-verification]({{< ref "/tags/program-verification" >}}) [#foundations]({{< ref "/tags/foundations" >}})_
 
 ## Table of Contents
 

@@ -3,10 +3,9 @@ title = 'Verification-driven development'
 date = 2024-03-06T21:21:31+08:00
 draft = false
 math = "katex"
+tags = ["Program Verification", "Verification Driven Development"]
 summary = "In this article the 'reasonable machine' term is presented along with the hypothesis that all practically applicable computing paradigms can be represented in the form of such machines."
 +++
-
-_Tags: [#program-verification]({{< ref "/tags/program-verification" >}}) [#verification-driven-development]({{< ref "/tags/verification-driven-development" >}})_
 
 ## Table of Contents
 

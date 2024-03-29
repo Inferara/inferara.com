@@ -3,10 +3,9 @@ title = 'Why use formal specification'
 date = 2024-03-04T20:02:48+08:00
 draft = false
 math = "katex"
+tags = ["Program Verification"]
 summary = "This blog explores the benefits of formal specification in the context of program verification."
 +++
-
-_Tags: [#program-verification]({{< ref "/tags/program-verification" >}})_
 
 Imagine a programmer tasked with a challenge: to bring a Dutch auction to life through code. With an arsenal of skill and determination, they approach this journey, piecing together logic and functionality, guided by what feels right and what their experience dictates.
 
