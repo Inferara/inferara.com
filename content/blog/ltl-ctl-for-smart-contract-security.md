@@ -12,7 +12,7 @@ Both `LTL` and `CTL` are fragments of propositional logic and parts of `CTL`*.
 
 ## Linear Temporal Logic (LTL)
 
-`LTL` is a modal temporal logic with modalities referring to time. In the context of smart contracts, `LTL` can be used to specify and verify properties that must hold over the sequences of states that a contract might pass through.
+`LTL` is a modal temporal logic with modalities referring to time[[1]]. In the context of smart contracts, `LTL` can be used to specify and verify properties that must hold over the sequences of states that a contract might pass through.
 
 For example, it allows developers to make assertions like, "If condition $X$ is $true$, then condition $Y$ will eventually be $true$" (expressed as $X \implies \lozenge Y$ in `LTL`). This is particularly useful for smart contracts, which may need to guarantee certain outcomes after a sequence of events.
 
@@ -33,7 +33,7 @@ This `LTL` formula states that it is globally $true$ ($G$) that if a deposit act
 
 ## Computation Tree Logic (CTL)
 
-While `LTL` is linear and considers the flow of time as a single path, `CTL` allows for branching time, where multiple future possibilities can be considered from any given point. `CTL` introduces path quantifiers to specify properties of computation trees — structures representing all possible executions of a system from any given state.
+While `LTL` is linear and considers the flow of time as a single path, `CTL` allows for branching time, where multiple future possibilities can be considered from any given point[[2]]. `CTL` introduces path quantifiers to specify properties of computation trees — structures representing all possible executions of a system from any given state.
 
 The two path quantifiers are:
 - $A$ (for All paths): Specifies that a property must hold on all possible future paths.
@@ -51,10 +51,19 @@ $$
 
 This states that along all paths ($A$), if a withdrawal attempt occurs, there exists a path ($E$) where either the caller is authorized and the date is on or after the specified date, or there exists a path where the transaction is reverted, ensuring funds can't be incorrectly withdrawn.
 
-Keeping in mind: `LTL` synthesis and the problem of verification of games against an `LTL` winning condition is 2EXPTIME-complete.
+Keeping in mind: `LTL` synthesis and the problem of verification of games against an `LTL` winning condition is 2EXPTIME-complete[[3]].
 
 We think these logics can be used to verify; hence, cover high-level logical scenarios for smart-contract as within a single transaction as in a sequence of blocks.
 
+## References
+
+- [Linear Temporal Logic][1]
+- [Computation Tree Logic][2]
+- [2EXPTIME][3]
+
+[1]: https://en.wikipedia.org/wiki/Linear_temporal_logic
+[2]: https://en.wikipedia.org/wiki/Computation_tree_logic
+[3]: https://en.wikipedia.org/wiki/2-EXPTIME
 ---
 
 Discuss [this post](https://t.me/inferara/10) in our telegram channel [@inferara](https://t.me/inferara/).
