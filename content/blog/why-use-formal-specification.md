@@ -3,7 +3,7 @@ title = 'Why use formal specification'
 date = 2024-03-04T20:02:48+08:00
 draft = false
 math = "katex"
-tags = ["Program Verification"]
+tags = ["Program Verification", "Verification Driven Development"]
 summary = "This blog explores the benefits of formal specification in the context of program verification."
 +++
 
@@ -18,6 +18,14 @@ Contrast this with a world where every stroke of the programmer's keyboard is di
 The tester's role, too, shifts focus — now, they must verify that the real-world behaviour of the code, shaped by the interplay between compiler, operating system, and beyond, truly matches those expectations laid out in the specification. This narrative isn't just about building and testing software; it's about navigating the accurate balance between creativity and conformity, between the freedom of interpretation and the clarity of specification.
 
 It's a journey through the complexities of bringing a concept to life, where each decision can lead to success or endless revision, and the path chosen can make all the difference.
+
+You can read about the software development based on the specification/verification, or as we call it **Verification Driven Development** presented as a mathematical formalism in our post [[1]].
+
+## References
+
+- [Verification-Driven Development][1]
+
+[1]: {{< ref "/posts/verification-driven-development" >}}
 
 ---
 
