@@ -67,7 +67,8 @@ Of course, for such digital systems as smart contracts, design and modelling bas
 [1]: https://en.wikipedia.org/wiki/Linear_temporal_logic
 [2]: https://en.wikipedia.org/wiki/Computation_tree_logic
 [3]: https://en.wikipedia.org/wiki/2-EXPTIME
-[4]: {{< ref "/posts/verification-driven-development" >}}
+
+[4]: {{< ref "/papers/verification-driven-development" >}}
 
 ---
 

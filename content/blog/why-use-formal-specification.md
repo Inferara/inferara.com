@@ -25,7 +25,7 @@ You can read about the software development based on the specification/verificat
 
 - [Verification-Driven Development][1]
 
-[1]: {{< ref "/posts/verification-driven-development" >}}
+[1]: {{< ref "/papers/verification-driven-development" >}}
 
 ---
 

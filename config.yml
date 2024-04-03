@@ -6,11 +6,12 @@ favicon: "favicon.ico"
 
 params:
 
+  disableThemeToggle: true
+  defaultTheme: light
+
   label:
-    # icon: "images/logo.svg"
-    defaultTheme: light
-    # disableThemeToggle: true
-    # # defaultTheme: dark
+    icon: "images/logo.svg"
+    # defaultTheme: dark
     # # defaultTheme: auto # to switch between dark or light according to browser theme
 
   profileMode:
@@ -19,6 +20,9 @@ params:
     imageUrl: "images/logo.svg"
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
+    buttons:
+      - name: Read Our Papers
+        url: "/papers"
 
   socialIcons:
     - name: "X"
@@ -47,9 +51,9 @@ menu:
       name: "Research"
       url: "/research/"
       weight: 1
-    - identifier: posts
-      name: "Posts"
-      url: "/posts/"
+    - identifier: papers
+      name: "Papers"
+      url: "/papers/"
       weight: 2
     - identifier: blog
       name: "Blog"
