@@ -4,7 +4,7 @@ date = 2024-03-06T21:21:31+08:00
 draft = false
 math = "katex"
 tags = ["Program Verification", "Verification Driven Development"]
-summary = "In this article the 'reasonable machine' term is presented along with the hypothesis that all practically applicable computing paradigms can be represented in the form of such machines."
+summary = "In this paper the 'reasonable machine' term is presented along with the hypothesis that all practically applicable computing paradigms can be represented in the form of such machines."
 +++
 
 ## Table of Contents
@@ -110,4 +110,4 @@ The development workflow described here can be called **verification-driven prog
 
 ---
 
-Discuss [this post](https://t.me/inferara/8) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this paper](https://t.me/inferara/8) in our telegram channel [@inferara](https://t.me/inferara/).

@@ -29,4 +29,4 @@ You can read about the software development based on the specification/verificat
 
 ---
 
-Discuss [this post](https://t.me/inferara/5) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this blog](https://t.me/inferara/5) in our telegram channel [@inferara](https://t.me/inferara/).

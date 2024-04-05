@@ -4,7 +4,7 @@ date = 2024-02-01T19:34:48+08:00
 draft = false
 math = "katex"
 tags = ["Mathematics", "Program Verification", "Foundations"]
-summary = "This article examines the field of program verification, emphasizing the precise implementation of algorithms through computational models like finite automata and Turing machines."
+summary = "This paper examines the field of program verification, emphasizing the precise implementation of algorithms through computational models like finite automata and Turing machines."
 +++
 
 ## Table of Contents
@@ -142,4 +142,4 @@ The ongoing evolution of program verification methodologies and tools will undou
 
 ---
 
-Discuss [this post](https://t.me/inferara/4) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this paper](https://t.me/inferara/4) in our telegram channel [@inferara](https://t.me/inferara/).

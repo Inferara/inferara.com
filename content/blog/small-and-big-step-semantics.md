@@ -6,6 +6,7 @@ math = "katex"
 tags = ["Formal Methods", "Formal Semantics"]
 summary = "This blog outlines small-step and big-step semantics, their differences, and applications in analyzing computer programs."
 +++
+
 Small-step semantics and big-step semantics are two approaches used in the field of formal semantics within computer science, particularly in the study of programming languages and formal verification. These semantic models provide formal ways to describe how programs execute and are used to reason about the behavior of programs in a deductive way.
 
 ## Small-Step Semantics (Operational Semantics)
@@ -32,4 +33,4 @@ Small-step semantics is often preferred in scenarios where the process of comput
 
 ---
 
-Discuss [this post](https://t.me/inferara/11) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this blog](https://t.me/inferara/11) in our telegram channel [@inferara](https://t.me/inferara/).

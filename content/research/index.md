@@ -6,7 +6,7 @@ We research because we believe that the rigorous foundational justification and 
 
 **Web3 Security**
 
-Web3 security domain consists of but is not limited security of the blockchain code itself along with the DApps code security. And these two we consider as our research result target application area.
+Web3 security domain consists of (but not limited) security of the blockchain code itself along with the DApps code security. And these two we consider as our research result target application area.
 
 **Mathematical Theorem Proving**
 

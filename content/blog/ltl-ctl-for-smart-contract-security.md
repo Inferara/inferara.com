@@ -72,4 +72,4 @@ Of course, for such digital systems as smart contracts, design and modelling bas
 
 ---
 
-Discuss [this post](https://t.me/inferara/10) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this blog](https://t.me/inferara/10) in our telegram channel [@inferara](https://t.me/inferara/).

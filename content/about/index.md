@@ -1,12 +1,13 @@
 # About Inferara
 
-- We do [research](/research) for protecting #Web3 digital assets and its citizens.
+- We do [research](/research) in formal methods for protecting #Web3 digital assets and its citizens.
 - Our goal is **to make Web3 safe and secure environment for everyone**.
 
-Our team unites people who share a passion for developing cutting-edge solutions to the most pressing security challenges in the #Web3 space.
+Our team unites people who share experience in science and engineering.
 
-- Our specializations are automated theorem proving and model checking – an approach to verifying the correctness of blockchain code. For that we use Coq and TLA+.
+- We know what engineers and developers do every day, because we daily write code ourselves; thus, we understand what tools and methods would work.
 
+- Our specializations are automated theorem proving and model checking: Coq and TLA+.
 - We frontrunning academic-style research before writing any new line of code.
 
 > "If you do not do design right from the beginning, then every piece of the code you write is a patch. And you start out from the day 1 with a mess." – Leslie Lamport
