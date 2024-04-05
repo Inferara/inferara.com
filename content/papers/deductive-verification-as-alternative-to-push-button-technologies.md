@@ -92,4 +92,4 @@ Deductive program verification has remained a mathematical artifact for more tha
 
 ---
 
-Discuss [this paper](https://t.me/inferara/8) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this paper](https://t.me/inferara/13) in our telegram channel [@inferara](https://t.me/inferara/).
