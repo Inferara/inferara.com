@@ -21,7 +21,7 @@ tags = ["Temporal Logic", "TLA+", "Model checking"]
 
 ## Introduction
 
-This is the first blog post in the series of the conspects of the "Introduction to TLA+" course by Leslie Lamport. It would directly follows the course structure and would be a good reference for those who are taking the course because it adds some more additional information and explanations to the course material. So all credits are to Leslie Lamport and his course that can be found on his [website][1].
+This is the first blog post in the series of the conspectus of the "Introduction to TLA+" course by Leslie Lamport. It would directly follows the course structure and would be a good reference for those who are taking the course because it adds some more additional information and explanations to the course material. So all credits are to Leslie Lamport and his course that can be found on his [website][1].
 
 $TLA^+$ is based on temporal logic, so you may read about it in the [LTL and CTL Applications for Smart Contracts Security][2] blog post.
 
@@ -35,25 +35,25 @@ $TLA^+$ is a language for **high-level** (design level, above the code) systems 
 
 $TLA^+$ system is used to model **critical parts** of digital systems, abstracting away less-critical parts and lower-level implementation details. $TLA^+$ was designed for designing concurrent and **distributed systems** in order to help find and correct **design errors** that are hard to find by testing and **before** writing any single line of code.
 
-OpenComRTOS is a commercial network-centric,real-time operating system [[3]] heavily used $TLA^+$ during the design and development process and shared their experience in the freely available book [[4]]. And showed that using design gratefully reduce the code base size and number of errors and boost the engineering view overall.
+OpenComRTOS is a commercial network-centric, real-time operating system [[3]] that heavily used $TLA^+$ during the design and development process and shared their experience in the freely available book [[4]]. And showed that using design gratefully reduce the code base size and number of errors and boost the engineering view overall.
 
-Consequently, $TLA^+$ provides programmers and engineers **a new way of thinking** that **makes them better programmers and engineers** even when $TLA^+$ are not useful. $TLA^+$ forces engineers thinking more abstract.
+Consequently, $TLA^+$ provides programmers and engineers **a new way of thinking** that **makes them better programmers and engineers** even when $TLA^+$ are not useful. $TLA^+$ forces engineers to think more abstractly.
 
-> Abstraction — the process of removing irrelevant details and the most important part of engineering. Without them we cannot design and understand small systems.
+> Abstraction — the process of removing irrelevant details and the most important part of engineering. Without them, we cannot design and understand small systems.
 {.note}
 
-As an example of using $TLA^+$ in huge company for vefifying a system that many of us use daily is Amazon Web Services. They use $TLA^+$ to verify the correctness of their distributed algorithms and AWS system design [[5]]. The problematic of alrogithms and communication in distributed systems is well described in the Leslie Lamport's paper "Time, Clocks, and the Ordering of Events in a Distributed System" [[6]].
+An example of using $TLA^+$ in a huge company for verifying a system that many of us use daily is Amazon Web Services. They use $TLA^+$ to verify the correctness of their distributed algorithms and AWS system design [[5]]. The problem of algorithms and communication in distributed systems is well described in Leslie Lamport's paper "Time, Clocks, and the Ordering of Events in a Distributed System" [[6]].
 
 A system design is expressed in a formal way called _specification_.
 
 > Specification — the precise high-level model.
 {.note}
 
-$TLA^+$ defines the specification, but it cannot produce the code. But it helps come with much clearer architecture, write more precise, accurate, in some cases compact code. It is able to check properties that express conditions on an individual execution (a system satisfies a property if and only if every single execution satisfies it).
+$TLA^+$ defines the specification, but it cannot produce the code. But it helps come with much clearer architecture and write more precise, accurate, in some cases compact code. It is able to check properties that express conditions on an individual execution (a system satisfies a property if and only if every single execution satisfies it).
 
 The underlying abstraction of $TLA^+$ is as follows: an execution of a system is represented as a sequence of discrete steps, where a step is the change from one state to the next one:
 
-- discrete — continuous evolution is a sequence of discrete events (computer is a discrete events based system);
+- discrete — continuous evolution is a sequence of discrete events (computer is a discrete events-based system);
 - sequence — a concurrent system can be simulated with a sequential program;
 - step — a state change;
 - state — an assignment of values to variables.
@@ -61,7 +61,7 @@ The underlying abstraction of $TLA^+$ is as follows: an execution of a system is
 > Behavior — a sequence of states.
 {.note}
 
-A state machine in context of $TLA^+$ system is described by:
+A state machine in the context of $TLA^+$ system is described by:
 
 1. all possible initial states – \[what the variables are] and \[their possible initial values];
 2. what next states can follow any given state – a relation between their values in the current state and their possible values in the next state;
@@ -74,7 +74,7 @@ State machines eliminate low-level implementation details, and $TLA^+$ is a lang
 
 ## State Machines in $TLA^+$
 
-$TLA^+$ uses ordinary, simple math. Consider a define state machine example for the following `C` code
+$TLA^+$ uses ordinary, simple math. Consider a defined state machine example for the following `C` code
 
 ```c
 int i;
@@ -85,7 +85,7 @@ void main()
 }
 ```
 
-In order to turn this code into the $TLA^+$ state machine definition we need to pack the execution flow of this code into states (sets of variables). For the given example, it is obvious how to define `i` variable. But we also need to instantiate the control state. We call it as `pc` such as:
+In order to turn this code into the $TLA^+$ state machine definition we need to pack the execution flow of this code into states (sets of variables). For the given example, it is obvious how to define `i` variable. But we also need to instantiate the control state. We call it a `pc` such as:
 
 - `pc = "start"` = `i = someNumber();`
 - `pc = "middle"` = `i = i + 1;`
@@ -93,7 +93,7 @@ In order to turn this code into the $TLA^+$ state machine definition we need to 
 
 _Assume for this example `someNumber()` returns an integer from the `[0:1000]` interval._
 
-To define the system we need to define the _initial_ state of the system the the _next_ possible system state, expressed as a formula, that can be reached afrom the current state.
+To define the system we need to define the _initial_ state of the system the the _next_ possible system state, expressed as a formula, that can be reached from the current state.
 
 Here is the **formula** of the `C` code above, not the sequence of execution.
 
@@ -125,7 +125,7 @@ B == /\ pc = "middle"
 Next == A \/ B
 ```
 
-From this spec we see that there are two possible _next states_ that can be reached begginging from the _initial_ state. `A` states the beggining of the execution, assigning a number to `i` and moving to the next `pc` state equals `p'`, `B` states the increment of `i` and moving to the final state.
+From this spec, we see that there are two possible _next states_ that can be reached beginning from the _initial_ state. `A` states the beginning of the execution, assigning a number to `i` and moving to the next `pc` state equals `p'`, `B` states the increment of `i` and moving to the final state.
 
 ## Resources and tools
 
@@ -137,7 +137,7 @@ There are not many learning resources of $TLA^+$; however, there are some that w
 
 ## Model Checking
 
-Now, let us talk about TLC and model checking related topics.
+Now, let us talk about TLC and model-checking related topics.
 
 > TLC computes all possible behaviors allowed by the spec. More precisely, TLC checks a *model* of the specification.
 {.note}
@@ -151,7 +151,7 @@ TLAPS (`TLA` proof system) is a tool for checking those proofs, it can check pro
 Practically, the term _spec_ (a specification) means:
 
 1. the set of modules, including imported modules consists of `.tla` files;
-2. the `TLA` formula that specifies the set of allowed behaviors of the system or algorithm being specified.
+2. the `TLA` formula specifies the set of allowed behaviors of the system or algorithm being specified.
 
 A specification may contain multiple models. The model tells TLC what it should do. Here are the parts of the model that must be explicitly chosen:
 
@@ -172,7 +172,7 @@ There are two ways to write the behavior spec:
      - $vars$ is the tuple of variables;
      - and $F$ is an optional fairness formula.
 
-The only way to write a behavior spec that includes fairness is with a temporal formula, otherwise a spec would not have variables and in this case TLC will check assumptions and evaluate a constant expression.
+The only way to write a behavior spec that includes fairness is with a temporal formula, otherwise a spec would not have variables and in this case, TLC will check assumptions and evaluate a constant expression.
 
 There are three kinds of properties of the behavior spec that TLC can check:
 
@@ -194,8 +194,8 @@ A model value is an unspecified value that TLC considers to be unequal to any va
 
 > Example: `NotANat == CHOOSE n : n \notin Nat`
 >
-> It defines  `NotANat`  to be an arbitrary value that is not a natural number.  TLC cannot evaluate this definition because it cannot evaluate the unbounded  `CHOOSE`  expression.  To allow TLC to handle the spec, you need to substitute a model value for  `NotANat` .  The best model value to substitute for it is one named  `NotANat` .  This is done by the Definition Override.  The $TLA^+$ Toolbox creates the appropriate entry in that section when it creates a model if it finds a definition having the precise syntax above or the syntax:
-> `NotANat == CHOOSE n : ~(n \in Nat)`, where `Nat` can be any expression, and `NotANat` and `n` can be any identifiers.
+> It defines  `NotANat`  to be an arbitrary value that is not a natural number.  TLC cannot evaluate this definition because it cannot evaluate the unbounded  `CHOOSE`  expression.  To allow TLC to handle the spec, you need to substitute a model value for  `NotANat`.  The best model value to substitute for it is one named  `NotANat`.  This is done by the Definition Override.  The $TLA^+$ Toolbox creates the appropriate entry in that section when it creates a model if it finds a definition having the precise syntax above or the syntax:
+> `NotANat == CHOOSE n: ~(n \in Nat)`, where `Nat` can be any expression, and `NotANat` and `n` can be any identifiers.
 
 **Model values can be typed as follows: a model value has type  `T`  if and only if its name begins with the two characters  `T_` .**
 
@@ -214,13 +214,13 @@ TLC does not check if a set you declare to be a symmetry set really is one. If 
 
 ## Die Hard
 
-Die Hard is an action movie from 1988. In this movie, there is a scene where are heroes need to solve a problem with two jugs in order to disable a bomb. The problem is to measure 4 gallons of water using 3 and 5 gallons jugs.
+Die Hard is an action movie from 1988. In this movie, there is a scene where are heroes need to solve a problem with two jugs in order to disable a bomb. The problem is to measure 4 gallons of water using 3 and 5-gallon jugs.
 
 For the plot, search: "Die Hard Jugs problem" on YouTube or simply click here 🙂. We will solve this problem using $TLA^+$.
 
 {{< youtube 2vdF6NASMiE >}}
 
-First, we need to write the behavior. Let values of $small$ and $big$ represent number of gallons in each jug.
+First, we need to write the behavior. Let values of $small$ and $big$ represent a number of gallons in each jug.
 
 {{< math >}}
 
@@ -244,10 +244,10 @@ $$
 
 Filling a jug is a single step; there are no intermediate steps.
 
-> Real specification are written to eliminate some kinds of errors.
+> Real specifications are written to eliminate some kinds of errors.
 {.tip}
 
-$TLA^+$ has no type declarations; however if it important to define a formula that asserts type correctness. It helps to understand the spec and TLC can check types by checking if such formula is always $true$.
+$TLA^+$ has no type declarations; however it important to define a formula that asserts type correctness. It helps to understand the spec and TLC can check types by checking if such a formula is always $true$.
 
 ```tlaplus
 TypeOK == /\ small \in 0..3
@@ -257,9 +257,9 @@ TypeOK == /\ small \in 0..3
 Here, we define that `small` is an integer in the range `[0:3]` and `big` is an integer in the range `[0:5]`. But this definition is not a part of the spec.
 
 The **Initial-State Formula** `Init == small = 0 /\ big = 0` defines the initial state of the system.
-The **Next-State Formula** defines possible transfers from state to state, and usually written as $F_1 \lor F_2 \lor ... \lor F_n$, where each formula $F_i$ allows a different kind of step.
+The **Next-State Formula** defines possible transfers from state to state and is usually written as $F_1 \lor F_2 \lor ... \lor F_n$, where each formula $F_i$ allows a different kind of step.
 
-Our problem has 3 kind of steps:
+Our problem has 3 kinds of steps:
 
 - fill a jug;
 - empty a jug;
@@ -284,7 +284,7 @@ FillSmall == /\ small' = 3
              /\ big' = big
 ```
 
-When defining formulas we need to keep in mind thinking of the system as a whole and about steps as transition from one state to another. In our case it means that we cannot define `FillSmall` as `FillSmall == small' = 3` because this formula doesn't have a part defining the second part of the program state (`big`). In another words, this formula turns $true$ if `small'` equals `3` and `big'` equals whatever. But this is not correct. In fact, if we fill the small jug, we remain the big jug at the state it is without changes.
+When defining formulas we need to keep in mind thinking of the system as a whole and about steps as a transition from one state to another. In our case, it means that we cannot define `FillSmall` as `FillSmall == small' = 3` because this formula doesn't have a part defining the second part of the program state (`big`). In another words, this formula turns $true$ if `small'` equals `3` and `big'` equals whatever. But this is not correct. In fact, if we fill the small jug, we keep the big jug in the state it is without changes.
 
 Now, we define `SmallToBig`. There are two possible cases we need to consider:
 
@@ -362,13 +362,13 @@ We have defined a `TypeOK` as a type definition for `small` and `big`, so we can
 
 ![alt text](/img/do-not-die-hard-with-tla-plus-1/add_typeok_invariant.png)
 
-If we run it now, we still see no errors meaning `small` and `big` respect their types in every reachable state.
+If we run it now, we still see no errors meaning `small` and `big` respecting their types in every reachable state.
 
 Now we can solve the _die hard_ problem of pouring `big` with exactly 4 gallons of water. To do it, we add a new invariant `big /= 4` into the invariants section.
 
 ![alt text](/img/do-not-die-hard-with-tla-plus-1/add_big_neq_4_invariant.png)
 
-Here, this invariant works as an counterexample. An invariant is a formula that turns to $true$ in **every** reachable state. We need to find a state (actually a state sequence) where `big = 4`, so we negate this by the `/=` symbol that equals to $\neq$. With this new formula if we run the model, it finds an error (a state where an invariant is broken) and shows a sequence of states that led to this state.
+Here, this invariant works as a counterexample. An invariant is a formula that turns to $true$ in **every** reachable state. We need to find a state (actually a state sequence) where `big = 4`, so we negate this by the `/=` symbol that equals to $\neq$. With this new formula if we run the model, it finds an error (a state where an invariant is broken) and shows a sequence of states that led to this state.
 
 ![alt text](/img/do-not-die-hard-with-tla-plus-1/run_result.png)
 
@@ -393,4 +393,4 @@ Now, we can see the exact steps that are required to be done to solve the proble
 
 ---
 
-Discuss [this blog](https://t.me/inferara/) in our telegram channel [@inferara](https://t.me/inferara/).
+Discuss [this blog](https://t.me/inferara/14) in our telegram channel [@inferara](https://t.me/inferara/).
