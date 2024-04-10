@@ -7,6 +7,18 @@ summary = "The first part of the conspect of the \"Intoduction to TLA+\" course 
 tags = ["Temporal Logic", "TLA+", "Model checking"]
 +++
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Introduction to $TLA^+$](#inroduction-to-tla)
+- [State Machines in $TLA^+$](#state-machines-in-tla)
+- [Resources and tools](#resources-and-tools)
+- [Model Checking](#model-checking)
+  - [Behavior spec](#behavior-spec)
+  - [Model](#model)
+- [Die Hard](#die-hard)
+- [References](#references)
+
 ## Introduction
 
 This is the first blog post in the series of the conspects of the "Introduction to TLA+" course by Leslie Lamport. It would directly follows the course structure and would be a good reference for those who are taking the course because it adds some more additional information and explanations to the course material. So all credits are to Leslie Lamport and his course that can be found on his [website][1].
@@ -17,8 +29,8 @@ $TLA^+$ is based on temporal logic, so you may read about it in the [LTL and CTL
 
 $TLA^+$ is a language for **high-level** (design level, above the code) systems (modules, algorithms, etc.) modelling and consists of the following components:
 
-- `TLC` — the model checker;
-- `TLAPS` — the $TLA^+$ proof system;
+- TLC — the model checker;
+- TLAPS — the $TLA^+$ proof system;
 - $TLA^+$ Toolbix — the IDE.
 
 $TLA^+$ system is used to model **critical parts** of digital systems, abstracting away less-critical parts and lower-level implementation details. $TLA^+$ was designed for designing concurrent and **distributed systems** in order to help find and correct **design errors** that are hard to find by testing and **before** writing any single line of code.
@@ -51,8 +63,8 @@ The underlying abstraction of $TLA^+$ is as follows: an execution of a system is
 
 A state machine in context of $TLA^+$ system is described by:
 
-1. all possible initial states -> \[what the variables are] and \[their possible initial values];
-2. what next states can follow any given state -> a relation between their values in the current state and their possible values in the next state;
+1. all possible initial states – \[what the variables are] and \[their possible initial values];
+2. what next states can follow any given state – a relation between their values in the current state and their possible values in the next state;
 3. halts if there is no possible next state.
 
 > Control state — the next to be executed statement.
@@ -125,26 +137,26 @@ There are not many learning resources of $TLA^+$; however, there are some that w
 
 ## Model Checking
 
-Now, let us talk about `TLC` and model checking related topics.
+Now, let us talk about TLC and model checking related topics.
 
-> `TLC` computes all possible behaviors allowed by the spec. More precisely, TLC checks a *model* of the specification.
+> TLC computes all possible behaviors allowed by the spec. More precisely, TLC checks a *model* of the specification.
 {.note}
 
-- `TLC` reports **deadlock** if execution stopped when it was not supposed to;
-- `TLC` reports **termination** if execution stopped when it was supposed to.
+- TLC reports **deadlock** if execution stopped when it was not supposed to;
+- TLC reports **termination** if execution stopped when it was supposed to.
 
 $TLA^+$ allows writing theorems and formal proofs of those theorems.
-`TLAPS` (`TLA` proof system) is a tool for checking those proofs, it can check proofs of correctness of algorithms.
+TLAPS (`TLA` proof system) is a tool for checking those proofs, it can check proofs of correctness of algorithms.
 
 Practically, the term _spec_ (a specification) means:
 
 1. the set of modules, including imported modules consists of `.tla` files;
 2. the `TLA` formula that specifies the set of allowed behaviors of the system or algorithm being specified.
 
-A specification may contain multiple models. The model tells `TLC` what it should do. Here are the parts of the model that must be explicitly chosen:
+A specification may contain multiple models. The model tells TLC what it should do. Here are the parts of the model that must be explicitly chosen:
 
 - what the behavior spec is (The behavior spec is the formula or pair of formulas that describe the possible behaviors of the system or algorithm you want to check);
-- what `TLC` should check;
+- what TLC should check;
 - what values to substitute for constant parameters.
 
 ### Behavior spec
@@ -160,7 +172,7 @@ There are two ways to write the behavior spec:
      - $vars$ is the tuple of variables;
      - and $F$ is an optional fairness formula.
 
-The only way to write a behavior spec that includes fairness is with a temporal formula, otherwise a spec would not have variables and in this case `TLC` will check assumptions and evaluate a constant expression.
+The only way to write a behavior spec that includes fairness is with a temporal formula, otherwise a spec would not have variables and in this case TLC will check assumptions and evaluate a constant expression.
 
 There are three kinds of properties of the behavior spec that TLC can check:
 
@@ -178,11 +190,11 @@ It is possible to set the value of the constant to any constant $TLA^+$ expressi
 
 **Model value**
 
-A model value is an unspecified value that `TLC` considers to be unequal to any value that you can express in $TLA^+$.  You can substitute the set  $\{p1, p2, p3\}$  of three model values for  $Proc$ .  If by mistake you write an expression like  $p+1$ where the value of  $p$ is a process, `TLC` will report an error when it tries to evaluate that expression because it knows that a process is a model value and thus not a number.  An important reason for substituting a set of model values for  $Proc$  is to let `TLC` take advantage of symmetry.
+A model value is an unspecified value that TLC considers to be unequal to any value that you can express in $TLA^+$.  You can substitute the set  $\{p1, p2, p3\}$  of three model values for  $Proc$ .  If by mistake you write an expression like  $p+1$ where the value of  $p$ is a process, TLC will report an error when it tries to evaluate that expression because it knows that a process is a model value and thus not a number.  An important reason for substituting a set of model values for  $Proc$  is to let TLC take advantage of symmetry.
 
 > Example: `NotANat == CHOOSE n : n \notin Nat`
 >
-> It defines  `NotANat`  to be an arbitrary value that is not a natural number.  `TLC` cannot evaluate this definition because it cannot evaluate the unbounded  `CHOOSE`  expression.  To allow `TLC` to handle the spec, you need to substitute a model value for  `NotANat` .  The best model value to substitute for it is one named  `NotANat` .  This is done by the Definition Override.  The $TLA^+$ Toolbox creates the appropriate entry in that section when it creates a model if it finds a definition having the precise syntax above or the syntax:
+> It defines  `NotANat`  to be an arbitrary value that is not a natural number.  TLC cannot evaluate this definition because it cannot evaluate the unbounded  `CHOOSE`  expression.  To allow TLC to handle the spec, you need to substitute a model value for  `NotANat` .  The best model value to substitute for it is one named  `NotANat` .  This is done by the Definition Override.  The $TLA^+$ Toolbox creates the appropriate entry in that section when it creates a model if it finds a definition having the precise syntax above or the syntax:
 > `NotANat == CHOOSE n : ~(n \in Nat)`, where `Nat` can be any expression, and `NotANat` and `n` can be any identifiers.
 
 **Model values can be typed as follows: a model value has type  `T`  if and only if its name begins with the two characters  `T_` .**
@@ -191,11 +203,11 @@ A model value declared in the model can be used as an ordinary value in any expr
 
 **Symmetry**
 
-Consider a specification of a memory system containing a declared constant `Val` that represents the set of possible values of a memory register. The set `Val` of values is probably a *symmetry set* for the memory system's behavior specification, meaning that permuting the elements in the set of values does not change whether or not a behavior satisfies that behavior spec. `TLC` can take advantage of this to speed up its checking.  Suppose we substitute a set `{v1, v2, v3}` of model values for `Val`. We can use the *Symmetry set* option to declare this set of model values to be a symmetry set of the behavior spec. This will reduce the number of reachable states that `TLC` has to examine by up to `3!`, or `6`.
+Consider a specification of a memory system containing a declared constant `Val` that represents the set of possible values of a memory register. The set `Val` of values is probably a *symmetry set* for the memory system's behavior specification, meaning that permuting the elements in the set of values does not change whether or not a behavior satisfies that behavior spec. TLC can take advantage of this to speed up its checking.  Suppose we substitute a set `{v1, v2, v3}` of model values for `Val`. We can use the *Symmetry set* option to declare this set of model values to be a symmetry set of the behavior spec. This will reduce the number of reachable states that TLC has to examine by up to `3!`, or `6`.
 
 You can declare more than one set of model values to be a symmetry set. However, the union of all the symmetry sets cannot contain two typed model values with different types.
 
-`TLC` does not check if a set you declare to be a symmetry set really is one. If you declare a set to be a symmetry set and it isn't, then `TLC` can fail to find an error that it otherwise would find. An expression is *symmetric* for a set `S` if and only if interchanging any two values of `S` does not change the value of the expression. The expression `{{v1, v2}, {v1, v3}, {v2, v3}}` is symmetric for the set `{v1, v2, v3}` — for example, interchanging `v1` and `v3` in this expression produces `{{v3, v2}, {v3, v1}, {v2, v1}}`, which is equal to the original expression. You should declare a set `S` of model values to be a symmetry set only if the specification and all properties you are checking are symmetric for `S` after the substitutions for constants and defined operators specified by the model are made. For example, you should not declare `{v1, v2, v3}` to be a symmetry set if the model substitutes `v1` for some constant. The only $TLA^+$ operator that can produce a non-symmetric expression when applied to a symmetric expression is `CHOOSE`. For example, the expression `CHOOSE x \in {v1, v2, v3} : TRUE` is not symmetric for `{v1, v2, v3}`.
+TLC does not check if a set you declare to be a symmetry set really is one. If you declare a set to be a symmetry set and it isn't, then TLC can fail to find an error that it otherwise would find. An expression is *symmetric* for a set `S` if and only if interchanging any two values of `S` does not change the value of the expression. The expression `{{v1, v2}, {v1, v3}, {v2, v3}}` is symmetric for the set `{v1, v2, v3}` — for example, interchanging `v1` and `v3` in this expression produces `{{v3, v2}, {v3, v1}, {v2, v1}}`, which is equal to the original expression. You should declare a set `S` of model values to be a symmetry set only if the specification and all properties you are checking are symmetric for `S` after the substitutions for constants and defined operators specified by the model are made. For example, you should not declare `{v1, v2, v3}` to be a symmetry set if the model substitutes `v1` for some constant. The only $TLA^+$ operator that can produce a non-symmetric expression when applied to a symmetric expression is `CHOOSE`. For example, the expression `CHOOSE x \in {v1, v2, v3} : TRUE` is not symmetric for `{v1, v2, v3}`.
 
 > Symmetry sets should not be used when checking liveness properties. Doing so can make TLC fail to find errors, or to report nonexistent errors.
 {.danger}
@@ -235,7 +247,7 @@ Filling a jug is a single step; there are no intermediate steps.
 > Real specification are written to eliminate some kinds of errors.
 {.tip}
 
-$TLA^+$ has no type declarations; however if it important to define a formula that asserts type correctness. It helps to understand the spec and `TLC` can check types by checking if such formula is always $true$.
+$TLA^+$ has no type declarations; however if it important to define a formula that asserts type correctness. It helps to understand the spec and TLC can check types by checking if such formula is always $true$.
 
 ```tlaplus
 TypeOK == /\ small \in 0..3
