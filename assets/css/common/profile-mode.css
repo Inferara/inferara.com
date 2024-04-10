@@ -53,3 +53,26 @@
 .buttons .button .button-inner {
     color: var(--code-bg);
 }
+
+.warning {
+  border-left-color: #c89f2d !important;
+}
+
+.note {
+    border-left-color: rgb(49, 109, 202) !important;
+    /* background: rgba(81, 75, 237, 0.23);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px; */
+}
+
+.important {
+    border-left-color: rgb(152, 110, 226) !important;
+}
+
+.tip {
+    border-left-color: rgb(87, 171, 90) !important;
+}
+
+.danger {
+  border-left-color: #810f0c !important;
+}

@@ -1,6 +1,6 @@
 +++
-title = "Do not die hard with TLA+"
-date = 2024-04-10T12:56:17+5:00
+title = "Do not die hard with TLA+ pt.1"
+date = 2024-04-10T12:56:17+05:00
 draft = false
 math = "katex"
 summary = "The first part of the conspect of the \"Intoduction to TLA+\" course by Leslie Lamport."
@@ -28,12 +28,14 @@ OpenComRTOS is a commercial network-centric,real-time operating system [[3]] hea
 Consequently, $TLA^+$ provides programmers and engineers **a new way of thinking** that **makes them better programmers and engineers** even when $TLA^+$ are not useful. $TLA^+$ forces engineers thinking more abstract.
 
 > Abstraction — the process of removing irrelevant details and the most important part of engineering. Without them we cannot design and understand small systems.
+{.note}
 
 As an example of using $TLA^+$ in huge company for vefifying a system that many of us use daily is Amazon Web Services. They use $TLA^+$ to verify the correctness of their distributed algorithms and AWS system design [[5]]. The problematic of alrogithms and communication in distributed systems is well described in the Leslie Lamport's paper "Time, Clocks, and the Ordering of Events in a Distributed System" [[6]].
 
 A system design is expressed in a formal way called _specification_.
 
 > Specification — the precise high-level model.
+{.note}
 
 $TLA^+$ defines the specification, but it cannot produce the code. But it helps come with much clearer architecture, write more precise, accurate, in some cases compact code. It is able to check properties that express conditions on an individual execution (a system satisfies a property if and only if every single execution satisfies it).
 
@@ -45,6 +47,7 @@ The underlying abstraction of $TLA^+$ is as follows: an execution of a system is
 - state — an assignment of values to variables.
 
 > Behavior — a sequence of states.
+{.note}
 
 A state machine in context of $TLA^+$ system is described by:
 
@@ -53,6 +56,7 @@ A state machine in context of $TLA^+$ system is described by:
 3. halts if there is no possible next state.
 
 > Control state — the next to be executed statement.
+{.note}
 
 State machines eliminate low-level implementation details, and $TLA^+$ is a language to describe state machines.
 
@@ -124,6 +128,7 @@ There are not many learning resources of $TLA^+$; however, there are some that w
 Now, let us talk about `TLC` and model checking related topics.
 
 > `TLC` computes all possible behaviors allowed by the spec. More precisely, TLC checks a *model* of the specification.
+{.note}
 
 - `TLC` reports **deadlock** if execution stopped when it was not supposed to;
 - `TLC` reports **termination** if execution stopped when it was supposed to.
@@ -151,9 +156,9 @@ There are two ways to write the behavior spec:
 2. **Single formula**
    - A single temporal formula of the form  $Init \land [][Next]_{vars} \land F$,  where
      - $Init$ is the initial predicate;
-     - `Next` is the next-state relation;
-     - `vars` is the tuple of variables;
-     - and `F` is an optional fairness formula.
+     - $Next$ is the next-state relation;
+     - $vars$ is the tuple of variables;
+     - and $F$ is an optional fairness formula.
 
 The only way to write a behavior spec that includes fairness is with a temporal formula, otherwise a spec would not have variables and in this case `TLC` will check assumptions and evaluate a constant expression.
 
@@ -193,20 +198,42 @@ You can declare more than one set of model values to be a symmetry set. However
 `TLC` does not check if a set you declare to be a symmetry set really is one. If you declare a set to be a symmetry set and it isn't, then `TLC` can fail to find an error that it otherwise would find. An expression is *symmetric* for a set `S` if and only if interchanging any two values of `S` does not change the value of the expression. The expression `{{v1, v2}, {v1, v3}, {v2, v3}}` is symmetric for the set `{v1, v2, v3}` — for example, interchanging `v1` and `v3` in this expression produces `{{v3, v2}, {v3, v1}, {v2, v1}}`, which is equal to the original expression. You should declare a set `S` of model values to be a symmetry set only if the specification and all properties you are checking are symmetric for `S` after the substitutions for constants and defined operators specified by the model are made. For example, you should not declare `{v1, v2, v3}` to be a symmetry set if the model substitutes `v1` for some constant. The only $TLA^+$ operator that can produce a non-symmetric expression when applied to a symmetric expression is `CHOOSE`. For example, the expression `CHOOSE x \in {v1, v2, v3} : TRUE` is not symmetric for `{v1, v2, v3}`.
 
 > Symmetry sets should not be used when checking liveness properties. Doing so can make TLC fail to find errors, or to report nonexistent errors.
+{.danger}
 
 ## Die Hard
 
 Die Hard is an action movie from 1988. In this movie, there is a scene where are heroes need to solve a problem with two jugs in order to disable a bomb. The problem is to measure 4 gallons of water using 3 and 5 gallons jugs.
 
-For the plot, search: "Die Hard Jugs problem" on YouTube or simply click [here](https://www.youtube.com/watch?v=2vdF6NASMiE). We will solve this problem using $TLA^+$.
+For the plot, search: "Die Hard Jugs problem" on YouTube or simply click here 🙂. We will solve this problem using $TLA^+$.
+
+{{< youtube 2vdF6NASMiE >}}
 
 First, we need to write the behavior. Let values of $small$ and $big$ represent number of gallons in each jug.
 
-$\begin{bmatrix} small & 0\\  big & 0 \end{bmatrix} \rightarrow \begin{bmatrix} small & 3\\  big & 0 \end{bmatrix} \rightarrow \begin{bmatrix} small & 0\\  big & 3 \end{bmatrix} \rightarrow \begin{bmatrix} small & 3\\  big & 3 \end{bmatrix} \rightarrow \begin{bmatrix} small & 1\\  big & 5 \end{bmatrix} \rightarrow \begin{bmatrix} small & 1\\  big & 0 \end{bmatrix} \rightarrow ...$
+{{< math >}}
+
+$$
+  \begin{bmatrix}
+    small & 0 \\
+    big & 0 \\
+  \end{bmatrix} \rightarrow   \begin{bmatrix}
+                                   small & 3 \\
+                                   big & 0 \\
+                              \end{bmatrix} \rightarrow     \begin{bmatrix}
+                                                                 small & 0 \\
+                                                                 big & 3 \\
+                                                              \end{bmatrix} \rightarrow     \begin{bmatrix}
+                                                                                                 small & 3 \\
+                                                                                                 big & 3 \\
+                                                                                              \end{bmatrix} \rightarrow ...
+$$
+
+{{< /math >}}
 
 Filling a jug is a single step; there are no intermediate steps.
 
 > Real specification are written to eliminate some kinds of errors.
+{.tip}
 
 $TLA^+$ has no type declarations; however if it important to define a formula that asserts type correctness. It helps to understand the spec and `TLC` can check types by checking if such formula is always $true$.
 
@@ -230,18 +257,19 @@ We define the spec as follows:
 
 ```tlaplus
 Next == \/ FillSmall  \* fill the small jug
-		\/ FillBig    \* fill the big jug
-		\/ EmptySmall \* empty the small jug
-		\/ EmptyBig   \* empty the big jug
-		\/ SmallToBig \* pour water from small jug in the big jug
-		\/ BigToSmall \* pour water from the big jug in the small jug
+        \/ FillBig    \* fill the big jug
+        \/ EmptySmall \* empty the small jug
+        \/ EmptyBig   \* empty the big jug
+        \/ SmallToBig \* pour water from small jug in the big jug
+        \/ BigToSmall \* pour water from the big jug in the small jug
 ```
 
 > The names of definitions (like `FillSmall`, etc.) must be defined before the usage (precede the definition of `Next`).
+{.important}
 
 ```tlaplus
 FillSmall == /\ small' = 3
-			 /\ big' = big
+             /\ big' = big
 ```
 
 When defining formulas we need to keep in mind thinking of the system as a whole and about steps as transition from one state to another. In our case it means that we cannot define `FillSmall` as `FillSmall == small' = 3` because this formula doesn't have a part defining the second part of the program state (`big`). In another words, this formula turns $true$ if `small'` equals `3` and `big'` equals whatever. But this is not correct. In fact, if we fill the small jug, we remain the big jug at the state it is without changes.
@@ -250,20 +278,19 @@ Now, we define `SmallToBig`. There are two possible cases we need to consider:
 
 ```tlaplus
 SmallToBig == /\ IF big + small <= 5
-				  THEN /* There is room -> empty small.
-				  ELSE /* There is no room -> fill big.
+                  THEN /* There is room -> empty small.
+                  ELSE /* There is no room -> fill big.
 ```
 
 ```tlaplus
 SmallToBig == /\ IF big + small <= 5
-				  THEN /\ big' = big + small
-					   /\ small' = 0
-				  ELSE /\ big' = 5
-					   /\ small' = small - (5 - big)
+                  THEN /\ big' = big + small
+                       /\ small' = 0
+                  ELSE /\ big' = 5
+                       /\ small' = small - (5 - big)
 ```
 
-<details>
-  <summary>The full spec text is here</summary>
+{{< detail-tag "The full spec text is here" >}}
 
 ```tlaplus
 ------------------------------ MODULE DieHard ------------------------------
@@ -272,65 +299,66 @@ EXTENDS Integers
 VARIABLES small, big
 
 TypeOK == /\ small \in 0..3
-/\ big \in 0..5
+          /\ big \in 0..5
 
 Init == /\ big = 0
-/\ small = 0
+        /\ small = 0
 
 FillSmall == /\ small' = 3
-/\ big' = big
+             /\ big' = big
 
 FillBig == /\ big' = 5
-/\ small' = small
+           /\ small' = small
 
 EmptySmall == /\ small' = 0
-/\ big' = big
+              /\ big' = big
 
 EmptyBig == /\ big' = 0
-/\ small' = small
+            /\ small' = small
 
 SmallToBig == IF big + small =< 5
-THEN /\ big' = big + small
-/\ small' = 0
-ELSE /\ big' = 5
-/\ small' = small - (5 - big)
+                THEN /\ big' = big + small
+                     /\ small' = 0
+                ELSE /\ big' = 5
+                     /\ small' = small - (5 - big)
 
 BigToSmall == IF big + small =< 3
-THEN /\ big' = 0
-/\ small' = big + small
-ELSE /\ big' = big - (3 - small)
-/\ small' = 3
+               THEN /\ big' = 0
+                    /\ small' = big + small
+               ELSE /\ big' = big - (3 - small)
+                    /\ small' = 3
 
 Next == \/ FillSmall
-\/ FillBig
-\/ EmptySmall
-\/ EmptyBig
-\/ SmallToBig
-\/ BigToSmall
+        \/ FillBig
+        \/ EmptySmall
+        \/ EmptyBig
+        \/ SmallToBig
+        \/ BigToSmall
 
 =============================================================================
 
 ```
 
-</details>
+{{< /detail-tag >}}
 
 If we create and run a model for this spec we will see no errors and this is fine; however, it doesn't check any particular invariant of our spec.
 
 > Invariant is a formula that is $true$ in every reachable state.
+{.note}
 
 We have defined a `TypeOK` as a type definition for `small` and `big`, so we can add this formula as an invariant to check that this invariant is not broken.
 
-![alt text](./do-not-die-hard-with-tla-plus-1/add_typeok_invariant.png)
+![alt text](/img/do-not-die-hard-with-tla-plus-1/add_typeok_invariant.png)
 
 If we run it now, we still see no errors meaning `small` and `big` respect their types in every reachable state.
 
 Now we can solve the _die hard_ problem of pouring `big` with exactly 4 gallons of water. To do it, we add a new invariant `big /= 4` into the invariants section.
 
-![alt text](./do-not-die-hard-with-tla-plus-1/add_big_neq_4_invariant.png)
+![alt text](/img/do-not-die-hard-with-tla-plus-1/add_big_neq_4_invariant.png)
 
 Here, this invariant works as an counterexample. An invariant is a formula that turns to $true$ in **every** reachable state. We need to find a state (actually a state sequence) where `big = 4`, so we negate this by the `/=` symbol that equals to $\neq$. With this new formula if we run the model, it finds an error (a state where an invariant is broken) and shows a sequence of states that led to this state.
 
-![alt text](./do-not-die-hard-with-tla-plus-1/run_result.png)
+![alt text](/img/do-not-die-hard-with-tla-plus-1/run_result.png)
 
 Now, we can see the exact steps that are required to be done to solve the problem and our heroes can move on.
 
@@ -345,7 +373,7 @@ Now, we can see the exact steps that are required to be done to solve the proble
 
 [1]: https://lamport.azurewebsites.net/tla/learning.html
 
-[2]: {{< ref "/blog/ltl-ctl-for-smart-contact-security" >}}
+[2]: {{< ref "/blog/ltl-ctl-for-smart-contract-security" >}}
 [3]: https://en.wikipedia.org/wiki/OpenComRTOS
 [4]: https://www.researchgate.net/publication/315385340_Formal_Development_of_a_Network-Centric_RTOS
 [5]: https://www.amazon.science/publications/how-amazon-web-services-uses-formal-methods
