@@ -55,7 +55,7 @@
 }
 
 .warning {
-  border-left-color: #c89f2d !important;
+  border-left-color: rgb(198, 144, 38) !important;
 }
 
 .note {
