@@ -63,3 +63,10 @@ menu:
       name: "About"
       url: "/about/"
       weight: 4
+
+markup:
+  defaultMarkdownHandler: goldmark
+  goldmark:
+      parser:
+          attribute:
+            block: true
