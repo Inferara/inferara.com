@@ -76,3 +76,15 @@
 .danger {
   border-left-color: #810f0c !important;
 }
+
+.goat.svg-container {
+    font-size: 13px;
+}
+
+.goat-caption {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-style: italic;
+    font-size: medium;
+}
