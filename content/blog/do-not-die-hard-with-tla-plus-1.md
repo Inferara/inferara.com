@@ -353,6 +353,8 @@ Next == \/ FillSmall
 
 {{< /detail-tag >}}
 
+<br/>
+
 If we create and run a model for this spec we will see no errors and this is fine; however, it doesn't check any particular invariant of our spec.
 
 > Invariant is a formula that is $true$ in every reachable state.

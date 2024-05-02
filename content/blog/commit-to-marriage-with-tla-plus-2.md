@@ -12,27 +12,44 @@ tags = ["Temporal Logic", "TLA+", "Model checking", "Alrorithms"]
 - [Introduction](#introduction)
 - [Transaction Commit](#transaction-commit)
 - [Two-Phase Commit](#two-phase-commit)
+- [Conclusion](#conclusion)
+- [Notes](#notes)
 - [References](#references)
 
 ## Introduction
 
-This is the second blog post in the series of the conspectus of the "Introduction to TLA+" course by Leslie Lamport. As usual, all credits are to Leslie Lamport and his course that can be found on his [website][2].
+This is the second blog post (here is the first one [[1]]) in the series of the conspectus of the "Introduction to TLA+" course by Leslie Lamport. As usual, all credits are to Leslie Lamport and his course that can be found on his [website][2]. In this part, we will consider the _Transaction Commit_ and _Two-Phase Commit_ algorithms.
 
 ## Transaction Commit
 
-A database transaction is performed by a collection of processes called _resource managers_. A transaction can either _commit_ or _abort_. It can commit only if all resource manages are prepared to commit and must abort if any resource manager wants to abort.
+In the first part we consider the _Transaction Commit_ algorithm [[3]], pp.2-4. In a distributed system, a transaction commit involves multiple resource managers (RMs) across different nodes that must unanimously decide to either commit or abort a transaction. The protocol ensures that all RMs either reach a committed state or an aborted state, supported by the conditions of stability and consistency, which mandate that once an RM reaches one of these states, it cannot revert, and no RM can be in the opposite state.
 
-> [!important] All resource managers must agree on whether a transaction is committed or aborted.
+A database transaction is performed by a collection of processes called _resource managers_. A transaction can either _commit_ or _abort_. It can commit only iif all resource manages are prepared to commit and must abort if any resource manager wants to abort.
 
-The state/transition diagram of each resource manager
+> All resource managers must agree on whether a transaction is committed or aborted.
+{.important}
 
 ```goat
-working_.
-|        \
-prepared  \
-|          \
-committed  aborted
+.------------.                
+|   working  +---------.      
+'-----+------'         |      
+      |                |
+      v                |      
+.------------.         |      
+|  prepared  |         |      
+'-----+------'         |      
+      |                |     
+      v                v
+.------------.   .-----------.
+|  commited  |   |  aborted  |
+'------------'   '-----------'
 ```
+
+<span class="goat-caption">Fig. 1 The state/transition diagram of each resource manager</span>
+
+Now, we consider the transcation commit spec with the details. You can find the full text below, under the black triangle.
+
+{{< detail-tag "The full TCommit spec text is here" >}}
 
 ```tlaplus
 ------------------------------ MODULE TCommit ------------------------------
@@ -116,20 +133,24 @@ THEOREM TCSpec => [](TCTypeOK /\ TCConsistent)
 =============================================================================
 ```
 
-Consider the spec in details.
+{{< /detail-tag >}}
 
-In $TLA^+$ every value is a set but the semantics of $TLA^+$ doesn't say what elements of a set are.
-The expression `rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]` represents a set of possible states that `rmState` can have according to the pic. 1.
+<br/>
 
-The `TCInit` declares an initial `rmState` which represents the array with index set `RM` such that: $[r \in RM \mapsto working][rm]$ an array, applied to the `rm` equals the string `"working"` for every resource manager `rm`, for all `rm` in `RM`.
+In $TLA^+$ every value is a set but the semantics of $TLA^+$ does not say what elements of a set are.
+The expression `rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]` represents a set of possible states that `rmState` can have according to the Fig. 1.
+
+The `TCInit` declares an initial `rmState` which represents the array with the index set `RM` such that: $[r \in RM \mapsto working][rm]$ is an array, applied to the $rm$ equals the string $working$ for every resource manager $rm$, for all $r$ in $RM$.
 
 Simply saying: $\forall r \in RM, RM(rm) = working$. 
 
-The $TLA^+$ syntax for an array expression: $[ variable \in set \mapsto expression]$, where $\mapsto$ looks like |-> in ASCII.
+The $TLA^+$ syntax for an array expression is as follows: $[ variable \in set \mapsto expression]$, where $\mapsto$ looks like |-> in ASCII.
 
-For example: `sqr = [ i \in 1..42 |-> i**2]`, defines `sqr` to be an array with index set from 1 to 42 such that `sqr[i] = i**2` for all `i` in the range from 1 to 42.
+> For example: `sqr = [ i \in 1..42 |-> i**2]`, defines `sqr` to be an array with index set from 1 to 42 such that `sqr[i] = i**2` for all `i` in the range from 1 to 42.
 
-Terminology that used in programming and math for the same things
+**Terminology that used in programming and math for the same things**
+
+Now, we need to take into account the terminology that is used in programming, math, and $TLA^+$. The terms on each row are equivalent.
 
 | Programming | Math                 |
 | ----------- | -------------------- |
@@ -139,9 +160,12 @@ Terminology that used in programming and math for the same things
 
 In $TLA^+$ we write formulas, not programs, so it uses the function and domain terminology; however, the $f[e]$ notation is used instead of $f(e)$ to escape possible ambiguity with other mathematical operations.
 
-> [!note] $TLA^+$ allow a function to have any set as its domain — even an infinite set, for example, the set of all integers.
+> $TLA^+$ allows a function to have any set as its domain — even an infinite set, for example, the set of all integers.
+{.note}
 
-The formula $\exists r \in RM : Prepare(r) \lor Decide(r)$ is $true$ if and only if there exists some $r$ in the set $RM$ where $Prepare(r) \lor Decide(r)$ is $true$.
+Consider the group of formulas, including $Prepare$ and $Decide$ formulas, that defines states transitions of resource managers.
+
+The formula $\exists r \in RM : Prepare(r) \lor Decide(r)$ is $true$ iif there exists some $r$ in the set $RM$ where $Prepare(r) \lor Decide(r)$ is $true$.
 
 Suppose `RM = { "r1", "r2", "r3", "r4" }` then this formula equals to the following set of disjunctives:
 
@@ -152,7 +176,7 @@ Suppose `RM = { "r1", "r2", "r3", "r4" }` then this formula equals to the follow
 \/ Prepare("r4") \/ Decide("r4")
 ```
 
-$\exists$ declares `r` to be local to formula.
+$\exists$ declares `r` to be local to a formula.
 
 In case we define this formula with $\forall r$ instead $\exists r$ as follows: $\forall r \in RM : \text{Prepare}(r) \lor \text{Decide}(r)$, reads as "for all $r$ in $\text{RM}$..." in the same assumption regarding the values of $\text{RM}$ as above, this formula equals to the following
 
@@ -170,54 +194,72 @@ $Prepare(r) \equiv \land rmState[r] = working$ where $\land rmState[r] = working
 
 The spec cannot say what the new state of $rmState'[r] = prepared$ is. It must say what the entire set of the $rmState'$ function is. The value of this function must be a function of the domain $RM$ like the following: $rmState' = [s \in RM \mapsto ...]$ where $...$ must be replaced with the new value of $rmState[s]$ for each resource manager $s$.
 
-If $s$ is a resource manager $r$ then the value of $RM$ state in a new state should be $prepared$ , any other resource manager should have a value in the new state same as in the old state.
+If $s$ is a resource manager $r$ then the value of the $RM$ state in a new state should be $prepared$ , any other resource managers should have a value in the new state same as in the old state.
 
 Here is the complete definition:
+{{< math >}}
 $$
 \begin{split} \text{Prepare}(r) \equiv & \land rmState[r] = \text{working} \\
 & \land rmState' = [rmState EXCEPT \space ![r] = \text{prepared}]
 \end{split}
 $$
+{{< /math >}}
 
-$\text{Decide}(r)$ describes possible steps in which a resource manager $r$ reaches $\text{commited}$ or $\text{aborted}$ state. Its the disjunctions of two formulas describing the transition $\text{prepared} \rightarrow \text{commited}$ which can only occur if $r$ in the $\text{prepared}$ state. $r$ can commit only if every resource manager is in the $\text{prepared}$ or in the $\text{commited}$ state. The second disjunction describes possible transitions to the $\text{abord}$ state. This transition can happen if $r$ state is $\text{working}$ or $\text{prepared}$ state. $r$ can abort only if no other resource manager is $\text{committed}$.
+$\text{Decide}(r)$ describes possible steps in which a resource manager $r$ reaches $\text{commited}$ or $\text{aborted}$ state. Its the disjunctions of two formulas describing the transition $\text{prepared} \rightarrow \text{commited}$ which can only occur if $r$ in the $\text{prepared}$ state.
 
+$r$ can commit only if every resource manager is in the $\text{prepared}$ or in the $\text{commited}$ state. The second disjunction describes possible transitions to the $\text{abord}$ state. This transition can happen if $r$ state is $\text{working}$ or $\text{prepared}$ state. $r$ can abort only if no other resource manager is $\text{committed}$.
+
+{{< math >}}
 $$
 \begin{split}
 \text{Decide}(r) \equiv \lor & \land rmState[r] = \text{prepared} \\
 & \land \text{canCommit} \\
 & \land rmState' = [rmState EXCEPT \space ![r] = \text{commited}] \\
-\lor & \land rmState[r] \in \{\text{workgin}, \text{prepared}\} \\
+\lor & \land rmState[r] \in \{ \text{working}, \text{prepared} \} \\
 & \land notCommited \\
 & \land rmState' = [rmState EXCEPT \space ![r] = \text{aborted}]
 \end{split}
 $$
+{{< /math >}}
 
 Now, we can define two formulas: $\text{canCommit}$ and $\text{notCommited}$.
 
-We can commit a transaction if and only if all resource managers are in either $\text{prepared}$ or $\text{commited}$ state: $\forall s \in \text{RM} : \text{rmState}[s] \in \{ \text{prepared}, \text{committed} \}$.
+We can commit a transaction if and only if all resource managers are in either $\text{prepared}$ or $\text{commited}$ state: $\forall s \in \text{RM} : \text{rmState}[s] \in \\{ \text{prepared}, \text{committed} \\}$.
 And a transaction is not committed if all resource managers' state not equals $\text{commited}$ : $\forall s \in \text{RM} : \text{rmState}[s] \neq \text{committed}$.
 
-It is important to remember then to check a model we need to provide an invariant to be checked (a formula that is always $true$). This invariant is presented as 
+> It is important to remember that to check a model we need to provide a set of invariants to be checked (a formula that is always $true$). This invariant is presented as 
+{.important}
+
+{{< math >}}
 $$
 \begin{split}
 TCConsistent \equiv  \forall r1, r2 \in RM : & \neg \land rmState[r1] = \text{aborted} \\
 & \land rmState[r2] = \text{committed}
 \end{split}
 $$
+{{< /math >}}
+
+After considering the $TCommit$ spec, and getting familiar with the used formulas and their semantics, we can proceed with more advanced example of the _Two-Phase Commit_ algorithm.
 
 ## Two-Phase Commit
 
-Martin Kleppmann
+To understand the _Two-Phase Commit_ algorithm, we recommend to read about it ([[3]], pp.5-7) and watch a video from Martin Kleppmann, which is a part of his great _Distributed Systems_ course.
 
-https://www.youtube.com/watch?v=-_rdWB9hN1c
+In a nutshell, the _Two-Phase Commit_ protocol in distributed systems involves a transaction manager (TM) that coordinates the commitment process among resource managers (RMs), who follow a two-step communication process to either commit or abort a transaction. The protocol starts with an RM entering the prepared state and signaling the TM, which then instructs all RMs to prepare; if all RMs are prepared, the TM commands them to commit, or to abort if any RM cannot prepare. This method ensures consistency but can be costly and vulnerable to blocking if the TM fails.
 
-Records.
+{{< youtube -_rdWB9hN1c >}}
 
-The $r \equiv [ \text{prof} \mapsto \text{"Fred"}, \text{num} \mapsto 42]$ defines $r$ to be a record with two fields $\text{prof}$ and $\text{num}$. It roughly corresponds to `struct` in `C`.
+Before considering the spec for the _Two-Phase Commit_ algorithm, we need to understand the concept of _records_ in the $TLA^+$.
 
-This record is actually a function $f$ with domain $\{\text{"prof"},\text{"num"}\}$, such that $f[\text{"prof"}] = \text{"Fred"}$ and $f[\text{"num"}] = 42$. Actually, record fields are accessible with dot notation $f.prof$ as an abbreviation for $f[\text{"prof"}]$.
+The $r \equiv [ \text{prof} \mapsto \text{"Fred"}, \text{num} \mapsto 42]$ defines $r$ to be a _record_ with two fields $\text{prof}$ and $\text{num}$. It roughly corresponds to `struct` in `C`.
 
-A notation $[f \space \text{EXCEPT!} [\text{"prof"}]=\text{"Red"}]$ equals the record the same as $f$ except its $\text{"prof"}$ field equals to $\text{"Red"}$. This expression can also be written as $[f \space \text{EXCEPT!.prof} = \text{"Red"}]$.
+This record is actually a function $f$ with the domain $\\{\text{"prof"},\text{"num"}\\}$, such that $f[\text{"prof"}] = \text{"Fred"}$ and $f[\text{"num"}] = 42$. Actually, record fields are accessible by the dot notation $f.prof$ as an abbreviation for $f[\text{"prof"}]$.
+
+A notation $[f \space \text{EXCEPT!} [\text{"prof"}]=\text{"Red"}]$ equals to the same record as $f$ except its $\text{"prof"}$ field equals to $\text{"Red"}$. This expression can also be written as $[f \space \text{EXCEPT!.prof} = \text{"Red"}]$.
+
+Now, we can consider the _Two-Phase Commit_ spec with the details. You can find the full text below, under the black triangle.
+
+{{< detail-tag "The full TwoPhase spec text is here" >}}
 
 ```tlaplus
 ------------------------------ MODULE twophase ------------------------------
@@ -400,9 +442,14 @@ THEOREM TPSpec => TCSpec
 =============================================================================
 ```
 
-In this spec `CONSTANT RM` and `VARIABLES rmState` are the same as in the previous spec.
-Variables `tmState` and `tmPrepared` indicate the state and track RM states of a transaction manager. A transaction manager tracks the state of resource managers memorizing which states are "committed" and execute a transaction once receives a "committed" state from all resource managers. `msgs` describes the messages that are in transit.
+{{< /detail-tag >}}
 
+<br/>
+
+In this spec $CONSTANT RM$ and $VARIABLES rmState$ are the same as in the previous spec.
+Variables $tmState$ and $tmPrepared$ indicate the state and track $RM$ states of a transaction manager. A transaction manager tracks the state of resource managers memorizing which states are $\text{"committed"}$ and execute a transaction once receives a $\text{"committed"}$ state from all resource managers. $msgs$ describes the messages that are in transit.
+
+{{< math >}}
 $$
 \begin{split}
 TPTypeOK \equiv & \land \text{rmState} \in [RM \rightarrow \{ \text{"working"}, \text{"prepared"}, \text{"committed"}, \text{"aborted"} \}] \\
@@ -411,18 +458,24 @@ TPTypeOK \equiv & \land \text{rmState} \in [RM \rightarrow \{ \text{"working"}, 
 & \land \text{msgs} \subseteq \text{Messages}
 \end{split}
 $$
+{{< /math >}}
+
 The definition of $TPTypeOK$ states sets of possible values for $rmState$ and $tmState$ respectively. The values of $tmPrepared$ must be from the $RM$ and $msgs$ must be from $\text{Messages}$.
 
-The goal of this spec is to describe the sending of messages. It does not specify the actual mechanism by which the messages are sent, but it specifies only what is required of message passing.
+> The goal of this spec is to describe the sending of messages. It does not specify the actual mechanism by which the messages are sent, but it specifies only what is required of message passing.
 
-There is one simplification introduced in the spec: since two-phase commit algorithm does not rely on the order of messages, we do not remove already picked messages from `msgs`. So, the `msgs` hold all ever sent messages and receivers can read messages from it. This is something that can actually happen in the real life, so we need ensure the algorithm works in this case.
+> There is one simplification introduced in the spec: since two-phase commit algorithm does not rely on the order of messages, we do not remove already picked messages from $msgs$. So, $msgs$ hold all ever sent messages and receivers can read messages from it. This is something that can actually happen in the real life, so we need to ensure the algorithm works in this case.
+{.note}
 
-$\text{Messages} \equiv [type : \{\text{"Prepared"}, rm : RM\}] \cup [type : \{\text{"Commit"}, \text{"Abort"}\}]$.
+The definiton of $Messages$.
 
-Left part of the union is a set of records whose $type$ field is an element of the set containing the single element $\text{"Prepared"}$ and $rm$ contains of the elements of $RM$. It can be written as $[type \mapsto \text{"Prepared"}, rm \mapsto r]$ — represents a _prepared_ message sent by $r$ to the transaction manager.
+$\text{Messages} \equiv [type : \\{\text{"Prepared"}, rm : RM\\}] \cup [type : \\{\text{"Commit"}, \text{"Abort"}\\}]$
 
-The right part of the union is a set that represents messages sent by a transaction manager to all resource managers. This set equals to the set containing two elements $\{[type \mapsto \text{"Commit"}],[type \mapsto \text{"Abort"}]\}$.
+The left part of the union is a set of records whose $type$ field is an element of the set containing the single element $\text{"Prepared"}$ and $rm$ consists of the elements of $RM$. It can be written as $[type \mapsto \text{"Prepared"}, rm \mapsto r]$ — represents a _prepared_ message sent by $r$ to the transaction manager.
 
+The right part of the union is a set that represents messages sent by a transaction manager to all resource managers. This set equals to the set containing two elements $\\{[type \mapsto \text{"Commit"}],[type \mapsto \text{"Abort"}]\\}$.
+
+{{< math >}}
 $$
 \begin{split}
 TPInit \equiv & \land rmState = [r \in RM \mapsto \text{"working"}] \\
@@ -431,9 +484,11 @@ TPInit \equiv & \land rmState = [r \in RM \mapsto \text{"working"}] \\
 & \land msgs = \{\}
 \end{split}
 $$
+{{< /math >}}
 
-In the $TPInit$ formula, $rmState$ — a formula that assigns the string $\text{"working"}$ to every resource managers;
+In the $TPInit$ formula, $rmState$ — is a formula that assigns the string $\text{"working"}$ to every resource managers;
 
+{{< math >}}
 $$
 \begin{split}
 TMRcvPrepared(r) \equiv & \land tmState = \text{"init"} \\
@@ -442,6 +497,7 @@ TMRcvPrepared(r) \equiv & \land tmState = \text{"init"} \\
 & \land UNCHANGED \left \langle rmState, tmState, msgs \right \rangle
 \end{split}
 $$
+{{< /math >}}
 
 The $TMRcvPrepared(r)$ sub-formula describes the receipt of a $Prepared$ message from a resource manager $r$ by the transaction manager.
 
@@ -449,21 +505,29 @@ The message can be received only if the transaction manager in the $init$ state 
 
 The new value of $\text{tmPrepared'}$ equals to its value and a union with the set of on element $r$, in another words, it adds $r$ to the set $\text{tmPrepared}$. 
 
-The entire $UNCHANGED$ formula is an equivalent to $\land rmState' = rmState \land tmState' = tmState \land msgs' = msgs$ which asserts that the values of $rmState$, $rmState$, and $msgs$ remain unchanged.
+The entire $UNCHANGED$ formula is an equivalent to $\land rmState' = rmState \land tmState' = tmState \land msgs' = msgs$ which asserts that values of $rmState$, $rmState$, and $msgs$ remain unchanged.
 
-In this formula, the first two conjunctions have no primes.  They are conditions on the first step of the step and called enabling conditions. They should go at the beginning of a formula.
+> In this formula, the first two conjunctions have no primes.  They are conditions on the first step of the step and called enabling conditions. They should go at the beginning of a formula.
+{.note}
 
-The order of conjuncts make sense, like here the third conjunct declares adding an element $r$ into the $tmPrepared'$ set and all subsequent step occur with $r$ in $tmPrepared$ that implies $tmPrepared$ remain unchanged, because it said to contain either an element or not, it cannot contain two copies of $r$. In another words, on this step $r$ was moved to the $tmPrepared'$ set but not to the $tmPrepared$ set and then _assigned_ to the $tmPrepared'$.
+The order of conjuncts makes sense, like here the third conjunct declares adding an element $r$ into the $tmPrepared'$ set and all subsequent step occur with $r$ in $tmPrepared$ that implies $tmPrepared$ remain unchanged, because it said to contain either an element or not, it cannot contain two copies of $r$. In another words, on this step $r$ was moved to the $tmPrepared'$ set but not to the $tmPrepared$ set and then _assigned_ to the $tmPrepared'$.
 
-In two-phase commit every resource manager has an identical role, they are interchangeable. In TCL the set of possible interchangeable permutations is called a symmetry set. TLC will check fewer states if the model sets a symmetry set to a set of model values.
+In TwoPhase commit every resource manager has an identical role, they are interchangeable. In TCL the set of possible interchangeable permutations is called a symmetry set. TLC will check fewer states if the model sets a symmetry set to a set of model values.
 
-Beware that TLC may miss errors if you claim a set is a symmetry set when it is not.
+> Beware that TLC may miss errors if you claim a set is a symmetry set when it is not.
+{.danger}
 
 To check that the two-phase commit is an actual transaction commit protocol we should check that formula $TCConsistent$ of the $TCommit$ spec, which asserts that one resource manager cannot commit if another aborts, is also an invariant of the spec.
 
 The statement `INSTANCE TCommit` imports the definitions from $TCommit$ into module $TwoPhase$.
 
-So, in order to ensure the spec has no errors, you need to add both $TPTypeOK$ and $TCConsistent$ invariants into the TLA+ toolbox.
+So, in order to ensure the spec has no errors, you need to add **both** $TPTypeOK$ and $TCConsistent$ invariants into the TLA+ toolbox.
+
+## Conclusion
+
+In this blog post, we considered the _Transaction Commit_ and _Two-Phase Commit_ algorithms. We have learned how to define multi-parties protocols, records, and symmetry sets. In the next blog, we will cover the Learning $TLA^+$ course part explaining the _Paxos_ algorithm.
+
+## Notes
 
 If you experience with errors (such as "unknown operator TPInit") when trying to run a model, check this thread https://groups.google.com/u/1/g/tlaplus/c/REfGFm9bJMU/m/BuJ9N8NnGwAJ.
 
@@ -473,15 +537,17 @@ However, this above did not help me, so what I did to solve the problem:
 3. Create a new specification inside the current one (right-click on _modules_ -> new specification with the root module file as the current one)
 4. Paste $TCommit$ spec into the newly created spec (keep names consistent according to the `INSTANCE TCommit` expression).
 
-It is probably an awkward solution but it works, the toolbox itself is not a modern UX friendly GUI :)
+It is probably an awkward solution but it works 🐦‍⬛.
 
 ## References
 
 - [Do not die hard with TLA+ pt.1][1]
 - [Leslie Lamport. Learning TLA+][2]
+- [Jim Gray, Leslie Lamport. Consensus on Transaction Commit][3]
 
 [1]: {{< ref "/blog/do-not-die-hard-with-tla-plus-1" >}}
 [2]: https://lamport.azurewebsites.net/tla/learning.html
+[3]: https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf
 
 
 ---
