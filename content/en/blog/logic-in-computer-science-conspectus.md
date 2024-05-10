@@ -7,4 +7,22 @@ summary = "This blog outlines the basics of propositional logic, as explained by
 tags = ["Propositional logic", "Foundations", "Mathematics"]
 +++
 
-TODO : write something
+## Table of contents
+
+- [Introduction](#introduction)
+- [Declarative sentences](#declarative-sentences)
+- [Logical operators and proof rules]()
+  - [Basic rules]()
+  - [Examples]()
+  - [Contradictions]()
+  - [Derived rules]()
+  - [More examples]()
+  - [Intuitionistic logic]()
+- [Well-formed formulae]()
+- [Proof by induction]()
+  - [Course-of-values induction]()
+
+# Introduction
+This blog post is my conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan. I will cover the first five parts of chapter one. 
+
+# Declarative sentences
