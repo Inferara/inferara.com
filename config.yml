@@ -16,7 +16,7 @@ params:
 
   profileMode:
     enabled: true
-    subtitle: "We use formal methods to prove the correctness of Rust code on the blockchain."
+    subtitle: "We use formal methods to prove the correctness of blockchain code."
     imageUrl: "images/logo.svg"
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
