@@ -45,15 +45,60 @@ Here is another example:
 Notice how in both cases, the sentences said different things about the world, but they had the same structure, and we were able to reason about them in the same way. This is interesting, because it means that to make arguments, we don't actually have to care about what these sentences are saying - we just need to know their logical structure. It means that we can describe __anything we like__ using these declarative sentences, reason about them logically, and come to some conclusions. This sounds like just the thing we need for verifying programs!
 
 # Propositional logic
-The English language is quite complicated. It would be nice to have a smaller "language" that would let us only focus on logical structure, and with rules that are simple enough for a computer to verify. Firstly, remember that we didn't need to know what our sentences were saying about the world. For this reason, we will only use a single letter to represent a declarative statement. Secondly, we used words such as _and_, _or_, _not_, _if_ and _then_ to connect our simple statements and make more complicated ones. We'll denote them using symbols, and give them more precise definitions:
+Unfortunately, there are some issues that arise when we use plain English to describe things. Firstly, English can be quite ambiguous. Two people can read the exact same sentence and have different interpretations of it. For example, the sentence
+> The man saw the woman with a telescope.
 
-- $\lnot$ will represent negation, like the word "not" in the English language. 
-- $\land$ will represent conjunction, like the word "and." $p\land q$ is true if and only if both $p$ is true, and $q$ is true. 
-- $\lor$ is disjunction, similar to the English "or." $p\lor q$ is true if either $p$ is true, or $q$ is true, or both $p$ and $q$ are true. This differs slightly from English, where, depending on the context, "or" can mean one or the other, but not both. 
-- Finally, $\rightarrow$ will denote implication, similar to "if \_ then \_" in English. Usually when we use that wording, there is some causation between the antecedent and result. For example, the phrase "If you don't wear your jacket, you will catch a cold" makes sense, because not wearing the jacket will cause you to catch a cold. The statement "If the atomic number of carbon is 40, then I like chocolate ice cream" sounds absurd, because there is no sensible connection between the antecedent and result. However, in propositional logic, we do not care about causation, only consequences.
+has two interpretations:
+  - The man, looking _through_ a telescope, saw the woman.
+  - The man saw the woman, who was holding a telescope.
 
-Let $a$ mean "it is sunny", $b$ mean "I was outside", and $c$ mean "I purchased ice cream." Here is our first example in this new logical notation:
-- $a$
-- $\lnot c$
-- $a\land b \rightarrow c$
+Usually in everyday conversations this doesn't matter, because we have context and can infer the right meaning. However, for our formal verification needs, we cannot have ambiguities like this. On top of this, natural language is quite excessive for our needs. Recall how when making logical arguments, we only needed to care about the structure of our sentences, and not what they were saying. Therefore, it would be great to express our declarative sentences in a smaller, stricter language with a much simpler grammar which would let us only focus on logical manipulation of statements. Perhaps we could even get computers to automatically do some of the manipulations for us.
 
+Propositional logic is this simpler language. Here's how it works:
+
+Since we don't have to know what our sentences are saying, we can take very simple statements that cannot be broken down any further and simply represent them with a single letter. These are called propositional atoms. For example, we could denote the sentence "It is raining" as just $p$.
+
+We can define some logical operators with strict rules that combine these propositional atoms into more complicated statements, so that we can describe some more interesting things. For example, let $p$ mean "It is winter," and let $q$ mean "It is cold outside." Then:
+
+- $\lnot p$ represents the _negation_ of $p$: "It is _not_ winter."
+- $p\land q$ represents the _conjunction_ of the two statements, I.E. "It is winter _and_ it is cold outside." This is true if and only if $p$ is true and $q$ is true.
+- $p\lor q$ is the _disjunction_ of $p$ and $q$: "It is winter _or_ it is cold outside." This is true if $p$ is true, _or_ $q$ is true, or both.This makes disjunction is similar to the English "or", however sometimes in English when we say "or", we mean one or the other, but not both. This is not the case here.
+- $p\rightarrow q$ means that $p$ _implies_ $q$, or in other words that $q$ is a result of $p$: "If it is winter, then it is cold outside." An important thing to note here is that we are not concerned about causation, as we usually are in English. The sentence "If the atomic number of carbon is 15, then I had yogurt for breakfast" doesn't make sense to us, since there is no obvious causality between the two statements. However, in propositional logic, that would be a perfectly fine statement.
+
+Now, consider the formula $p\land q\rightarrow r$. There is some abiguity here, as we can potentially read this in two ways:
+- $(p\land q)\rightarrow r$: $r$ is true if $p$ is true and $q$ is true.
+- $p\land(q\rightarrow r)$: $p$ is true, and $q$ implies $r$.
+
+In order to avoid situations like this, we establish some rules:
+- $\lnot$ binds more tightly than $\land$ and $\lor$, and those two bind more tightly than $\rightarrow$. 
+Therefore, the correct interpretation of the above formula is $(p\land q)\rightarrow r$.
+
+Finally, we need some rules for manipulating these formulae so we can arrive at conclusion from them. They will look like this:
+$$
+\frac{\phi,\psi}{\gamma} n
+$$
+They read as follows: If we know that everything above the line is true $(\phi, \psi)$, then we can conclude that $\gamma$ is also true. $n$ is the name of the rule.
+
+Firstly, let's consider conjunction ($\land$). We know that if $\phi$ is true, and $\psi$ is true, then $\phi$ _and_ $\psi$ must be true. Hence we get the rule for conjunction introduction:
+$$
+\frac{\phi,\psi}{\phi\land\psi}\land_i
+$$
+Likewise, if we know that both $\phi$ and $\psi$ are true, then we can infer that $\phi$ is true. We can also infer that $\psi$ is true. This gives us two rules for conjunction elimination:
+$$
+\frac{\phi\land\psi}{\phi}\land e_1
+\frac{\phi\land\psi}{\psi}\land e_2
+$$
+The rules for double negation ($\lnot\lnot$) are also quite simple. Consider the sentence "It isn't not winter." This is just a weird way of saying "It is winter," and vice-versa. Therefore we get two more rules:
+$$
+\frac{\phi}{\lnot\lnot \phi}\lnot\lnot i
+\frac{\lnot\lnot\phi}{\phi}\lnot\lnot e
+$$
+Implication elimination is quite straightforward: If we know that $\phi$ implies $\psi$ (In other words, if $\phi$ is true, then $\psi$ must be true), and we know that $\phi$ is true, then $\psi$ must be true:
+$$
+\frac{\phi\rightarrow\psi,\phi}{\psi}\rightarrow e
+$$
+Disjunction introduction is a tiny bit harder. If we know that $\phi$ is true, then we know $\phi\lor\psi$ (or $\psi\lor\phi$) must be true, where $\psi$ can be any other formula. Even if $\psi$ is false, the disjunction still holds, because $\phi$ is true, and we only need at least one of the formulae to be true.
+$$
+\frac{\phi}{\phi\lor\psi}\lor i_1
+\frac{\phi}{\psi\lor\phi}\lor i_2
+$$
