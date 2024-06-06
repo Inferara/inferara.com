@@ -73,7 +73,7 @@ In order to avoid situations like this, we establish some rules:
 - $\lnot$ binds more tightly than $\land$ and $\lor$, and those two bind more tightly than $\rightarrow$. 
 Therefore, the correct interpretation of the above formula is $(p\land q)\rightarrow r$.
 
-Finally, we need some rules for manipulating these formulae so we can arrive at conclusion from them. They will look like this:
+Finally, we need some rules for manipulating these formulae so we can arrive at conclusions from them. They will look like this:
 $$
 \frac{\phi,\psi}{\gamma} n
 $$
@@ -97,8 +97,41 @@ Implication elimination is quite straightforward: If we know that $\phi$ implies
 $$
 \frac{\phi\rightarrow\psi,\phi}{\psi}\rightarrow e
 $$
+There is another rule we can use to eliminate an implication called _modus tollens_, abbreviated as M.T.:
+$$
+\frac{\phi\rightarrow\psi,\lnot\psi}{\lnot\phi}M.T.
+$$
+This rule states that if $\phi$ implies $\psi$ (In other words, if $\phi$ is true, then $\psi$ must be true), and we know that $\psi$ is _false_, then $\phi$ cannot be true since this would lead to a contradiction.
+
 Disjunction introduction is a tiny bit harder. If we know that $\phi$ is true, then we know $\phi\lor\psi$ (or $\psi\lor\phi$) must be true, where $\psi$ can be any other formula. Even if $\psi$ is false, the disjunction still holds, because $\phi$ is true, and we only need at least one of the formulae to be true.
 $$
 \frac{\phi}{\phi\lor\psi}\lor i_1
 \frac{\phi}{\psi\lor\phi}\lor i_2
 $$
+With these simple rules, we can construct a proof. We usually start a proof with some formulae or propositions that we know to be true. These are called our premises. By applying the above rules to our premises, we can obtain new formulae. We can apply rules to those new formulae, and repeat this process until we arrive at some conclusion. Once we have a valid proof for some conclusion ($\psi$) from some premises $(\phi_1,\phi_2\dots\phi_n)$, we can write the following : $\phi_1,\phi_2\dots\phi_n\vdash\psi$. This expression is called a sequent, and it reads like so: "If we know the formulae $\phi_1, \phi_2, \dots$, and $\phi_n$ are true, then we can infer that $\psi$ is true as well." Typically, we structure a proof like so:
+| Line number | What we have | Where we got it from |
+|-------------|--------------|----------------------|
+| 1           | ....         | ....                 |
+
+As an example, we will prove the sequent $p\land q, q\rightarrow r\vdash p\land r$. Here's how it looks:
+
+1. $p\land q$ (Premise)
+2. $q \rightarrow r$ (Premise)
+3. $q$ $(\land e_2\space 1)$
+4. $r$ $(\rightarrow e\space 2,3)$
+5. $p$ $(\land e_1\space 1)$
+6. $p\land r$ $(\land_i\space 4,5)$
+
+We got to the conclusion by applying these rules to our premises - therefore the sequent is valid. At each step, we also give justifications. For example, in line 3, we say we have the formula $q$, and we got it by applying the rule $\land e_2$ to line 1.
+
+These aren't all the proof rules. For the remaining ones, you have to understand assumptions and contradictions. At any stage of our proof, we are free to make an assumption. However, for the proof to be valid, we have to "discharge" these assumptions at some point. There are two rules which can do this:
+The first rule is implication introduction. Here it is:
+$$
+\frac{[\phi\dots\psi]}{\phi\rightarrow\psi}\rightarrow i
+$$
+It states that if we assume $\phi$ to be true, and from that assumption we are able to show that $\psi$ is true, then $\phi$ must imply $\psi$. There is also disjunction elimination $(\lor e)$ - it looks like this:
+$$
+\frac{[\phi\dots\alpha],[\psi\dots\alpha],\phi\lor\psi}{\alpha}\lor e
+$$
+This means that if we know that either $\phi$ is true or $\psi$ is true, and in each case we can show that $\alpha$ is true, then we can infer that $\alpha$ must be true. 
+
