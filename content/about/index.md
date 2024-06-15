@@ -12,4 +12,4 @@ Our team unites people who share experience in science and engineering.
 
 > "If you do not do design right from the beginning, then every piece of the code you write is a patch. And you start out from the day 1 with a mess." – Leslie Lamport
 
-We are very welcome to everyone who wants to share their comments, suggestions, and thoughts. We are the #Web3 ecosystem altogether, so please do not hesitate to reach us and discuss the future of #Web3 security.
+We are very welcome to everyone who wants to share their comments, suggestions, and thoughts. We are the #Web3 ecosystem altogether, so please do not hesitate to [ reach out to us ](/contact) and discuss the future of #Web3 security.

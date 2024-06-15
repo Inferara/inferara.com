@@ -28,4 +28,4 @@ We concentrate on developing methodologies that ensure code operates exactly as 
 
 ---
 
-If you share our passion for these topics and are interested in exploring collaborative research opportunities, we warmly invite you to reach out to us. Our team is eager to discuss potential partnerships and projects that can further advance the field. Please find our contact details on the [main page](/), and let’s forge new frontiers together.
+If you share our passion for these topics and are interested in exploring collaborative research opportunities, we warmly invite you to reach out to us. Our team is eager to discuss potential partnerships and projects that can further advance the field. Please find our social media details on the [main page](/) or write to us directly on the [contact page](/contact), and let’s forge new frontiers together.
