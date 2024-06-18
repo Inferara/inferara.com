@@ -154,34 +154,56 @@ $$
 This rule is called "Law of the excluded middle", and abbreviated as LEM.
 
 # Syntax vs semantics
-When we were writing proofs in the previous section using the rules of natural deduction, we were thinking in terms of _structure_. All we had were valid expressions and rules for transforming valid expressions into other valid expressions. Hypothetically, you could show someone just the symbols (atoms, connectives such as $\land,\lor$ etc.) and natural deduction rules, and without even knowing what these symbols represent, they could still construct a proof. When we write $\phi\vdash\psi$, we mean "If $\phi$ is true, then we can infer $\psi$ is true, because we are able to turn $\phi$ into $\psi$ by applying the rules of natural deduction." However, instead of thinking about structure, we could also think about _meaning_, and reason with truth tables instead of natural deduction rules. For example, consider this sequent: $$p\rightarrow q\vdash\lnot p\lor q$$ It says "If $p$ implies $q$, then either $p$ is false, or $q$ is true." I.E, if the formula on the left is true, then so too must be the one on the right. Of course, we can prove this by manipulating the structure of the left formula:
-1. $p\rightarrow q$ (Premise)
-2. $q\lor\lnot q$ (LEM)
-3. $q$ (Assumption)
-4. $\lnot p\lor q$ ($\lor i_2$ 3)
-5. ($\lnot q$) (Assumption)
-6. ($\lnot p$) (M.T 1,5)
-7. ($\lnot p\lor q$) ($\lor i_1$ 6)
-8. ($\lnot p\lor q$) ($\lor e$ 2,3..4,5..7)
+When we were writing proofs in the previous section using the rules of natural deduction, we were thinking in terms of _structure_. All we had were valid expressions and rules for transforming valid expressions into other valid expressions. Hypothetically, you could show someone just the symbols (atoms, connectives such as $\land,\lor$ etc.) and natural deduction rules, and without even knowing what these symbols represent, they could still construct a proof. When we write $\phi\vdash\psi$, we mean "If $\phi$ is true, then we can infer $\psi$ is true, because we are able to turn $\phi$ into $\psi$ by applying the rules of natural deduction." However, instead of thinking about structure, we could also think about _meaning_: instead of symbols with rules describing how we can manipulate them, we can view connectives as manipulating truth values. For instance, the truth value of the formula $\phi\land\psi$ depends on the truth values of $\phi$ and $\psi$, and the meaning of $\land$. We say that $\phi\land\psi$ is true if and only if both $\phi$ is true, and $\psi$ is true. We can also write out each _valutation_ of this formula (A valuation is simply where we assign each atom to be true or false) and get a truth table:
+| $\\phi$ | $\\psi$ | $\\phi\\land\\psi$ |
+| ------- | ------- | ------------------ |
+| T       | T       | T                  |
+| T       | F       | F                  |
+| F       | T       | F                  |
+| F       | F       | F                  |
 
-__TODO: Formatting__
+And here are the truth tables for the other connectives:
+Disjunction is true if at least one of the disjuncts are true.
 
-But look what happens if we write out the truth tables for both formulae:
-| p | q    | $p\rightarrow  q$ |
-| - | - | ---- |
-| T  | T  | T        |
-| T  | F  | F        |
-| F  | T  | T        |
-| F  | F  | T        |
+| $\\phi$ | $\\psi$ | $\\phi\\lor\\psi$ |
+| ------- | ------- | ------------------ |
+| T       | T       | T                  |
+| T       | F       | T                  |
+| F       | T       | T                  |
+| F       | F       | F                  |
 
+Implication is only false if the assumption is true and the conclusion is false. You can think of this as trying to preserve truth. In the cases where the assumption is false, the implication is true, because there is no truth to be preserved in the first place.
 
-| p | q               | $\lnot p\lor q$ |
-| - | - | --------------- |
-| T  | T  | T                              |
-| T  | F  | F                              |
-| F  | T  | T                              |
-| F  | F  | T                              |
+| $\\phi$ | $\\psi$ | $\\phi\\rightarrow\\psi$ |
+| ------- | ------- | ------------------ |
+| T       | T       | T                  |
+| T       | F       | F                  |
+| F       | T       | T                  |
+| F       | F       | T                  |
 
-They are the same! For each valuation where the left formula is true, the right formula is true as well. This lets us write something new: $p\rightarrow q\models \lnot p\lor q$. It says "If the left formula is true, then we can infer the right formula must also be true, because if we write out the truth tables, we see that for every valuation where the left formula is true, the right formula is true as well."
+Negation just flips true to false, and vice-versa.
 
-This brings us to soundness and completeness. Soundness means that if we can show one formula to imply another _syntactically_ ($\phi\vdash\psi$), then that formula must also imply the other _semantically_. ($\phi\models\psi$)
+| $\\phi$ | $\lnot\phi$|
+| ------- | ------------------ |
+| T       | F                  |
+| F       | T                  |
+
+Now, consider the following sequent: $\phi\land\psi\vdash\phi\rightarrow\psi$. We could prove this using natural deduction, but watch what happens if we write out the truth tables for both formulae:
+| $\\phi$ | $\\psi$ | $\\phi\\land\\psi$ | $\\phi\\rightarrow\\psi$ |
+| ------- | ------- | ------------------ | ------------------------ |
+| **T**   | **T**   | **T**              | **T**                    |
+| T       | F       | F                  | F                        |
+| F       | T       | F                  | T                        |
+| F       | F       | F                  | T                        |
+
+Observe that whenever $\phi\land\psi$ is true, so too is $\phi\rightarrow\psi$. This lets us write something new:
+$$
+\phi\land\psi\models\phi\rightarrow\psi
+$$
+This reads as follows: "If we know that $\phi\land\psi$ is true, then we can infer that $\phi\rightarrow\psi$ is true, because we see in the truth tables that whenever the former evaluates to true, so too does the latter." This is different to $\phi\land\psi\vdash\phi\rightarrow\psi$, which instead reads "If we know that $\phi\land\psi$ is true, then we can infer $\phi\rightarrow\psi$ is true, because we were able to turn the former into the latter using our natural deduction rules." This brings us to _soundness_ and _completeness_.
+
+Soundness means that if we can find a proof that $\phi\vdash\psi$ using our natural deduction rules, then it always the case that $\phi\models\psi$.
+
+Completeness goes the other way around: If we find that a formula $\psi$ is always true whenever another formula $\phi$ is true, then there must be a proof using natural deduction rules that $\phi\vdash\psi$.
+
+This means that whenever we want to show that one formula entails another, we are free to switch between working with syntactic proofs ($\vdash$) and semantic entailment ($\models$).
