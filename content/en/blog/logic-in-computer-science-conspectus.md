@@ -12,15 +12,6 @@ tags = ["Propositional logic", "Foundations", "Mathematics"]
 - [Introduction](#introduction)
 - [Declarative sentences](#declarative-sentences)
 - [Propositional logic](#propositional-logic)
-  - [Basic rules]()
-  - [Examples]()
-  - [Contradictions]()
-  - [Derived rules]()
-  - [More examples]()
-  - [Intuitionistic logic]()
-- [Well-formed formulae]()
-- [Proof by induction]()
-  - [Course-of-values induction]()
 
 # Introduction
 This blog post is my conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan. I will cover the first five parts of chapter one. 
@@ -122,16 +113,75 @@ As an example, we will prove the sequent $p\land q, q\rightarrow r\vdash p\land 
 5. $p$ $(\land e_1\space 1)$
 6. $p\land r$ $(\land_i\space 4,5)$
 
+__TODO: FORMAT THIS SO IT DOESN'T LOOK LIKE GARBAGE__
+
 We got to the conclusion by applying these rules to our premises - therefore the sequent is valid. At each step, we also give justifications. For example, in line 3, we say we have the formula $q$, and we got it by applying the rule $\land e_2$ to line 1.
 
-These aren't all the proof rules. For the remaining ones, you have to understand assumptions and contradictions. At any stage of our proof, we are free to make an assumption. However, for the proof to be valid, we have to "discharge" these assumptions at some point. There are two rules which can do this:
-The first rule is implication introduction. Here it is:
+These aren't all the proof rules - the remaining ones work with _contradictions_ and _assumptions_. A contradiction arises when we can show something is both true and not true at the same time, I.E any statement of the form $\phi\land\lnot\phi$ or $\lnot\phi\land\phi$. We denote the contradiction with $\bot$, and this gives us the following rule:
+$$
+\frac{\phi,\lnot\phi}{\bot}\lnot e
+$$
+Perhaps one of the stranger rules is $\bot e$, which states that a contradiction is equivalent to any formula:
+$$
+\frac{\bot}{\phi}\bot e
+$$
+__TODO: ADD AN EXPLANATION HERE__
+
+What about assumptions? While we are doing a proof, we may at any point assume that something holds. However, in order for the proof to be valid, we must make sure the conclusion _does not depend on the assumption_. For example, if we assume that some formula $\phi$ is true, and then from working with that assumption we are able to conclude that $\psi$ is true, we can't just say that $\psi$ is true in general, because we had to make an assumption for the proof to work! However, we _are_ able to say that $\phi$ _implies_ $\psi$, because we know that if $\phi$ were to be true, we could prove $\psi$. This leads to the following rule:
 $$
 \frac{[\phi\dots\psi]}{\phi\rightarrow\psi}\rightarrow i
 $$
-It states that if we assume $\phi$ to be true, and from that assumption we are able to show that $\psi$ is true, then $\phi$ must imply $\psi$. There is also disjunction elimination $(\lor e)$ - it looks like this:
-$$
-\frac{[\phi\dots\alpha],[\psi\dots\alpha],\phi\lor\psi}{\alpha}\lor e
-$$
-This means that if we know that either $\phi$ is true or $\psi$ is true, and in each case we can show that $\alpha$ is true, then we can infer that $\alpha$ must be true. 
+To me, it reads like this: "If we assume $\phi$ is true, and can show that $\psi$ is true using that assumption, then we may conclude that $\phi$ implies $\psi$."
 
+Another similar rule is negation introduction. It states that if we assume some $\phi$ is true, and that leads to a contradiction, then $\phi$ must be false:
+$$
+\frac{[\phi\dots\bot]}{\lnot\phi}\lnot i
+$$
+Finally, there is disjunction elimination. The formula $\phi\lor\psi$ tells us that $\phi$ is true, or $\psi$ is true, or both. Now, imagine we had a proof for $\phi\vdash\gamma$ and $\psi\vdash\gamma$. This would let us conclude that $\gamma$ is true. Why? Well, we don't know which one of $\phi$ or $\psi$ are true, but it doesn't matter, because regardless of which case it turns out to be, we always can show $\gamma$. This leads to the most intimidating rule of the bunch:
+$$
+\frac{\phi\lor\psi,[\phi\dots\gamma],[\psi\dots\gamma]}{\gamma}\lor e
+$$
+This rule is describes what I said above: if we know that
+- Either $\phi$ is true, or $\psi$ is true (or both),
+- And we can conclude $\gamma$ if we assume $\phi$ to be true,
+- And we can also conclude $\gamma$ if we assume $\psi$ to be true,
+
+Then $\gamma$ must be true.
+Lastly, we have a rule which states that something must be either true or false:
+$$
+\frac{}{\phi\lor\lnot\phi}LEM
+$$
+This rule is called "Law of the excluded middle", and abbreviated as LEM.
+
+# Syntax vs semantics
+When we were writing proofs in the previous section using the rules of natural deduction, we were thinking in terms of _structure_. All we had were valid expressions and rules for transforming valid expressions into other valid expressions. Hypothetically, you could show someone just the symbols (atoms, connectives such as $\land,\lor$ etc.) and natural deduction rules, and without even knowing what these symbols represent, they could still construct a proof. When we write $\phi\vdash\psi$, we mean "If $\phi$ is true, then we can infer $\psi$ is true, because we are able to turn $\phi$ into $\psi$ by applying the rules of natural deduction." However, instead of thinking about structure, we could also think about _meaning_, and reason with truth tables instead of natural deduction rules. For example, consider this sequent: $$p\rightarrow q\vdash\lnot p\lor q$$ It says "If $p$ implies $q$, then either $p$ is false, or $q$ is true." I.E, if the formula on the left is true, then so too must be the one on the right. Of course, we can prove this by manipulating the structure of the left formula:
+1. $p\rightarrow q$ (Premise)
+2. $q\lor\lnot q$ (LEM)
+3. $q$ (Assumption)
+4. $\lnot p\lor q$ ($\lor i_2$ 3)
+5. ($\lnot q$) (Assumption)
+6. ($\lnot p$) (M.T 1,5)
+7. ($\lnot p\lor q$) ($\lor i_1$ 6)
+8. ($\lnot p\lor q$) ($\lor e$ 2,3..4,5..7)
+
+__TODO: Formatting__
+
+But look what happens if we write out the truth tables for both formulae:
+| p | q    | $p\rightarrow  q$ |
+| - | - | ---- |
+| T  | T  | T        |
+| T  | F  | F        |
+| F  | T  | T        |
+| F  | F  | T        |
+
+
+| p | q               | $\lnot p\lor q$ |
+| - | - | --------------- |
+| T  | T  | T                              |
+| T  | F  | F                              |
+| F  | T  | T                              |
+| F  | F  | T                              |
+
+They are the same! For each valuation where the left formula is true, the right formula is true as well. This lets us write something new: $p\rightarrow q\models \lnot p\lor q$. It says "If the left formula is true, then we can infer the right formula must also be true, because if we write out the truth tables, we see that for every valuation where the left formula is true, the right formula is true as well."
+
+This brings us to soundness and completeness. Soundness means that if we can show one formula to imply another _syntactically_ ($\phi\vdash\psi$), then that formula must also imply the other _semantically_. ($\phi\models\psi$)
