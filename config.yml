@@ -28,7 +28,7 @@ params:
     - name: "X"
       url: "https://www.x.com/Inferara_kk"
     - name: "email"
-      url: "mailto:inferara@gmail.com"
+      url: "mailto:info@inferara.com"
     - name: "github"
       url: "https://www.github.com/inferara"
     - name: "telegram"
