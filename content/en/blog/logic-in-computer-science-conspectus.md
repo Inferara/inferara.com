@@ -53,157 +53,164 @@ We can define some logical operators with strict rules that combine these propos
 
 - $\lnot p$ represents the _negation_ of $p$: "It is _not_ winter."
 - $p\land q$ represents the _conjunction_ of the two statements, I.E. "It is winter _and_ it is cold outside." This is true if and only if $p$ is true and $q$ is true.
-- $p\lor q$ is the _disjunction_ of $p$ and $q$: "It is winter _or_ it is cold outside." This is true if $p$ is true, _or_ $q$ is true, or both.This makes disjunction is similar to the English "or", however sometimes in English when we say "or", we mean one or the other, but not both. This is not the case here.
+- $p\lor q$ is the _disjunction_ of $p$ and $q$: "It is winter _or_ it is cold outside." This is true if $p$ is true, _or_ $q$ is true, or both.This makes disjunction is similar to the English "or". The difference is that sometimes when we say "or" in English, we mean one option or the other, but not both. In this case, both $p$ and $q$ can be true, and the disjunction will also be true.
 - $p\rightarrow q$ means that $p$ _implies_ $q$, or in other words that $q$ is a result of $p$: "If it is winter, then it is cold outside." An important thing to note here is that we are not concerned about causation, as we usually are in English. The sentence "If the atomic number of carbon is 15, then I had yogurt for breakfast" doesn't make sense to us, since there is no obvious causality between the two statements. However, in propositional logic, that would be a perfectly fine statement.
+
+One small note about implication: _It only goes one way!_ For example, consider the following sentence:
+> If I make a loaf of bread, then I am baking.
+
+The inverse is not true - you cannot assume that if I am baking, then I must be making a loaf of bread; perhaps I am making a cake instead. It turns out this mistake is common enough to have a [fancy name and its own Wikipedia page.](https://en.wikipedia.org/wiki/Affirming_the_consequent)
 
 Now, consider the formula $p\land q\rightarrow r$. There is some abiguity here, as we can potentially read this in two ways:
 - $(p\land q)\rightarrow r$: $r$ is true if $p$ is true and $q$ is true.
 - $p\land(q\rightarrow r)$: $p$ is true, and $q$ implies $r$.
 
 In order to avoid situations like this, we establish some rules:
-- $\lnot$ binds more tightly than $\land$ and $\lor$, and those two bind more tightly than $\rightarrow$. 
+- $\lnot$ binds more tightly than $\land$ and $\lor$
+- $\land$ and $\lor$ bind more tightly than $\rightarrow$.
+
 Therefore, the correct interpretation of the above formula is $(p\land q)\rightarrow r$.
 
-Finally, we need some rules for manipulating these formulae so we can arrive at conclusions from them. They will look like this:
-$$
-\frac{\phi,\psi}{\gamma} n
-$$
-They read as follows: If we know that everything above the line is true $(\phi, \psi)$, then we can conclude that $\gamma$ is also true. $n$ is the name of the rule.
+Finally, we have a small and concise language we can use to encode logical statements. But how do we go about making rigorous arguments? Usually, we would like to start with some premises (things we know to be true), and show that, given those premises, some other conclusion must also be true. At this point, we are free to choose if we want to argue about the _structure_ of the formula, or about the _meaning_ of the formula.
 
-Firstly, let's consider conjunction ($\land$). We know that if $\phi$ is true, and $\psi$ is true, then $\phi$ _and_ $\psi$ must be true. Hence we get the rule for conjunction introduction:
+# Syntax
+One way we can argue that a list of premises entail some conclusion is by dealing with the structure of our formulae. We can start with our premises and apply some rules to them, which will give us new formulae. We may then continue applying these rules to the new formulae until we reach the conclusion. I will briefly list the rules below, here is how to interpret them:
 $$
-\frac{\phi,\psi}{\phi\land\psi}\land_i
+\frac{a,b,c}{d} X
 $$
-Likewise, if we know that both $\phi$ and $\psi$ are true, then we can infer that $\phi$ is true. We can also infer that $\psi$ is true. This gives us two rules for conjunction elimination:
+This is a rule named $X$. It says that if we have everything _above_ the line (namely $a$, $b$, and $c$), then we can conclude whatever is _below_ the line ($d$).
+
+__Conjunction:__
 $$
+\frac{\phi,\psi}{\phi\land\psi}\land i
 \frac{\phi\land\psi}{\phi}\land e_1
 \frac{\phi\land\psi}{\psi}\land e_2
 $$
-The rules for double negation ($\lnot\lnot$) are also quite simple. Consider the sentence "It isn't not winter." This is just a weird way of saying "It is winter," and vice-versa. Therefore we get two more rules:
-$$
-\frac{\phi}{\lnot\lnot \phi}\lnot\lnot i
-\frac{\lnot\lnot\phi}{\phi}\lnot\lnot e
-$$
-Implication elimination is quite straightforward: If we know that $\phi$ implies $\psi$ (In other words, if $\phi$ is true, then $\psi$ must be true), and we know that $\phi$ is true, then $\psi$ must be true:
-$$
-\frac{\phi\rightarrow\psi,\phi}{\psi}\rightarrow e
-$$
-There is another rule we can use to eliminate an implication called _modus tollens_, abbreviated as M.T.:
-$$
-\frac{\phi\rightarrow\psi,\lnot\psi}{\lnot\phi}M.T.
-$$
-This rule states that if $\phi$ implies $\psi$ (In other words, if $\phi$ is true, then $\psi$ must be true), and we know that $\psi$ is _false_, then $\phi$ cannot be true since this would lead to a contradiction.
+The conjunction introduction rule ($\land i$) states that if we know $\phi$ and $\psi$ are both true, then $\phi$ _and_ $\psi$ is also true. Likewise, the conjunction elimination rules state that if we know $\phi$ and $\psi$ is true, then $\phi$ must be true, and so too must be $\psi$.
 
-Disjunction introduction is a tiny bit harder. If we know that $\phi$ is true, then we know $\phi\lor\psi$ (or $\psi\lor\phi$) must be true, where $\psi$ can be any other formula. Even if $\psi$ is false, the disjunction still holds, because $\phi$ is true, and we only need at least one of the formulae to be true.
+__Double negation:__
+
+Consider the sentence "It isn't not winter." This is just a strange way of saying "It is winter", and vice-versa. This leads to the rules for double disjunction:
+$$
+\frac{\lnot\lnot\phi}{\phi}\lnot\lnot e
+\frac{\phi}{\lnot\lnot\phi}\lnot\lnot i
+$$
+
+__Disjunction:__
 $$
 \frac{\phi}{\phi\lor\psi}\lor i_1
 \frac{\phi}{\psi\lor\phi}\lor i_2
 $$
-With these simple rules, we can construct a proof. We usually start a proof with some formulae or propositions that we know to be true. These are called our premises. By applying the above rules to our premises, we can obtain new formulae. We can apply rules to those new formulae, and repeat this process until we arrive at some conclusion. Once we have a valid proof for some conclusion ($\psi$) from some premises $(\phi_1,\phi_2\dots\phi_n)$, we can write the following : $\phi_1,\phi_2\dots\phi_n\vdash\psi$. This expression is called a sequent, and it reads like so: "If we know the formulae $\phi_1, \phi_2, \dots$, and $\phi_n$ are true, then we can infer that $\psi$ is true as well." Typically, we structure a proof like so:
-| Line number | What we have | Where we got it from |
-|-------------|--------------|----------------------|
-| 1           | ....         | ....                 |
+If we know that $\phi$ is true, then we know that $\phi$ or $\psi$ must be true. This works because disjunction only requires one of the sides to be true in order for it to hold - so even if $\psi$ was false, the disjunction as a whole is still true.
 
-As an example, we will prove the sequent $p\land q, q\rightarrow r\vdash p\land r$. Here's how it looks:
+__Assumption:__
 
-1. $p\land q$ (Premise)
-2. $q \rightarrow r$ (Premise)
-3. $q$ $(\land e_2\space 1)$
-4. $r$ $(\rightarrow e\space 2,3)$
-5. $p$ $(\land e_1\space 1)$
-6. $p\land r$ $(\land_i\space 4,5)$
+The following rules work with the idea of an assumption. When we are writing our proof, we are free at any point to assume that something is true. However, the catch is that our final result _cannot depend on the assumption_, meaning we have to "discharge" it in some way before we finish the proof. For example, if we assume that some formula $a$ is true, and then from working with that assumption we are able to conclude that $b$ is true, we can't just say that $b$ is true in general, because we had to make an assumption for the proof to work! However, we are able to say that $a$ implies $b$, because we know that if $a$ were to be true, we could prove $b$. Furthermore, this implication is true regardless if $a$ happens to be true or not. This gives us a rule for eliminating disjunctions and creating implications.
 
-__TODO: FORMAT THIS SO IT DOESN'T LOOK LIKE GARBAGE__
-
-We got to the conclusion by applying these rules to our premises - therefore the sequent is valid. At each step, we also give justifications. For example, in line 3, we say we have the formula $q$, and we got it by applying the rule $\land e_2$ to line 1.
-
-These aren't all the proof rules - the remaining ones work with _contradictions_ and _assumptions_. A contradiction arises when we can show something is both true and not true at the same time, I.E any statement of the form $\phi\land\lnot\phi$ or $\lnot\phi\land\phi$. We denote the contradiction with $\bot$, and this gives us the following rule:
-$$
-\frac{\phi,\lnot\phi}{\bot}\lnot e
-$$
-Perhaps one of the stranger rules is $\bot e$, which states that a contradiction is equivalent to any formula:
-$$
-\frac{\bot}{\phi}\bot e
-$$
-__TODO: ADD AN EXPLANATION HERE__
-
-What about assumptions? While we are doing a proof, we may at any point assume that something holds. However, in order for the proof to be valid, we must make sure the conclusion _does not depend on the assumption_. For example, if we assume that some formula $\phi$ is true, and then from working with that assumption we are able to conclude that $\psi$ is true, we can't just say that $\psi$ is true in general, because we had to make an assumption for the proof to work! However, we _are_ able to say that $\phi$ _implies_ $\psi$, because we know that if $\phi$ were to be true, we could prove $\psi$. This leads to the following rule:
-$$
-\frac{[\phi\dots\psi]}{\phi\rightarrow\psi}\rightarrow i
-$$
-To me, it reads like this: "If we assume $\phi$ is true, and can show that $\psi$ is true using that assumption, then we may conclude that $\phi$ implies $\psi$."
-
-Another similar rule is negation introduction. It states that if we assume some $\phi$ is true, and that leads to a contradiction, then $\phi$ must be false:
-$$
-\frac{[\phi\dots\bot]}{\lnot\phi}\lnot i
-$$
-Finally, there is disjunction elimination. The formula $\phi\lor\psi$ tells us that $\phi$ is true, or $\psi$ is true, or both. Now, imagine we had a proof for $\phi\vdash\gamma$ and $\psi\vdash\gamma$. This would let us conclude that $\gamma$ is true. Why? Well, we don't know which one of $\phi$ or $\psi$ are true, but it doesn't matter, because regardless of which case it turns out to be, we always can show $\gamma$. This leads to the most intimidating rule of the bunch:
+__Disjunction rules (cont.):__
 $$
 \frac{\phi\lor\psi,[\phi\dots\gamma],[\psi\dots\gamma]}{\gamma}\lor e
 $$
-This rule is describes what I said above: if we know that
-- Either $\phi$ is true, or $\psi$ is true (or both),
-- And we can conclude $\gamma$ if we assume $\phi$ to be true,
-- And we can also conclude $\gamma$ if we assume $\psi$ to be true,
+Suppose we were able to show that if $\phi$ is true, then $\gamma$ must be true as well, and we were also able to show that if $\psi$ is true, then $\gamma$ must be true as well. If we know that $\phi\lor\psi$ is true, that means we can then conclude that $\gamma$ must be true. Even if we don't know which one of the two is true, it doesn't matter, because in both cases we are able to show $\gamma$. This is essentially what the rule above is saying - the $[\phi\dots\gamma]$ means "A proof of $\gamma$ assuming that $\phi$ is true."
 
-Then $\gamma$ must be true.
-Lastly, we have a rule which states that something must be either true or false:
+__Implication:__
+
 $$
-\frac{}{\phi\lor\lnot\phi}LEM
+\frac{\phi,\phi\rightarrow\psi}{\psi}\rightarrow e
+\frac{[\phi\dots\psi]}{\phi\rightarrow\psi}\rightarrow i
+\frac{\phi\rightarrow\psi,\lnot\psi}{\lnot\phi} M.T.
 $$
-This rule is called "Law of the excluded middle", and abbreviated as LEM.
+The first rule is quite simple: if we know that $\phi$ is true, and we also know that if $\phi$ is true, then $\psi$ must be true as well, then we can conclude $\psi$. The second rule states that if we assume $\phi$ is true, and from that assumption we are able to show that $\psi$ is true, then $\phi$ must imply $\psi$. Finally, the third rule states that if we know $\phi$ implies $\psi$, and $\psi$ isn't true, then $\phi$ can't be true either. If $\phi$ was true, there would be a contradiction. This rule's name, M.T., is an abbreviation for _modus tollens_, which is Latin for something.
 
-# Syntax vs semantics
-When we were writing proofs in the previous section using the rules of natural deduction, we were thinking in terms of _structure_. All we had were valid expressions and rules for transforming valid expressions into other valid expressions. Hypothetically, you could show someone just the symbols (atoms, connectives such as $\land,\lor$ etc.) and natural deduction rules, and without even knowing what these symbols represent, they could still construct a proof. When we write $\phi\vdash\psi$, we mean "If $\phi$ is true, then we can infer $\psi$ is true, because we are able to turn $\phi$ into $\psi$ by applying the rules of natural deduction." However, instead of thinking about structure, we could also think about _meaning_: instead of symbols with rules describing how we can manipulate them, we can view connectives as manipulating truth values. For instance, the truth value of the formula $\phi\land\psi$ depends on the truth values of $\phi$ and $\psi$, and the meaning of $\land$. We say that $\phi\land\psi$ is true if and only if both $\phi$ is true, and $\psi$ is true. We can also write out each _valutation_ of this formula (A valuation is simply where we assign each atom to be true or false) and get a truth table:
-| $\\phi$ | $\\psi$ | $\\phi\\land\\psi$ |
-| ------- | ------- | ------------------ |
-| T       | T       | T                  |
-| T       | F       | F                  |
-| F       | T       | F                  |
-| F       | F       | F                  |
+__Contradiction:__
 
-And here are the truth tables for the other connectives:
-Disjunction is true if at least one of the disjuncts are true.
-
-| $\\phi$ | $\\psi$ | $\\phi\\lor\\psi$ |
-| ------- | ------- | ------------------ |
-| T       | T       | T                  |
-| T       | F       | T                  |
-| F       | T       | T                  |
-| F       | F       | F                  |
-
-Implication is only false if the assumption is true and the conclusion is false. You can think of this as trying to preserve truth. In the cases where the assumption is false, the implication is true, because there is no truth to be preserved in the first place.
-
-| $\\phi$ | $\\psi$ | $\\phi\\rightarrow\\psi$ |
-| ------- | ------- | ------------------ |
-| T       | T       | T                  |
-| T       | F       | F                  |
-| F       | T       | T                  |
-| F       | F       | T                  |
-
-Negation just flips true to false, and vice-versa.
-
-| $\\phi$ | $\lnot\phi$|
-| ------- | ------------------ |
-| T       | F                  |
-| F       | T                  |
-
-Now, consider the following sequent: $\phi\land\psi\vdash\phi\rightarrow\psi$. We could prove this using natural deduction, but watch what happens if we write out the truth tables for both formulae:
-| $\\phi$ | $\\psi$ | $\\phi\\land\\psi$ | $\\phi\\rightarrow\\psi$ |
-| ------- | ------- | ------------------ | ------------------------ |
-| **T**   | **T**   | **T**              | **T**                    |
-| T       | F       | F                  | F                        |
-| F       | T       | F                  | T                        |
-| F       | F       | F                  | T                        |
-
-Observe that whenever $\phi\land\psi$ is true, so too is $\phi\rightarrow\psi$. This lets us write something new:
+Finally, we have rules concerning contradiction. A contradiction is any statement of the form $\phi\land\lnot\phi$ or $\lnot\phi\land\phi$. It is denoted by the symbol $\bot$, and is always false. A strange property of contradiction is that we can derive any formula from it. This leads to the following rules:
 $$
-\phi\land\psi\models\phi\rightarrow\psi
+\frac{\phi,\lnot\phi}{\bot} \lnot e
+\frac{\bot}{\psi} \bot e
 $$
-This reads as follows: "If we know that $\phi\land\psi$ is true, then we can infer that $\phi\rightarrow\psi$ is true, because we see in the truth tables that whenever the former evaluates to true, so too does the latter." This is different to $\phi\land\psi\vdash\phi\rightarrow\psi$, which instead reads "If we know that $\phi\land\psi$ is true, then we can infer $\phi\rightarrow\psi$ is true, because we were able to turn the former into the latter using our natural deduction rules." This brings us to _soundness_ and _completeness_.
+Finally, there is also the rule of negation introduction. It states that if we assume some formula $\phi$ is true, and then it leads us to a contradiction, then it must mean $\phi$ is not true.
+$$
+\frac{[\phi\dots\bot]}{\lnot\phi}\lnot i
+$$
+With these rules, we can now go about constructing a proof. Proofs can be structured using three columns: the first column is the line number. The second column is the formula that we have, and the third column justifies where we got it from. Let's prove that if $a\land b$ and $b\rightarrow c$ is true, then $a\land c$ is true.
 
-Soundness means that if we can find a proof that $\phi\vdash\psi$ using our natural deduction rules, then it always the case that $\phi\models\psi$.
+| Line No. | What we have | Where we got it from |
+|----------|--------------|----------------------|
+| 1        | $a\land b$   | Premise (We start with it) |
+| 2        | $b\rightarrow c$| Premise |
+| 3        | $b$          | $\land e_2$ 1 (We applied the rule $\land e_2$ to line 1.)|
+| 4        | $c$          | $\rightarrow e$ 2,3|
+| 5        | $a$          | $\land e_1$ 1 |
+| 6        | $a\land c$   | $\land i$ 5,4 |
 
-Completeness goes the other way around: If we find that a formula $\psi$ is always true whenever another formula $\phi$ is true, then there must be a proof using natural deduction rules that $\phi\vdash\psi$.
+We were able to conclude $a\land c$ by starting with $a\land b$ and $b\rightarrow c$, and applying natural deduction rules to it. Therefore, we can write
+$$
+a\land b, b\rightarrow c\vdash a\land c
+$$
 
-This means that whenever we want to show that one formula entails another, we are free to switch between working with syntactic proofs ($\vdash$) and semantic entailment ($\models$).
+# Semantics
+Another way we can show that one formula entails another is by focusing on the _meaning_ of the formulae. Consider the formula $a\lor b$ - it is either true or false. Its truth value depends on:
+- The truth value of $a$ (whether or not it is true)
+- The truth value of $b$
+- The meaning of $\lor$.
+
+We can show the meaning of a connective by writing out a truth table. In each row of this table, we assign a truth value to $a$ and $b$ (This is called a valuation), and show the resulting truth value of $a\lor b$. We do this for every possible valuation. Here are the truth tables for all the logical connectives.
+
+| $a$ | $b$ | $a\lor b$    |
+|---|---|------|
+| T | T | T |
+| T | F | T |
+| F | T | T |
+| F | F | F |
+
+| $a$ | $b$ | $a\land b$    |
+|---|---|------|
+| T | T | T |
+| T | F | F |
+| F | T | F |
+| F | F | F |
+
+| $a$ | $b$ | $a\rightarrow b$    |
+|---|---|------|
+| T | T | T |
+| T | F | F |
+| F | T | T |
+| F | F | T |
+
+| $a$ | $\lnot a$ |
+|-----|-----------|
+|  T  |     F     |
+|  F  |     T     |
+
+If we have a more complicated formula with more variables, we just expand the truth table. However, each additional variable will double the amount of lines our truth table has - so it can get out of hand quickly. Now, by looking at the meaning, we are able to check that one formula entails another by writing out the truth tables:
+
+| $a$ | $b$ | $c$ | $a\land b$ | $b\rightarrow c$ | $a\land c$ |
+|---|---|---|----------|----------------|----------|
+| __T__ | __T__ | __T__ | __T__        | __T__              | __T__        |
+| T | T | F | T        | F              | F        |
+| T | F | T | F        | F              | F        |
+| T | F | F | F        | T              | F        |
+| F | T | T | F        | T              | T        |
+| F | T | F | F        | F              | F        |
+| F | F | T | F        | T              | F        |
+| F | F | F | F        | T              | F        |
+
+Here we can see that if $a\land b$ is true, and $b\rightarrow c$ is true, then $a\land c$ must be true - the same result we showed in the syntax section. The difference is that this time we reached this conclusion from looking at the truth table - notice how in each row where $a\land b$ is true and $b\rightarrow c$ is true, $a\land c$ is also true (I have highlighted that row in bold). This means we can write 
+$$
+a\land b, b\rightarrow c\models a\land c
+$$
+Notice how, just like implication, this relationship only goes one way. Yes, it is true that in each valuation where $a\land b$ and $b\rightarrow c$ are true, so too is $a\land c$, but there are some valuations where $a\land c$ is true and $a\land b$ and $b\rightarrow c$ is false (Look at row 5).
+
+# Soundness and completeness
+We have seen two ways of showing that some formulae entail another. The first way is syntactical - it deals with the _structure_ of the formula, and pays no attention to the meaning. When we write 
+$$
+\phi,\psi\vdash\gamma
+$$
+We mean "If $\phi$ and $\psi$ are true, $\gamma$ must be true, because we were able to manipulate the structures of $\phi$ and $\psi$ using the natural deduction rules to get $\gamma$." The second approach pays no attention to the structure of the formulae, but rather, their meaning. When we write
+$$
+\phi,\psi\models\gamma
+$$
+we mean "If $\phi$ and $\psi$ are true, $\gamma$ must be true, because we wrote out the truth tables and saw that in each case where $\phi$ and $\psi$ were true, so too was $\gamma$."
+
+As it turns out, both of these methods are valid, and there is a relationship between them. _Soundness_ means that if we find a syntactical proof of $a\vdash b$, then write out the truth table of the formulae $a$ and $b$, we will see that $b$ is true whenever $a$ is true. _Completeness_ goes the other way: if we write out the truth tables of two formulae $a$ and $b$, and observe that $a\models b$, then there must be a syntactic proof that $a\vdash b$. This means that we are free to switch between working with syntax and working with semantics.
