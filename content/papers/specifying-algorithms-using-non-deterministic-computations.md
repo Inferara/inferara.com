@@ -13,6 +13,7 @@ summary = "In this article, we will discuss the use of the formalism of non-dete
 - [Non-Determinism and Formal Specifications](#non-determinism-and-formal-specifications)
 - [Problem](#problem)
 - [Solution](#solution)
+- [Unrelated-machines scheduling example](#unrelated-machines-scheduling-example)
 - [Conclusion](#conclusion)
 - [References](#references)
 
@@ -207,6 +208,82 @@ Indeed, if we had an interpreter capable of executing code in the extended Rust 
 
 Most notably, the reasoning by which we arrived at this conclusion is in no way invalidated by the fact that the above-described interpreter for non-deterministic code does not actually exist.
 
+## Unrelated-machines scheduling example
+
+Consider another example of widely used algorithms of processing tasks on machines. The input consists of a finite set of tasks $N$, a finite set of machines $M$, and natural numbers $p_{i,j} \in \mathbb{Z}$ representing the duration of task $i \in N$ on machine $j \in M$. We need to find a mapping $f : N \to M$ such that 
+$$\max_{j \in M} \sum_{i \in N} \left[f(i) = j\right] p_{i,j}$$ 
+is minimized [[3]].
+
+```rust
+// Specified function takes n*m array of p_{i,j} and outputs its
+// solution into second array of size n. Return value is
+// minimax that solution aims to optimize.
+type sf = fn(&[u32], &mut [usize]) -> u32;
+
+// Checks validity of input.
+fn valid_input(p: &[u32], n: usize) {
+	let nm = p.len();
+
+	assert!(nm > 0); // p must be non-empty
+	assert!(nm % n == 0); // p must be rectangular
+
+	let m = nm / n;
+
+	for j in 0..m {
+		let mut acc: u32 = 0;
+
+		for i in 0..n {
+			let old = acc;
+			acc += p[i * m + j];
+			// sum of p_{*,j} must not overflow u32
+			assert!(acc >= old);
+		}
+	}
+}
+
+// Calculates minimax of solution candidate.
+fn calculate(p: &[u32], f: &[usize]) -> u32 {
+    let m = p.len() / f.len();
+    // array of running sums for each j
+    let mut res: Vec<u32> = vec![0; m];
+
+    for (i, &fi) in f.iter().enumerate() {
+	    assert!(fi < m);
+        res[fi] += p[i * m + fi];
+    }
+
+    res.iter().max().unwrap()
+}
+
+// Specification of globaly optimal solution.
+total fn optimal(func: sf) {
+	let p = Vec<u32>::undef();
+	let mut f = Vec<usize>::undef();
+	let n = f.len();
+
+	// checking input
+	filter valid_input(&p, n);
+
+	// running specified function
+	let r = func(&p, &mut f);
+
+	// ensuring return value is correct
+	assert!(r == calculate(&p, &f));
+
+	// generating all other possible solutions
+	for i in 0..n { f[i] = usize::undef(); }
+
+	// ensuring that candidate solution is the best
+	assert!(r <= filter calculate(&p, &f));
+}
+
+fn proof() {
+	verify optimal(foobar);
+
+	println!("foobar is an unrelated-machines scheduler");
+}
+```
+
 ## Conclusion
 
 Thanks to the rigor of our reasoning, the presented code can serve as a formal specification for a sorting function, comparable to predicate logic statements from the previous article. Moreover, the notation naturally extends a tool already familiar to programmers, making the barrier to understanding such specifications significantly lower. Programmers without a mathematical background can more easily grasp the semantics of non-deterministic computations compared to predicate logic.
@@ -217,6 +294,8 @@ However, it should be understood that to truly confirm the behavior of a specifi
 
 - [Program Verification: Background and Notation][1]
 - [Total functional programming. _wiki_][2]
+- [Unrelated-machines scheduling. _wiki_][3]
 
 [1]: https://www.inferara.com/papers/program-verification-background-and-notation/
 [2]: https://en.wikipedia.org/wiki/Total_functional_programming
+[3]: https://en.wikipedia.org/wiki/Unrelated-machines_scheduling
