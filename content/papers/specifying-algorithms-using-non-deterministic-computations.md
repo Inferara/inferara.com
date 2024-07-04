@@ -1,6 +1,6 @@
 +++
 title = 'Specifying Algorithms Using Non-Deterministic Computations'
-date = 2024-07-02T09:14:22+05:00
+date = 2024-07-04T10:20:22+05:00
 draft = false
 math = "katex"
 tags = ["Program Verification", "Inference"]
