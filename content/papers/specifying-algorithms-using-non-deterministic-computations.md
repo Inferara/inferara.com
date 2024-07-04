@@ -216,7 +216,7 @@ is minimized [[3]].
 
 ```rust
 // Specified function takes n*m array of p_{i,j} and outputs its
-// solution into second array of size n. Return value is
+// solution into the second array of size n. Return value is
 // minimax that solution aims to optimize.
 type sf = fn(&[u32], &mut [usize]) -> u32;
 
@@ -255,7 +255,7 @@ fn calculate(p: &[u32], f: &[usize]) -> u32 {
     res.iter().max().unwrap()
 }
 
-// Specification of globaly optimal solution.
+// Specification of globally optimal solution.
 total fn optimal(func: sf) {
 	let p = Vec<u32>::undef();
 	let mut f = Vec<usize>::undef();
@@ -273,7 +273,7 @@ total fn optimal(func: sf) {
 	// generating all other possible solutions
 	for i in 0..n { f[i] = usize::undef(); }
 
-	// ensuring that candidate solution is the best
+	// ensuring that the candidate solution is the best
 	assert!(r <= filter calculate(&p, &f));
 }
 
@@ -299,3 +299,7 @@ However, it should be understood that to truly confirm the behavior of a specifi
 [1]: https://www.inferara.com/papers/program-verification-background-and-notation/
 [2]: https://en.wikipedia.org/wiki/Total_functional_programming
 [3]: https://en.wikipedia.org/wiki/Unrelated-machines_scheduling
+
+---
+
+Discuss [this paper](https://t.me/inferara/19) in our telegram channel [@inferara](https://t.me/inferara/).
