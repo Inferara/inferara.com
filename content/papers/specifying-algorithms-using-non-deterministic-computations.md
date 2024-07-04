@@ -75,9 +75,7 @@ Let's consider the following example, written in a syntax that slightly extends 
 ```rust
 type sf = fn(&mut [i32]);
 
-fn count_values(arr: &[i32], val: i
-
-32) -> usize {
+fn count_values(arr: &[i32], val: i32) -> usize {
 	arr.iter().filter(|&&x| x == val).count()
 }
 
