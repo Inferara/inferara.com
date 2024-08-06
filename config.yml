@@ -24,16 +24,6 @@ params:
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
 
-  socialIcons:
-    - name: "X"
-      url: "https://www.x.com/Inferara_kk"
-    - name: "email"
-      url: "mailto:info@inferara.com"
-    - name: "github"
-      url: "https://www.github.com/inferara"
-    - name: "telegram"
-      url: "https://t.me/inferara"
-
 assets:
   favicon16x16: "/assets/favicon-16x16.png"
   favicon32x32: "/assets/favicon-32x32.png"
@@ -70,6 +60,15 @@ languages:
         buttons:
           - name: Read Our Papers
             url: "/papers"
+      socialIcons:
+        - name: "X"
+          url: "https://www.x.com/Inferara_kk"
+        - name: "email"
+          url: "mailto:info@inferara.com"
+        - name: "github"
+          url: "https://www.github.com/inferara"
+        - name: "telegram"
+          url: "https://t.me/inferara"
     menus:
       main:
         - identifier: research
@@ -107,6 +106,15 @@ languages:
         buttons:
           - name: 論文を読む
             url: "/papers"
+      socialIcons:
+        - name: "X"
+          url: "https://www.x.com/Inferara_kk"
+        - name: "email"
+          url: "mailto:info@inferara.com"
+        - name: "github"
+          url: "https://www.github.com/inferara"
+        - name: "line"
+          url: "https://line.me/ti/p/~inferara"
     menus:
       main:
         - identifier: research
