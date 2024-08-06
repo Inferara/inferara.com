@@ -4,10 +4,14 @@ title: "Inferara"
 theme: "PaperMod"
 favicon: "favicon.ico"
 
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: true
+
 params:
 
   disableThemeToggle: true
   defaultTheme: light
+  displayFullLangName: true
 
   label:
     icon: "images/logo.svg"
@@ -16,13 +20,9 @@ params:
 
   profileMode:
     enabled: true
-    subtitle: "We use formal methods to prove the correctness of blockchain code."
     imageUrl: "images/logo.svg"
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
-    buttons:
-      - name: Read Our Papers
-        url: "/papers"
 
   socialIcons:
     - name: "X"
@@ -45,29 +45,6 @@ services:
   googleAnalytics:
     ID: G-HFSPPHXC3W
 
-menu:
-  main:
-    - identifier: research
-      name: "Research"
-      url: "/research/"
-      weight: 1
-    - identifier: papers
-      name: "Papers"
-      url: "/papers/"
-      weight: 2
-    - identifier: blog
-      name: "Blog"
-      url: "/blog/"
-      weight: 3
-    - identifier: about
-      name: "About"
-      url: "/about/"
-      weight: 4
-    - identifier: contact
-      name: "Contact"
-      url: "/contact/"
-      weight: 5
-
 markup:
   defaultMarkdownHandler: goldmark
   goldmark:
@@ -76,3 +53,79 @@ markup:
             block: true
       renderer:
           unsafe: true
+
+languages:
+  en:
+    contentDir: content/en
+    disabled: false
+    languageCode: en-US
+    languageDirection: ltr
+    languageName: English
+    title: Inferara
+    weight: 1
+    params:
+      profileMode:
+        enabled: true
+        subtitle: "We use formal methods to prove the correctness of blockchain code."
+        buttons:
+          - name: Read Our Papers
+            url: "/papers"
+    menus:
+      main:
+        - identifier: research
+          name: "Research"
+          url: "/research/"
+          weight: 1
+        - identifier: papers
+          name: "Papers"
+          url: "/papers/"
+          weight: 2
+        - identifier: blog
+          name: "Blog"
+          url: "/blog/"
+          weight: 3
+        - identifier: about
+          name: "About"
+          url: "/about/"
+          weight: 4
+        - identifier: contact
+          name: "Contact"
+          url: "/contact/"
+          weight: 5
+  jp:
+    contentDir: content/jp
+    disabled: false
+    languageCode: ja-JP
+    languageDirection: ltr
+    languageName: 日本語
+    title: インフェララ
+    weight: 2
+    params:
+      profileMode:
+        enabled: true
+        subtitle: "ブロックチェーンコードの正確性を証明するために形式手法を使用しています。"
+        buttons:
+          - name: 論文を読む
+            url: "/papers"
+    menus:
+      main:
+        - identifier: research
+          name: "研究"
+          url: "/research/"
+          weight: 1
+        - identifier: papers
+          name: "論文"
+          url: "/papers/"
+          weight: 2
+        - identifier: blog
+          name: "ブログ"
+          url: "/blog/"
+          weight: 3
+        - identifier: about
+          name: "私たちについて"
+          url: "/about/"
+          weight: 4
+        - identifier: contact
+          name: "お問い合わせ"
+          url: "/contact/"
+          weight: 5
