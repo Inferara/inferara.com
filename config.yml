@@ -57,8 +57,8 @@ languages:
       FooterSubtitle: '"If you do not do design right from the beginning, then every piece of the code you write is a patch. And you start out from the day 1 with a mess." – Leslie Lamport'
       profileMode:
         enabled: true
-        title: "We do research in formal methods for protecting #Web3 digital assets and its citizens."
-        subtitle: "Our goal is to make Web3 safe and secure environment for everyone with our experience in science and engineering. aaaaaaaaaaaaaaaaaa"
+        title: "We do research in formal methods<br/>for protecting #Web3 digital assets<br/>and its citizens."
+        subtitle: "Our goal is to make Web3 safe and secure environment for everyone<br/>with our experience in science and engineering."
         buttons:
           - name: Read Our Papers
             url: "/papers"

@@ -17,16 +17,15 @@
 }
 
 .main .profile {
-    align-items: top;
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - (var(--gap) * 2));
-    text-align: center;
 }
 
 .profile .profile_inner {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     gap: 50px;
+    justify-content: start;
 }
 
 .profile-title {
