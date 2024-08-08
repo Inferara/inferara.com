@@ -1,3 +1,15 @@
+:root {
+    --gap: 70px;
+}
+
+.main {
+    max-width: calc(var(--nav-width) + var(--gap) * 2);
+}
+
+.footer {
+    max-width: calc(var(--nav-width) + var(--gap) * 2);
+}
+
 .buttons,
 .main .profile {
     display: flex;
@@ -12,9 +24,29 @@
 
 .profile .profile_inner {
     display: flex;
-    flex-direction: column;
+    /*flex-direction: column;*/
     align-items: center;
     gap: 10px;
+}
+
+.profile-title {
+    font-size: 40px;
+    color: #761C15;
+    font-weight: bold;
+}
+
+.social-icons {
+    display: flex;
+    flex-direction: column;
+}
+
+.social-icons a {
+    padding-block: 15px;
+}
+
+.social-icons a svg {
+    height: 50px;
+    width: 50px;
 }
 
 .profile img {
