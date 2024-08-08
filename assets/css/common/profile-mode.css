@@ -17,22 +17,27 @@
 }
 
 .main .profile {
-    align-items: center;
+    align-items: top;
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - (var(--gap) * 2));
     text-align: center;
 }
 
 .profile .profile_inner {
     display: flex;
-    /*flex-direction: column;*/
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 50px;
 }
 
 .profile-title {
     font-size: 40px;
     color: #761C15;
     font-weight: bold;
+    text-align: start;
+}
+
+.profile-subtitle {
+    text-align: start;
 }
 
 .social-icons {
@@ -56,6 +61,7 @@
 .buttons {
     flex-wrap: wrap;
     max-width: 400px;
+    align-self: start;
 }
 
 .button {

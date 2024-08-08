@@ -58,7 +58,7 @@ languages:
       profileMode:
         enabled: true
         title: "We do research in formal methods for protecting #Web3 digital assets and its citizens."
-        subtitle: "Our goal is to make Web3 safe and secure environment for everyone with our experience in science and engineering."
+        subtitle: "Our goal is to make Web3 safe and secure environment for everyone with our experience in science and engineering. aaaaaaaaaaaaaaaaaa"
         buttons:
           - name: Read Our Papers
             url: "/papers"
