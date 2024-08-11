@@ -16,8 +16,16 @@
     justify-content: center;
 }
 
+#menu li:last-child span {
+    border: 2px solid #810f0c;
+    border-radius: 10px;
+    padding: 5px;
+}
+
 .main .profile {
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - (var(--gap) * 2));
+    display: flex;
+    justify-content: space-between;
 }
 
 .profile .profile_inner {
