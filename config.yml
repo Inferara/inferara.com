@@ -61,7 +61,7 @@ languages:
         subtitle: "Our goal is to make Web3 safe and secure environment for everyone<br/>with our experience in science and engineering."
         buttons:
           - name: Read Our Papers
-            url: "/papers"
+            url: "/en/papers"
       socialIcons:
         - name: "X"
           url: "https://www.x.com/Inferara_kk"
@@ -71,28 +71,6 @@ languages:
           url: "https://www.github.com/inferara"
         - name: "telegram"
           url: "https://t.me/inferara"
-    menus:
-      main:
-        - identifier: research
-          name: "Research"
-          url: "/research/"
-          weight: 1
-        - identifier: papers
-          name: "Papers"
-          url: "/papers/"
-          weight: 2
-        - identifier: blog
-          name: "Blog"
-          url: "/blog/"
-          weight: 3
-        - identifier: about
-          name: "About"
-          url: "/about/"
-          weight: 4
-        - identifier: contact
-          name: "Contact Us"
-          url: "/contact/"
-          weight: 5
   jp:
     contentDir: content/jp
     disabled: false
@@ -105,10 +83,11 @@ languages:
       FooterSubtitle: "「最初から設計を正しく行わないと、書くコードのすべてが修正になります。そして、1日目から混乱を抱えることになります。」 – レスリー・ランポート"
       profileMode:
         enabled: true
+        title: "私たちの目標は、Web3をすべての人に<br/>とって安全で安心な環境にすることです"
         subtitle: "ブロックチェーンコードの正確性を証明するために形式手法を使用しています。"
         buttons:
           - name: 論文を読む
-            url: "/papers"
+            url: "/jp/papers"
       socialIcons:
         - name: "X"
           url: "https://www.x.com/Inferara_kk"
@@ -118,25 +97,3 @@ languages:
           url: "https://www.github.com/inferara"
         - name: "line"
           url: "https://line.me/ti/p/~inferara"
-    menus:
-      main:
-        - identifier: research
-          name: "研究"
-          url: "/research/"
-          weight: 1
-        - identifier: papers
-          name: "論文"
-          url: "/papers/"
-          weight: 2
-        - identifier: blog
-          name: "ブログ"
-          url: "/blog/"
-          weight: 3
-        - identifier: about
-          name: "私たちについて"
-          url: "/about/"
-          weight: 4
-        - identifier: contact
-          name: "お問い合わせ"
-          url: "/contact/"
-          weight: 5

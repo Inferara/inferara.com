@@ -22,6 +22,10 @@
     padding: 5px;
 }
 
+#menu a {
+    font-size: 15px;
+}
+
 .main .profile {
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - (var(--gap) * 2));
     display: flex;
