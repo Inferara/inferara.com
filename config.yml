@@ -73,7 +73,7 @@ languages:
           url: "https://t.me/inferara"
   jp:
     contentDir: content/jp
-    disabled: false
+    disabled: true
     languageCode: ja-JP
     languageDirection: ltr
     languageName: 日本語
