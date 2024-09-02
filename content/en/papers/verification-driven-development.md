@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 tags = ["Program Verification", "Verification Driven Development"]
 summary = "In this paper the 'reasonable machine' term is presented along with the hypothesis that all practically applicable computing paradigms can be represented in the form of such machines."
+aliases = ["verification-driven-development"]
 +++
 
 ## Table of Contents

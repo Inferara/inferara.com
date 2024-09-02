@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 summary = "The first part of the conspect of the \"Intoduction to TLA+\" course by Leslie Lamport."
 tags = ["Temporal Logic", "TLA+", "Model checking"]
+aliases = ["/blog/do-not-die-hard-with-tla-plus-1"]
 +++
 
 ## Table of Contents

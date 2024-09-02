@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 summary = "In this blog we explore linear temporal logic as well as computation tree logic, and how we could use them to verify smart-contracts."
 tags = ["Temporal Logic", "LTL", "CTL"]
+aliases = ["/blog/ltl-ctl-for-smart-contract-security"]
 +++
 
 Both `LTL` and `CTL` are fragments of propositional logic and parts of `CTL`\*.

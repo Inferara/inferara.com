@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 tags = ["Program Verification", "Verification Driven Development"]
 summary = "This blog explores the benefits of formal specification in the context of program verification."
+aliases = ["/blog/why-use-formal-specification"]
 +++
 
 Imagine a programmer tasked with a challenge: to bring a Dutch auction to life through code. With an arsenal of skill and determination, they approach this journey, piecing together logic and functionality, guided by what feels right and what their experience dictates.

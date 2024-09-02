@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 tags = ["Program Verification", "SMT", "Model checking"]
 summary = "In this paper, the deductive verification approach is compared with other formal verification techniques, emphasizing the importance of correctness certificates in the verification process."
+aliases = [ "/papers/deductive-verification-as-alternative-to-push-button-technologies" ]
 +++
 
 ## Table of Contents

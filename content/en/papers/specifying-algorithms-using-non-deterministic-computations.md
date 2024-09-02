@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 tags = ["Program Verification", "Inference"]
 summary = "In this article, we will discuss the use of the formalism of non-deterministic computations as a language for specifying algorithms."
+aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 +++
 
 ## Table of Contents

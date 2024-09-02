@@ -5,6 +5,7 @@ draft = false
 math = "katex"
 tags = ["Mathematics", "Program Verification", "Foundations"]
 summary = "This paper examines the field of program verification, emphasizing the precise implementation of algorithms through computational models like finite automata and Turing machines."
+aliases = [ "/papers/program-verification-background-and-notation" ]
 +++
 
 ## Table of Contents
