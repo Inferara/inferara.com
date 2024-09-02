@@ -1,0 +1,21 @@
+main:
+  - identifier: research
+    name: "研究"
+    url: "/research/"
+    weight: 1
+  - identifier: papers
+    name: "論文"
+    url: "/papers/"
+    weight: 2
+  - identifier: blog
+    name: "ブログ"
+    url: "/blog/"
+    weight: 3
+  - identifier: about
+    name: "私たちについて"
+    url: "/about/"
+    weight: 4
+  - identifier: contact
+    name: "お問い合わせ"
+    url: "/contact/"
+    weight: 5

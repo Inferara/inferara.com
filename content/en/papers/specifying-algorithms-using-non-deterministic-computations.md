@@ -294,7 +294,7 @@ However, it should be understood that to truly confirm the behavior of a specifi
 - [Total functional programming. _wiki_][2]
 - [Unrelated-machines scheduling. _wiki_][3]
 
-[1]: https://www.inferara.com/papers/program-verification-background-and-notation/
+[1]: {{< ref "/papers/program-verification-background-and-notation" >}}
 [2]: https://en.wikipedia.org/wiki/Total_functional_programming
 [3]: https://en.wikipedia.org/wiki/Unrelated-machines_scheduling
 
