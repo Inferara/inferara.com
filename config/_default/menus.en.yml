@@ -11,10 +11,10 @@ main:
     name: "Blog"
     url: "/blog/"
     weight: 3
-  - identifier: about
-    name: "About"
-    url: "/about/"
-    weight: 4
+  # - identifier: about
+  #   name: "About"
+  #   url: "/about/"
+  #   weight: 4
   - identifier: contact
     name: "Contact Us"
     url: "/contact/"
