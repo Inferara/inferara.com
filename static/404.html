@@ -5,9 +5,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>404 Not Found 「見つかりません」</title>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100vh;
+        background-color: rgb(245, 245, 245);
+        margin: 0;
+      }
+      .message {
+        font-size: 2em;
+        color: dimgray;
+      }
+      a {
+        color: rgb(11, 10, 10);
+      }
+    </style>
   </head>
   <body>
-    <h1>404 Page Not Found 「ページが見つかりません」</h1>
-    <p><a href="/en/">English Site</a></p>
+    <p class="message">Page Not Found</p>
+    <p class="link"><a href="/en/">Home page</a></p>
+    <!-- <p class="message">ページが見つかりません</p>
+    <p class="link"><a href="/jp/">ホームページ</a></p> -->
   </body>
 </html>
