@@ -104,7 +104,7 @@ The development workflow described here can be called **verification-driven prog
 - [Frederick P. Brooks Jr. – The Mythical Man-Month (Anniversary Edition) – 1995 – ark:/13960/t6b339c1v][3]
 - [Compcert manual][4]
 
-[1]: ../program-verification-background-and-notation/
+[1]: {{< ref "/papers/program-verification-background-and-notation" >}}
 [2]: https://ozaner.github.io/iverson-bracket/
 [3]: https://www.oreilly.com/library/view/mythical-man-month-the/0201835959/
 [4]: https://compcert.org/man/manual001.html#sec3
