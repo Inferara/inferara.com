@@ -79,7 +79,7 @@ languages:
     languageCode: ja-JP
     languageDirection: ltr
     languageName: 日本語
-    title: インフェララ
+    title: Inferara
     weight: 2
     params:
       FooterSubtitle: "「最初から設計を正しく行わないと、書くコードのすべてが継ぎ接ぎだらけになります。そして、初日から混乱した状態でスタートすることになります。」 - レスリー・ランポート"
