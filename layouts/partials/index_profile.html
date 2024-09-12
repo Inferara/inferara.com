@@ -59,6 +59,7 @@
     {{- end}}
 </div>
 
+{{ if eq $.Site.Language.LanguageName "English" }}
 <div class="profile-first-block">
     <p>We know what engineers and developers do every day, because we daily write code ourselves; thus, we understand what tools and methods would work.</p>
     <br/>
@@ -71,5 +72,23 @@
         </li>
     </ul>
     <br/>
-    <p>We are very welcome to everyone who wants to share their comments, suggestions, and thoughts. We are the #Web3 ecosystem altogether, so please do not hesitate to <a href="/en/contact"> reach out to us </a> and discuss the future of #Web3 security.</p>
+    <p>We are very welcome to everyone who wants to share their comments, suggestions, and thoughts. We are the #Web3 ecosystem altogether, so please do not hesitate to <a href="/en/contact" style="text-decoration-style: dotted; text-decoration:revert;"> reach out to us </a> and discuss the future of #Web3 security.</p>
 </div>
+{{ end }}
+
+{{ if eq $.Site.Language.LanguageName "日本語" }}
+<div class="profile-first-block">
+    <p>Inferaraも毎日コードを書いているため、エンジニアや開発者が日々何をしているかをよく理解しています。そのため、どのツールや手法が効果的かも熟知しています。</p>
+    <br/>
+    <ul style="padding-inline-start: 40px;">
+        <li>
+            Inferaraの専門は、自動化定理証明（Coq）とモデル検査（TLA+）です。
+        </li>
+        <li>
+            Inferaraは、アカデミックなスタイルで研究を進めてから、新しいコードを書いています。
+        </li>
+    </ul>
+    <br/>
+    <p>ご意見、ご提案、ご感想をお寄せください。Inferaraは、#Web3のエコシステム全体を担っています。#Web3のセキュリティの将来について、遠慮なく<a href="/jp/contact" style="text-decoration-style: dotted; text-decoration:revert;">お問い合わせ</a>ください。</p>
+</div>
+{{ end }}

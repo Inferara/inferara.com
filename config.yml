@@ -71,20 +71,22 @@ languages:
           url: "https://www.github.com/inferara"
         - name: "telegram"
           url: "https://t.me/inferara"
+        - name: "discord"
+          url: "https://discord.gg/GTybPMG2"
   jp:
     contentDir: content/jp
-    disabled: true
+    disabled: false
     languageCode: ja-JP
     languageDirection: ltr
     languageName: 日本語
     title: インフェララ
     weight: 2
     params:
-      FooterSubtitle: "「最初から設計を正しく行わないと、書くコードのすべてが修正になります。そして、1日目から混乱を抱えることになります。」 – レスリー・ランポート"
+      FooterSubtitle: "「最初から設計を正しく行わないと、書くコードのすべてが継ぎ接ぎだらけになります。そして、初日から混乱した状態でスタートすることになります。」 - レスリー・ランポート"
       profileMode:
         enabled: true
-        title: "私たちの目標は、Web3をすべての人に<br/>とって安全で安心な環境にすることです"
-        subtitle: "ブロックチェーンコードの正確性を証明するために形式手法を使用しています。"
+        title: "Inferaraは、#Web3のデジタル資産と<br/>デジタル市民を守るために<br/>フォーマルな手法で研究を行っています。"
+        subtitle: "Inferaraの目標は、科学技術の知見に基づき、<br/>Web3を全ての人々が安心できる安全な環境にすることです。"
         buttons:
           - name: 論文を読む
             url: "/jp/papers"
@@ -95,5 +97,9 @@ languages:
           url: "mailto:info@inferara.com"
         - name: "github"
           url: "https://www.github.com/inferara"
-        - name: "line"
-          url: "https://line.me/ti/p/~inferara"
+        - name: "telegram"
+          url: "https://t.me/inferara"
+        # - name: "line"
+        #   url: "https://line.me/ti/p/~inferara"
+        - name: "discord"
+          url: "https://discord.gg/GTybPMG2"
