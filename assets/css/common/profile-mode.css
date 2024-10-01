@@ -139,6 +139,9 @@
 
 .goat.svg-container {
     font-size: 13px;
+    width: 50%;
+    display: block;
+    margin: auto;
 }
 
 .goat-caption {
