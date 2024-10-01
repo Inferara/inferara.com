@@ -23,6 +23,11 @@ params:
     imageUrl: "images/logo.svg"
     imageWidth: 200 # custom size
     imageHeight: 200 # custom size
+  
+  socials:
+    x: "https://www.x.com/Inferara_kk"
+    discord: "https://discord.gg/GTybPMG2"
+    telegram: "https://t.me/inferara"
 
 assets:
   favicon16x16: "/assets/favicon-16x16.png"

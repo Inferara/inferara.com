@@ -1,87 +1,87 @@
 +++
-title = 'Deductive Verification as an Alternative to "Push-Button" Technologies'
+title = '「ワンボタン」技術の代替としての演繹的検証'
 date = 2024-04-05T07:57:12+05:00
 draft = false
 math = "katex"
-tags = ["Program Verification", "SMT", "Model checking"]
-summary = "In this paper, the deductive verification approach is compared with other formal verification techniques, emphasizing the importance of correctness certificates in the verification process."
+tags = ["プログラム検証", "SMT", "モデルチェック"]
+summary = "本論文では、演繹的検証アプローチを他の形式的検証技術と比較し、検証プロセスにおける正確性証明書の重要性を強調します。"
 aliases = [ "/papers/deductive-verification-as-alternative-to-push-button-technologies" ]
 +++
 
-## Table of Contents
+## 目次
 
-- [Introduction](#introduction)
-- [Features and Similarities of Formal Verification Techniques](#features-and-similarities-of-formal-verification-techniques)
-- [Correctness Certificate and Its Role in the Verification Process](#correctness-certificate-and-its-role-in-the-verification-process)
-- [Deep Specification Methodology](#deep-specification-methodology)
-- [Conclusion](#conclusion)
-- [References](#references)
+- [はじめに](#はじめに)
+- [形式的検証技術の特徴と類似点](#形式的検証技術の特徴と類似点)
+- [正確性証明書と検証プロセスにおけるその役割](#正確性証明書と検証プロセスにおけるその役割)
+- [ディープスペシフィケーション手法](#ディープスペシフィケーション手法)
+- [結論](#結論)
+- [参考文献](#参考文献)
 
-## Introduction
+## はじめに
 
-Continuing the series of articles on development driven by deductive verification, here we propose a comparison of this methodology with the most closely related techniques that have already secured their place in practical software engineering. By formalizing the description of procedures for both — searching for confirmation of a program's compliance with specifications, and verifying already found solutions, we will try to convince the reader that manually implementing the first procedure while automating the second can become a quite practical compromise, offering several advantages over fully automatic methods.
+演繹的検証によって推進される開発に関する一連の記事を続けて、ここではこの方法論を、既に実用的なソフトウェア工学でその地位を確立している最も密接に関連する技術と比較します。プログラムが仕様に適合していることの確認を探す手順と、既に見つかった解決策を検証する手順の両方の記述を形式化することにより、最初の手順を手動で実装し、二番目を自動化することが、完全に自動化された方法よりもいくつかの利点を提供する、実用的な妥協点となり得ることを読者に納得させようとします。
 
-## Features and Similarities of Formal Verification Techniques
+## 形式的検証技術の特徴と類似点
 
-Discussing the automation of formal software verification, it's impossible not to notice that the landscape of this field is extremely vast and encompasses many techniques that are related to each other only in the most general sense. At the same time, even experts tend to use this overarching term, shifting the focus away from the significant methodological differences between the applied techniques in favor of their common goal — mechanically obtaining mathematically convincing confirmation that the observed behavior of the program corresponds to the programmer's intent, expressed in the form of an unambiguous specification. If one attempts to formally highlight the mathematical essence of the idea of automating formal software verification, in broad terms, this can be done based on several basic objects:
+ソフトウェアの形式的な検証の自動化について議論する際、この分野の状況が極めて広大であり、最も一般的な意味でのみ関連する多くの技術を包含していることに気づかざるを得ません。同時に、専門家でさえ、この包括的な用語を使用し、適用される技術間の重要な方法論的な違いから焦点を逸らし、彼らの共通の目標—プログラマーの明確な仕様で表現された意図に対応するプログラムの観察された振る舞いを数学的に納得のいく形で機械的に確認すること—に焦点を当てます。ソフトウェアの形式的な検証の自動化のアイデアの数学的な本質を正式に強調しようとすると、大まかに言って、いくつかの基本的なオブジェクトに基づいてこれを行うことができます。
 
-- A countable set $\mathcal{L}$, listing all statements of a certain logic capable of describing specifications of the form $S = \\{f : X \rightharpoonup Y \mid l_S\\}$, where $l_S \in \mathcal{L}$;
-- A countable set $\mathcal{C}$, listing correctness certificates for algorithms (the meaning of this concept will become clear later);
-- A computable function $\texttt{verify} : P \times \mathcal{L} \times \mathcal{C} \to \\{\texttt{Proven}, \texttt{Contra}, \texttt{Invalid}\\}$ such that for every program $p \in P$ and symbolic record of the specification $l_S \in \mathcal{L}$, the equivalences $\mathfrak{M}_p \in S \Leftrightarrow \exists c \in \mathcal{C} : \texttt{verify}(p, l_S, c) = \texttt{Proven}$ and $\mathfrak{M}_p \notin S \Leftrightarrow \exists c \in \mathcal{C} : \texttt{verify}(p, l_S, c) = \texttt{Contra}$ hold.
+- ある論理のすべての命題を列挙する可算集合$\mathcal{L}$。この論理は、$S = \{f : X \rightharpoonup Y \mid l_S\}$の形の仕様を記述することができ、ここで$l_S \in \mathcal{L}$。
+- アルゴリズムの正確性証明書を列挙する可算集合$\mathcal{C}$（この概念の意味は後で明らかになります）。
+- 計算可能な関数$\texttt{verify} : P \times \mathcal{L} \times \mathcal{C} \to \{\texttt{Proven}, \texttt{Contra}, \texttt{Invalid}\}$。任意のプログラム$p \in P$と仕様の記号的表記$l_S \in \mathcal{L}$に対して、$\mathfrak{M}_p \in S \Leftrightarrow \exists c \in \mathcal{C} : \texttt{verify}(p, l_S, c) = \texttt{Proven}$および$\mathfrak{M}_p \notin S \Leftrightarrow \exists c \in \mathcal{C} : \texttt{verify}(p, l_S, c) = \texttt{Contra}$という同値関係が成立します。
 
-It's noted that the $\tt verify$ function in practically applicable methods must be easily computable (i.e., at a minimum, belong to the polynomial complexity class) and universally recognized as correct (since its verdict is considered evidence of the correctness of the algorithm being verified). To complete the picture, it remains to define the meaning and method of constructing what we have called a correctness certificate for an algorithm. The meaning of this concept becomes clear if we consider the $\tt verify$ function as a procedure for checking, within polynomial time, the solution to a nondeterministically polynomial problem of whether $\mathfrak M_p$ belongs to $S$, where $c$ acts as a hint from an oracle. This can be most simply illustrated using the previously used example of an algorithm for coloring planar graphs by enumerating all colorings in increasing order of colors up to four:
+実用的に適用可能な方法では、$\texttt{verify}$関数は容易に計算可能でなければならないこと（つまり、最低限でも多項式複雑性クラスに属すること）が指摘されており、その判決は検証されるアルゴリズムの正確性の証拠と見なされるため、一般的に正しいと認められる必要があります。全体像を完成させるためには、アルゴリズムの正確性証明書と呼ばれるものの意味と構築方法を定義する必要があります。この概念の意味は、$\texttt{verify}$関数を、$\mathfrak M_p$が$S$に属するかどうかという非決定性多項式問題の解を多項式時間内でチェックする手順と見なすと明らかになります。ここで$c$はオラクルからのヒントとして機能します。これは、以前使用した平面グラフを4色までの色数で列挙するアルゴリズムの例を用いて最も簡単に説明できます。
 
-- $\mathfrak{M}$ — some abstract machine with Turing-complete operational semantics;
-- $p$ — the program described in the article "Program verification: background and notation" (section _Example: Graph Colorers_ [[1]]);
-- $l_S$ — specification record declaring the success of coloring for any planar graph;
-- $c$ — enumeration of 633 configurations that constitute the proof of the Four Color Theorem.
+- $\mathfrak{M}$は、チューリング完全な操作セマンティクスを持つ抽象マシン。
+- $p$は、記事「プログラム検証：背景と表記法」（セクション_例：グラフの彩色_[[1]]）で説明されたプログラム。
+- $l_S$は、任意の平面グラフの彩色の成功を宣言する仕様の記述。
+- $c$は、四色定理の証明を構成する633の構成の列挙。
 
-With these components available, the correctness of an algorithm that enumerates all colorings up to four colors can be confirmed mechanically, through relatively straightforward automatic reasoning. Thus, a correctness certificate for an algorithm can be seen as a **symbolic record either of the procedure for mathematically proving the fact of its belonging to the corresponding equivalence class, or of a counterexample disproving this belonging**. Modern engineering practice in most cases implies the automation of constructing a correctness certificate, which can be generalized in terms of a heuristic $\mathtt{evince} : P \times \mathcal L_* \rightharpoonup \mathcal C$ such that $\mathcal L_* \subseteq \mathcal L$, and for every $p \in P, l_S \in \mathcal L_*, c \in \mathcal C$ it holds that $\mathtt{evince}(p, l_S) = c \Rightarrow \mathtt{verify}(p, l_S, c) \neq \mathtt{Invalid}$.
+これらの構成要素が利用可能であれば、4色までの色数を列挙するアルゴリズムの正確性は、比較的簡単な自動推論を通じて機械的に確認できます。したがって、アルゴリズムの正確性証明書は、**対応する同値類に属するという事実を数学的に証明する手順の記号的記録、またはこの所属を否定する反例の記録**と見なすことができます。現代のエンジニアリング実践では、ほとんどの場合、その検証（$\texttt{verify}$）だけでなく、その生成（$\texttt{evince}$）の自動化を意味するアプローチが主流です。これは、$\mathtt{evince} : P \times \mathcal L_* \rightharpoonup \mathcal C$というヒューリスティックで一般化することができ、$\mathcal L_* \subseteq \mathcal L$であり、任意の$p \in P, l_S \in \mathcal L_*, c \in \mathcal C$に対して、$\mathtt{evince}(p, l_S) = c \Rightarrow \mathtt{verify}(p, l_S, c) \neq \mathtt{Invalid}$が成立します。
 
-As an example, consider how the mechanism of model checking is described by Yury G. Karpov (the translation below is ours) [[2]], page 83:
+例として、ユーリ・G・カルポフによって記述されたモデル検査のメカニズムを考えてみましょう（以下の翻訳は私たちによるものです）[[2]]、83ページ：
 
-> Model checking is a methodology that uses models, techniques, and algorithms to verify the truth of temporal logic formulas (CTL\*, CTL, LTL) with respect to a system model with a finite number of states (Kripke structure), describing the behavior of dynamic systems. Kripke structures serve as a model for representing the behavior of reactive systems (discrete control systems, parallel and distributed algorithms, protocols), and temporal logics are an efficient formalism for describing their properties.
+> モデル検査は、有限数の状態（クリプキ構造）を持つシステムモデルに関して、時間論理式（CTL\*、CTL、LTL）の真偽を検証するためのモデル、技術、およびアルゴリズムを使用する方法論です。クリプキ構造は動的システムの振る舞いを記述し、時間論理はそれらの特性を記述する効率的な形式論です。
 >
-> Using variables and parameters of the system being verified, the atomic predicates of interest to the developer are expressed within the Kripke structure—logical expressions that can take the values "true" or "false" in each state of the system. In this context, a system state "false" can be considered as a counterexample to the formula being input.
+> 検証対象のシステムの変数とパラメータを使用して、開発者が関心を持つ原子的述語—各状態で「真」または「偽」の値を取る論理式—がクリプキ構造内で表現されます。この文脈では、システム状態の「偽」は、入力された論理式に対する反例と見なすことができます。
 
-It should be understood that an arbitrarily complex heuristic $\tt evince$, one should not expect beign able to solve this problem in the general sense, for any arbitrary combination of program and specification. [[3]] For the same reasons that the halting problem is undecidable, for any nontrivial specification, there will always be a program whose certificate of conformity to this specification cannot be constructed by any algorithm. Moreover, even when limiting ourselves to computational models that do not possess algorithmic completeness, and to any nontrivial fragments of first-order logic as the specification language, in terms of computational complexity, we almost always remain in the realm of $\tt PSPACE$-hard problems, which makes the automatic verification of even somewhat nontrivial programs quite problematic.
+任意の複雑なヒューリスティック$\texttt{evince}$について、プログラムと仕様の任意の組み合わせに対して一般的な意味でこの問題を解くことができるとは期待すべきではないことを理解する必要があります[[3]]。停止問題が決定不能であるのと同じ理由で、任意の非自明な仕様に対して、この仕様への適合性の証明書をどのアルゴリズムでも構築できないプログラムが常に存在します。さらに、アルゴリズム的完全性を持たない計算モデルに限定し、仕様言語としての一階述語論理の非自明な断片に限定した場合でも、計算複雑性の観点から、ほとんど常に$\texttt{PSPACE}$困難な問題の領域にとどまります。これは、少しでも非自明なプログラムの自動検証を非常に問題にします。
 
-## Correctness Certificate and Its Role in the Verification Process
+## 正確性証明書と検証プロセスにおけるその役割
 
-The perception of a correctness certificate as a description of a mathematical proof procedure is, unfortunately, more of a theoretical generalization than a practical application, since the engineering culture at present is dominated by approaches that imply automation not only of its verification ($\tt verify$), but of its generation ($\tt evince$) as well. From a utilitarian perspective, it might initially seem that for a provenly reliable correctness certificate verification procedure, the method of its construction should not matter much — after all, what do we need besides assurance of the code's compliance with the specification? Nevertheless, by examining the verification task of algorithms from its mathematical perspective, it becomes evident that existing methods of automatic correctness certificate generation possess a number of significant and, seemingly, insurmountable flaws.
+正確性証明書を数学的な証明手順の記述と見なすことは、残念ながら実用的な応用というよりは理論的な一般化です。なぜなら、現時点のエンジニアリング文化は、その検証（$\texttt{verify}$）だけでなく、その生成（$\texttt{evince}$）の自動化を意味するアプローチが主流だからです。功利的な観点から見ると、証明された信頼性のある正確性証明書の検証手順がある場合、その構築方法はあまり重要ではないように最初は思えるかもしれません。結局のところ、私たちが必要なのは、コードが仕様に適合しているという保証だけです。しかし、アルゴリズムの検証タスクを数学的な観点から検討すると、既存の自動正確性証明書生成方法には、多くの重要で、そしておそらく克服できない欠点があることが明らかになります。
 
-Firstly, due to the fundamental complexity gap between the tasks of finding a proof and confirming it, the sublanguage acceptable for describing the objective of the heuristic $\tt evince$ is always relatively small compared to the logical language of the domain of the function $\tt verify$. Moreover, even those specifications $S$ that can be recorded in the form $l_S \in \mathcal L_*$ often have to be formulated in an extremely unnatural way, adhering to rather esoteric restrictions imposed by specific enumerative strategies used in $\tt evince$.
+第一に、証明を見つけるタスクとそれを確認するタスクとの間の基本的な複雑さのギャップのために、ヒューリスティック$\texttt{evince}$が受け入れる目的のための下位言語は、関数$\texttt{verify}$の定義域の論理言語と比較して常に比較的小さいものです。さらに、$\mathcal{L}_*$の形で記録できる仕様$S$であっても、特定の$\texttt{evince}$で使用される列挙戦略によって課される非常に特殊な制限に従って、極めて不自然な方法で定式化しなければならないことがよくあります。
 
-Secondly, the behavior of $\tt evince$ is inevitably highly sensitive to even minor changes in the algorithm being processed. Since the program's semantics are checked for compliance with the specification in their entirety, no matter how localized the differences between $p$ and $p'$ might be, the computations of the enumerative heuristics $\mathtt{evince}(p, l_S)$ and $\mathtt{evince}(p', l_S)$ will almost always proceed along significantly different paths, leading, in the case of success, to structurally incomparable $c$ and $c'$.
+第二に、$\texttt{evince}$の挙動は、処理されるアルゴリズムの些細な変更に対しても、必然的に非常に敏感です。プログラムのセマンティクスはその全体で仕様への適合性をチェックされるため、$p$と$p'$の違いがどれほど局所的であっても、列挙ヒューリスティック$\texttt{evince}(p, l_S)$と$\texttt{evince}(p', l_S)$の計算は、ほとんど常に大幅に異なる経路をたどり、成功した場合でも、構造的に比較できない$c$と$c'$に至ります。
 
-Finally, unlike traditional proofs with which mathematicians are accustomed to working, it is practically impossible to extract any additional information about the relationship between the program and the specification from correctness certificates found by enumerative heuristics, beyond the unequivocal confirmation of correctness. In mathematics, a proof can often contain much more useful information about the connections between the objects it involves than the formulation of the proposition being proved.
+最後に、数学者が扱う伝統的な証明とは異なり、列挙ヒューリスティックによって見つかった正確性証明書から、プログラムと仕様の関係についてのさらなる情報を抽出することは、実際には不可能です。数学では、証明はしばしば証明される命題の定式化以上に、関与するオブジェクト間の関係についてのはるかに有用な情報を含むことがあります。
 
-The mentioned flaws do not make SMT solvers or model checking methods any less useful in practical terms—the counterexamples they produce accurately localize errors in algorithms, and valid certificates allow for a definitive conclusion in the debugging process of a specific version of the code. However, it may be worth considering whether the automation of constructing a correctness certificate is always a sufficient compensation for the absence of any mathematical meaning in it. Is the industry missing something important in its pursuit of a one-button solution?
+これらの欠点は、SMTソルバーやモデルチェック法を実用的な意味でそれほど有用でなくするものではありません。彼らが生成する反例はアルゴリズムのエラーを正確に特定し、有効な証明書はコードの特定のバージョンのデバッグプロセスで決定的な結論を可能にします。しかし、正確性証明書の構築の自動化が、その中に数学的な意味が欠如していることの十分な補償となるのかどうかを考えてみる価値があるかもしれません。業界は「ワンボタン」ソリューションの追求で何か重要なものを見逃しているのでしょうか？
 
-## Deep Specification Methodology
+## ディープスペシフィケーション手法
 
-The methodology proposed in the article "Verification-Driven development" [[4]] can also be referred to as deep specification methodology. Unlike conventional techniques, it assumes mechanization only of the $\tt verify$ procedure, leaving the construction of the correctness certificate to humans. Although this approach, evidently, places somewhat higher demands on the operator's qualifications compared with the use of automatic heuristics, it is expected that the reward for this will be a number of significant advantages.
+「検証駆動開発」[[4]]で提案された方法論は、ディープスペシフィケーション手法とも呼ばれます。従来の技術とは異なり、これは$\texttt{verify}$手順のみの機械化を想定し、正確性証明書の構築は人間に委ねます。このアプローチは、明らかに、自動ヒューリスティックの使用と比較して、操作者の資格にやや高い要求を課しますが、その見返りとして、いくつかの重要な利点が期待されます。
 
-Firstly, in the deductive search for proof, there is no need to limit the logical language $\mathcal{L}$ in any way — specifications can be formulated in the most natural manner, without sacrificing clarity and conciseness to the esoteric requirements of automatic solvers. Any statement that can be formulated in Coq or Lean with their impressive expressive power of inductive types can be used in the specification description.
+第一に、演繹的な証明の探索では、論理言語$\mathcal{L}$を何らかの形で制限する必要はありません。仕様は最も自然な方法で定式化でき、自動ソルバーの特殊な要件に明晰さや簡潔さを犠牲にする必要はありません。帰納的な型の強力な表現力を持つCoqやLeanで定式化できる任意の命題は、仕様記述に使用できます。
 
-Secondly, a certificate constructed using the methodology of gradual specification refinement is composed of proofs of a multitude of independent statements and is structurally parallel to the verified algorithm — there exists a local correspondence between elements of the certificate and segments of the program code. This allows for the expectation that minor changes in the program or specification will, in most cases, require only minor adjustments to the correctness certificate, thus encouraging incremental development.
+第二に、漸進的な仕様の洗練の方法論を用いて構築された証明書は、多数の独立した命題の証明から構成され、検証されたアルゴリズムと構造的に並行しています。つまり、証明書の要素とプログラムコードのセグメントとの間に局所的な対応があります。これにより、プログラムや仕様の些細な変更が、ほとんどの場合、正確性証明書へのわずかな調整のみを必要とすることが期待でき、インクリメンタルな開発を促進します。
 
-Finally, if the hypothesis [[5]] we formulated at the end of the previous article holds true, the parallel construction of the correctness certificate and the program it verifies follows the natural logic of breaking down the task into subtasks. As a result, the correctness certificate becomes not just a confirmation of the program's compliance with the specification of observed behavior, but a formal description of the structure of the algorithm being implemented — effectively, its precise architectural blueprint, which can be used as the foundation for project documentation.
+最後に、前回の記事の最後に私たちが定式化した仮説[[5]]が真である場合、正確性証明書とそれが検証するプログラムの並行した構築は、タスクをサブタスクに分解する自然な論理に従います。その結果、正確性証明書は、プログラムの観察された振る舞いの仕様への適合性の確認だけでなく、実装されるアルゴリズムの構造の正式な記述となります。つまり、プロジェクトのドキュメンテーションの基盤として使用できる正確なアーキテクチャ設計図となります。
 
-By sacrificing the one-button simplicity of $\tt evince$, we may lose in convenience as traditionally understood, but we hope to gain much more. At Inferara, we suggest that development driven by deductive verification can become a fully independent methodology of software engineering, allowing for seamless scaling of reliability guarantees in large projects. This scaling pertains to both the spatial axis (facilitating the coverage with formal specifications not only of small sections of code considered most critical but also of the entire surrounding infrastructure) and the temporal axis (helping to maintain reliability guarantees when further changes are made to an already verified algorithm).
+$\texttt{evince}$のワンボタンのシンプルさを犠牲にすることで、伝統的に理解される利便性を失うかもしれませんが、もっと多くを得ることを期待しています。Inferaraでは、演繹的検証によって推進される開発が、ソフトウェア工学の完全に独立した方法論となり、大規模なプロジェクトで信頼性保証のシームレスなスケーリングを可能にすると提案しています。このスケーリングは、空間軸（最も重要と考えられる小さなコードセクションだけでなく、周囲のインフラ全体を正式な仕様でカバーすることを容易にする）と時間軸（既に検証されたアルゴリズムにさらなる変更を加える際に信頼性保証を維持するのに役立つ）の両方に関係します。
 
-## Conclusion
+## 結論
 
-Deductive program verification has remained a mathematical artifact for more than half a century, its rare application in practical engineering being regarded as a high art, accessible to only a very few tenacious researchers at the technological frontier. Meanwhile, younger technologies such as SMT solvers and model checking methods have turned into tools of the trade, making the concept of formal verification a routine part of the industrial landscape. Perhaps now, as the blockchain and cryptocurrency industry has definitively become part of the global financial system [[6]], creating direct financial obligations, and tools for deductive theorem proving have matured, the time has come to unveil the true potential of ideas previously considered too extravagant.
+演繹的プログラム検証は半世紀以上にわたって数学的なアーティファクトのままであり、その実用的なエンジニアリングでの稀な適用は、高度な技術的先端での数少ない粘り強い研究者にのみアクセス可能な高度な技芸と見なされてきました。一方で、SMTソルバーやモデルチェック法のような新しい技術は、実務のツールに変わり、形式的な検証の概念を産業界の日常的な一部にしました。おそらく今、ブロックチェーンと暗号通貨産業が明確に世界的な金融システムの一部となり[[6]]、直接的な金融義務を生み出し、演繹的定理証明のためのツールが成熟した現在、以前はあまりにも奇抜と考えられていたアイデアの真の可能性を明らかにする時が来たのかもしれません。
 
-## References
+## 参考文献
 
-- [Program Verification: Background and Notation, Example graph colorers][1]
-- [Yuri Glebovich Karpov. MODEL CHECKING. "Verification of Parallel and Distributed Software Systems". BHV-Petersburg, 2010. 560 pages.][2] [ISBN 5977504047, 9785977504041](https://www.abebooks.co.uk/9785977504041/MODEL-CHECKING-Verification-parallel-distributed-5977504047/plp)
-- [Why Writing Correct Software Is Hard][3]
-- [Verification-Driven Development][4]
-- [Verification-Driven Development, Escape from tarpit][5]
-- [Statement on the Approval of Spot Bitcoin][6]
+- [プログラム検証：背景と表記法、例：グラフの彩色][1]
+- [ユーリ・グレボヴィッチ・カルポフ。「モデル検査」。"並列および分散ソフトウェアシステムの検証"。BHV-ペテルブルク、2010年。560ページ。][2] [ISBN 5977504047, 9785977504041](https://www.abebooks.co.uk/9785977504041/MODEL-CHECKING-Verification-parallel-distributed-5977504047/plp)
+- [なぜ正しいソフトウェアを書くことは難しいのか][3]
+- [検証駆動開発][4]
+- [検証駆動開発、沼からの脱出][5]
+- [現物ビットコインの承認に関する声明][6]
 
 [1]: https://www.inferara.com/papers/program-verification-background-and-notation/#example-graph-colorers
 [2]: https://books.google.co.uz/books?id=xpui56eRsHgC&pg=PA83&source=gbs_toc_r&cad=2#v=onepage&q&f=false
@@ -91,6 +91,5 @@ Deductive program verification has remained a mathematical artifact for more tha
 [5]: {{< ref "/papers/verification-driven-development" >}}/#escape-from-tarpit
 [6]: https://www.sec.gov/news/statement/gensler-statement-spot-bitcoin-011023
 
----
-
-Discuss [this paper](https://t.me/inferara/13) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" telegram_post_id="13" x_post_id="1776091018150162468">}}
+{{<ai-translated>}}

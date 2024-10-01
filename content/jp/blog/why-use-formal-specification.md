@@ -1,33 +1,32 @@
 +++
-title = 'Why use formal specification'
+title = 'なぜ形式的仕様を使うのか'
 date = 2024-03-04T20:02:48+08:00
 draft = false
 math = "katex"
-tags = ["Program Verification", "Verification Driven Development"]
-summary = "This blog explores the benefits of formal specification in the context of program verification."
+tags = ["プログラム検証", "検証駆動開発"]
+summary = "このブログでは、プログラム検証の文脈で形式的仕様の利点を探ります。"
 aliases = ["/blog/why-use-formal-specification"]
 +++
 
-Imagine a programmer tasked with a challenge: to bring a Dutch auction to life through code. With an arsenal of skill and determination, they approach this journey, piecing together logic and functionality, guided by what feels right and what their experience dictates.
+ダッチオークションをコードで実現するという課題を任されたプログラマーを想像してください。豊富なスキルと決意を持って、彼らはこの旅に取り組み、直感や経験に従って論理と機能を組み立てていきます。
 
-Once they reach a point where the digital auction seems ready to face the world, they step back, inviting testers into this creation to scrutinize his work, to ensure it behaves as intended. In this dance between creation and evaluation, both programmers and testers lean on a set of guidelines that are more akin to unwritten rules than formal commandments. This ambiguity can also open a door to endless interpretations, a breeding ground for misunderstandings.
+デジタルオークションが世界に向けて準備が整ったと思える段階に達すると、彼らは一歩引いて、テスターを招き、自分の作品を精査してもらい、意図した通りに動作することを確認します。この創造と評価の間のダンスでは、プログラマーもテスターも、正式な規則というよりは不文律に近い一連のガイドラインに頼っています。この曖昧さは、無限の解釈や誤解の温床を生む可能性があります。
 
-Testers navigate through scenarios they believe will prove the auction's readiness. Each discovery of a flaw sends the project into a loop of corrections, where solving one problem might unwittingly birth another, trapping them in a potentially endless cycle of tweaking.
+テスターは、オークションの準備が整っていることを証明するであろうシナリオを通じてナビゲートします。欠陥が見つかるたびに、プロジェクトは修正のループに入り、一つの問題を解決すると別の問題を知らず知らずのうちに生み出し、潜在的に終わりのない微調整のサイクルに陥ります。
 
-Contrast this with a world where every stroke of the programmer's keyboard is directed by a formal specification, a map that outlines the operational semantics of the program with precision. In this realm, the programmer's role transforms into one of diligent adherence, ensuring each line of code aligns with the predefined semantics, sculpting the auction into its ideal form.
+これを、プログラマーのキーボードの一打ちがすべて形式的な仕様によって導かれる世界と対比してみましょう。その仕様は、プログラムの操作的セマンティクスを精密に示す地図です。この領域では、プログラマーの役割は、事前に定義されたセマンティクスに各コード行が一致することを保証し、オークションを理想的な形に作り上げる、勤勉な遵守者へと変わります。
 
-The tester's role, too, shifts focus — now, they must verify that the real-world behaviour of the code, shaped by the interplay between compiler, operating system, and beyond, truly matches those expectations laid out in the specification. This narrative isn't just about building and testing software; it's about navigating the accurate balance between creativity and conformity, between the freedom of interpretation and the clarity of specification.
+テスターの役割もまた焦点が移ります。今や、コンパイラやオペレーティングシステムなどの相互作用によって形作られたコードの実際の動作が、仕様に示された期待と真に一致するかを検証しなければなりません。この物語は、単にソフトウェアを構築しテストすることだけでなく、創造性と適合性、解釈の自由と仕様の明確さとの間の正確なバランスを見極めることについてです。
 
-It's a journey through the complexities of bringing a concept to life, where each decision can lead to success or endless revision, and the path chosen can make all the difference.
+それは、コンセプトを実現するという複雑さを経る旅であり、各決定が成功にも無限の修正にもつながり得るものであり、選択した道がすべての違いを生む可能性があります。
 
-You can read about the software development based on the specification/verification, or as we call it **Verification Driven Development** presented as a mathematical formalism in our post [[1]].
+私たちの投稿[[1]]では、仕様/検証に基づくソフトウェア開発、つまり私たちが**検証駆動開発**と呼ぶものが数学的な形式主義として提示されていますので、ご覧いただけます。
 
-## References
+## 参考文献
 
-- [Verification-Driven Development][1]
+- [検証駆動開発][1]
 
 [1]: {{< ref "/papers/verification-driven-development" >}}
 
----
-
-Discuss [this blog](https://t.me/inferara/5) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="5" x_post_id="1774705080094335425">}}
+{{<ai-translated>}}

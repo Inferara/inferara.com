@@ -394,6 +394,4 @@ Now, we can see the exact steps that are required to be done to solve the proble
 [5]: https://www.amazon.science/publications/how-amazon-web-services-uses-formal-methods
 [6]: https://amturing.acm.org/p558-lamport.pdf
 
----
-
-Discuss [this blog](https://t.me/inferara/14) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials page_content_type="blog" telegram_post_id="14">}}

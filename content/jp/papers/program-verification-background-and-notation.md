@@ -1,135 +1,135 @@
 +++
-title = 'Program Verification: background and notation'
+title = 'プログラム検証：背景と表記法'
 date = 2024-02-01T19:34:48+08:00
 draft = false
 math = "katex"
-tags = ["Mathematics", "Program Verification", "Foundations"]
-summary = "This paper examines the field of program verification, emphasizing the precise implementation of algorithms through computational models like finite automata and Turing machines."
+tags = ["数学", "プログラム検証", "基礎"]
+summary = "本論文では、有限オートマトンやチューリングマシンなどの計算モデルを通じて、アルゴリズムの正確な実装に焦点を当て、プログラム検証の分野を検討します。"
 aliases = [ "/papers/program-verification-background-and-notation" ]
 +++
 
-## Table of Contents
+## 目次
 
-- [Introduction](#introduction)
-- [Specification-vs-Computation Gap](#specification-vs-computation-gap)
-  - [Example: Graph Colorers](#example-graph-colorers)
-- [Abstract Computing Device](#abstract-computing-device)
-  - [Example 1: Finite Automaton](#example-1-finite-automaton)
-  - [Example 2: Turing Machine](#example-2-turing-machine)
-- [Closing the Gap](#closing-the-gap)
-  - [Example 3: Totality of Finite Automatons](#example-3-totality-of-finite-automatons)
-- [Conclusion](#conclusion)
-- [References](#references)
+- [はじめに](#はじめに)
+- [仕様と計算のギャップ](#仕様と計算のギャップ)
+  - [例：グラフの彩色](#例-グラフの彩色)
+- [抽象計算装置](#抽象計算装置)
+  - [例1：有限オートマトン](#例1-有限オートマトン)
+  - [例2：チューリングマシン](#例2-チューリングマシン)
+- [ギャップを埋める](#ギャップを埋める)
+  - [例3：有限オートマトンの全体性](#例3-有限オートマトンの全体性)
+- [結論](#結論)
+- [参考文献](#参考文献)
 
-## Introduction
+## はじめに
 
-This study is focused on considering program verification in software engineering, a pivotal domain that integrates theoretical mathematical principles with practical computational applications. Here, we make the congruence between algorithmic specifications and their implementations through the operation of abstract computational models. This research is pivotal in addressing the security challenges associated with ascertaining program correctness and dependability. Employing a systematic analytical framework, the article traverses a spectrum of computational paradigms, ranging from finite automata to Turing machines, thereby determining their respective roles and impacts within the broader context of program verification. The objective of this article exposition is to outline a comprehensive and nuanced perspective on program verification, underscoring its significance in the enhancement and evolution of reliable software methodologies in the context of the #Web3 era.
+本研究は、ソフトウェア工学における重要な領域であるプログラム検証に焦点を当てています。この領域は、理論的な数学的原理と実用的な計算応用を統合します。ここでは、アルゴリズムの仕様とその実装の一致を、抽象的な計算モデルの操作を通じて行います。この研究は、プログラムの正確性と信頼性を確保することに関連するセキュリティ上の課題に対処する上で重要です。体系的な分析フレームワークを用いて、有限オートマトンからチューリングマシンまでの計算パラダイムの範囲を横断し、それらの役割とプログラム検証の広範な文脈における影響を決定します。本論文の目的は、プログラム検証に関する包括的で詳細な視点を概説し、#Web3時代の信頼性の高いソフトウェア手法の強化と進化におけるその重要性を強調することです。
 
-Consider a defined class $S \subset X \rightharpoonup Y$ including partial functions, where $X$ represents an enumerable domain and $Y$ the corresponding codomain. At the same time, imagine a computational machine $\mathfrak M : P \to X \rightharpoonup Y$, capable of processing a program $p \in P$ ($P$ being an enumerable set) with an input $x \in X$ to potentially yield an output $y \in Y$, represented as $\mathfrak M_p(x)=y$. In this context, 'potentially' means that $\mathfrak M$ operates as a deterministic machine, with attributes such as totality and determinism being implemented into program design by engineers. Consequently, the main task in program verification can be formulated as follows:
+可算なドメイン$X$と対応するコドメイン$Y$において、部分関数を含む定義済みのクラス$S \subset X \rightharpoonup Y$を考えます。同時に、計算マシン$\mathfrak M : P \to X \rightharpoonup Y$を想定し、プログラム$p \in P$（$P$は可算集合）と入力$x \in X$を処理して、潜在的に出力$y \in Y$を生成します。これは$\mathfrak M_p(x)=y$と表されます。ここで「潜在的に」とは、$\mathfrak M$が決定的なマシンとして動作し、全体性や決定性などの属性がエンジニアによってプログラム設計に組み込まれていることを意味します。したがって、プログラム検証の主な課題は次のように定式化できます。
 
-> Given $p$, $\mathfrak M$ and $S$. Ascertain whether the proposition $\mathfrak M_p \in S$ holds $true$.
+> $p$、$\mathfrak M$、そして$S$が与えられたとき、命題$\mathfrak M_p \in S$が真であるかどうかを確かめよ。
 
-## Specification-vs-Computation Gap
+## 仕様と計算のギャップ
 
-The complexity of this verification issue comes from a notable semantic disjunction between the descriptive framework of $S$ and the operational dynamics of $\mathfrak M_p$. The conventional approach to defining a function class involves a declarative methodology, emphasizing the logical interrelations of inputs and outputs, while typically abstracting away the evaluative process as a conceptual 'black box'. In contrast, the functional paradigm of $\mathfrak M_p$ adheres to a deterministic modality, characterized by the systematic and inductive application of a predetermined array of operational rules. This process incrementally alters the machine's internal state, informed by the specific program $p$ and a given input $x$, and continues until a predefined termination criterion is satisfied, finishing in the generation of a discrete output $y$. Notably, this operational process does not inherently account for the logical coherence between varying input-output pairs and, in the context of $\mathfrak M$ possessing Turing completeness does not inherently assure termination as per the halting problem [[1]].
+この検証問題の複雑さは、$S$の記述的なフレームワークと$\mathfrak M_p$の操作的なダイナミクスとの間に顕著な意味的分離が存在することに起因します。関数クラスを定義する従来のアプローチは、宣言型の方法論を採用し、入力と出力の論理的な相互関係を強調しつつ、評価プロセスを概念的な「ブラックボックス」として抽象化する傾向があります。対照的に、$\mathfrak M_p$の機能的なパラダイムは決定的なモダリティに従い、事前定義された一連の操作ルールを体系的かつ帰納的に適用します。このプロセスは、特定のプログラム$p$と与えられた入力$x$に基づいてマシンの内部状態を逐次的に変更し、事前定義された終了条件が満たされるまで続き、離散的な出力$y$の生成で終了します。注目すべきは、この操作プロセスが異なる入力と出力のペア間の論理的一貫性を本質的に考慮していないことであり、$\mathfrak M$がチューリング完全性を持つ場合、停止問題[[1]]に従って終了を保証しないことです。
 
-Also, a noteworthy detail is that sometimes people confuse the true verification problem as stated above with a much weaker variation:
+また、しばしば人々が真の検証問題を、より弱いバリエーションと混同するという注目すべき点があります。
 
-> Given $p$, $\mathfrak M$ and a specifically delineated set $S' \subseteq X \times Y$ of permissible input-output pairs, one must ascertain the trueness of the proposition $\forall x \in X, (x, \mathfrak M_p(x)) \in S'$.
+> $p$、$\mathfrak M$、そして特定の入力出力ペアの集合$S' \subseteq X \times Y$が与えられたとき、命題$\forall x \in X, (x, \mathfrak M_p(x)) \in S'$が真であるかどうかを確かめよ。
 
-In such a problem statement (intuitively well-aligned with the essence of manual program testing) we can not express many important function properties of integral nature, for instance, its bijectiveness. Understanding this difference allows us to distinguish the nuanced difference between verifying the absolute correctness of $\mathfrak M_p$ as opposed to its conformity with a predetermined spectrum of acceptable responses.
+このような問題設定（直感的には手動のプログラムテストの本質によく一致します）では、例えば全単射性のような重要な関数特性を表現することができません。この違いを理解することで、$\mathfrak M_p$の絶対的な正確性を検証することと、予め定められた許容応答の範囲への適合性を検証することの微妙な違いを区別できます。
 
-### Example: Graph Colorers
+### 例：グラフの彩色
 
-In an endeavor to explain the mentioned verification challenge, consider a hypothetical scenario of a programming competition aimed at designing an algorithm for coloring the vertices of an arbitrary loopless planar graph. The objective is to utilize the minimal number of colors such that adjacent vertices are not identically colored [[2]]. While the verification of solution correctness for a specific input in this context is straightforward, addressing more abstract inquiries, such as the absolute optimality of the algorithm (i.e., its inability to be surpassed in efficiency by any alternative algorithm across all inputs), presents a more profound challenge. Despite the potential for extensive test suites, the absence of algorithmic failure within these parameters does not undoubtedly guarantee universal applicability. Furthermore, an analytical review of the algorithm's internal mechanics poses significant difficulties. For instance, consider an algorithm structured as follows:
+前述の検証課題を説明するために、任意のループのない平面グラフの頂点を彩色するアルゴリズムの設計を目的としたプログラミングコンテストの仮想的なシナリオを考えてみましょう。目標は、隣接する頂点が同じ色にならないように、最小限の色数を使用することです[[2]]。この文脈では、特定の入力に対する解の正確性の検証は簡単ですが、アルゴリズムの絶対的な最適性（すなわち、全ての入力において他のどのアルゴリズムよりも効率的であること）のようなより抽象的な問いに対処することは、より深い課題を提示します。広範なテストスイートの可能性にもかかわらず、これらのパラメータ内でのアルゴリズムの失敗の欠如は、普遍的な適用性を確実に保証するものではありません。さらに、アルゴリズムの内部メカニズムの分析的なレビューは重大な困難を伴います。例えば、次のようなアルゴリズムを考えてみましょう。
 
-1. Evaluate if the graph contains any edges; if absent edges, color the entire graph uniformly and terminate.
-2. Determine if the graph is bipartite; if affirmative, employ a dual-coloring scheme and terminate.
-3. Engage in a comprehensive evaluation for a viable 3-coloring solution; upon success, terminate.
-4. Similarly, exhaustively explore possible 4-coloring solutions; terminate upon finding a solution.
-5. In the absence of a solution, conclude with an 'Unexpected!' error.
+1. グラフにエッジが含まれているか評価する；エッジがない場合、グラフ全体を同じ色で塗り、終了する。
+2. グラフが二部グラフであるか判断する；もしそうであれば、2色で彩色し、終了する。
+3. 可能な3色彩色解を総当たりで評価する；成功したら、終了する。
+4. 同様に、可能な4色彩色解を総当たりで探索する；解が見つかったら終了する。
+5. 解がない場合、「予期せぬエラー！」で終了する。
 
-Even with a detailed code audit confirming its adherence to the above algorithm, uncertainties persist — specifically, the algorithm's reliance on an exhaustive search strategy raises questions about its ability to invariably reach a conclusive outcome without resorting to the 'Unexpected!' termination. To answer this question positively, mathematicians had to prove the Four Color Theorem (Appel & Haken, 1976) — a landmark result in graph theory that, even in its most modern variation, requires careful analysis of 633 reducible configurations [[3]]. This scenario underscores the intricate nature of bridging the gap between a theoretical specification and its practical algorithmic realization, where validating the latter's comprehensive alignment with the former can be an difficult task.
+このアルゴリズムに従っていることを確認する詳細なコード監査を行っても、依然として不確実性が残ります—特に、このアルゴリズムが総当たり探索戦略に依存しているため、「予期せぬエラー！」で終了せずに常に決定的な結果に到達できるかどうかという疑問が生じます。この質問に肯定的に答えるために、数学者たちは四色定理（アッペルとヘイケン、1976年）を証明する必要がありました—これはグラフ理論における画期的な結果であり、その最も現代的なバリエーションでも、633の還元可能な構成の詳細な分析が必要です[[3]]。このシナリオは、理論的な仕様とその実際のアルゴリズム的実現とのギャップを埋めることの複雑な性質を強調しており、後者が前者と完全に一致していることを検証することが困難な課題であることを示しています。
 
-This serves as a perfect illustration of the idea that when we are talking about formal verification of the infamous **specification – algorithm – implementation** workflow chain, the hardest tasks are not about detecting discrepancies between algorithm and implementation — actually the standard industrial practices have made this case pretty understandable already. The main gap lies between specification and algorithm, as making sure that the second obeys the first sometimes may require tremendous efforts, easily towering both specification and algorithm complexities.
+これは、悪名高い**仕様–アルゴリズム–実装**のワークフローチェーンの形式的検証について話すとき、最も困難なタスクはアルゴリズムと実装の間の不一致を検出することではないという考えを完璧に示しています—実際、標準的な産業慣行はこのケースを既にかなり理解可能なものにしています。主なギャップは仕様とアルゴリズムの間にあり、後者が前者に従うことを確実にすることは、時に仕様とアルゴリズムの複雑さの両方を容易に凌駕する途方もない努力を要することがあります。
 
-## Abstract Computing Device
+## 抽象計算装置
 
-In addressing the theoretical outline of the discrepancy between algorithmic specifications and their respective implementations, it is imperative to being with a rigorous formalization of both constructs. Our discourse initiates from the algorithmic perspective, arguably more accessible to the reader. Attaining a comprehensive level of abstraction necessitates transcending the particularities of programming languages and computational platforms, as well as the inherent distinctions amongst computational models. This approach is predicated on two fundamental premises:
+アルゴリズムの仕様とそれぞれの実装との間の理論的な不一致を解決するにあたり、両方の構成要素を厳密に形式化することが不可欠です。我々の議論は、読者にとってよりアクセスしやすいであろうアルゴリズムの視点から始まります。包括的な抽象化レベルに到達するには、プログラミング言語や計算プラットフォームの特異性、そして計算モデル間の固有の違いを超越する必要があります。このアプローチは、二つの基本的な前提に基づいています。
 
-1. The efficiency of an algorithm's representation is often contingent upon the computational model employed. For instance, the Turing machine [[4]] serves as a supreme model for algorithms processing fixed-sized data, offering intuitive understanding and simplicity. Vice versa, Markov algorithms [[5]] provide an optimal framework for complex string operations. Algorithms manipulating tree-structured data are expressed via lambda calculus [[6]]. The unique attributes of each computational model necessitate a adaptive and universally applicable formal language to accurately represent diverse algorithmic structures.
-2. The computational demands of certain algorithms do not necessitate the extensive capabilities of a Turing machine or its equivalents. For instance, deploying a general recursive function to formulate a basic regular language [[7]] classifier may be an unnecessary complexity. More efficient formation can be achieved through computational models restricted in their operational capacity, thereby simplifying the reasoning process for such algorithms. Hence, a universal formal language, capable of setting various levels within the Chomsky hierarchy [[8]], is instrumental in conserving analytical effort and cognitive resources.
+1. アルゴリズムの表現の効率は、しばしば使用される計算モデルに依存します。例えば、チューリングマシン[[4]]は固定サイズのデータを処理するアルゴリズムにとって最高のモデルであり、直感的な理解と簡潔さを提供します。逆に、マルコフアルゴリズム[[5]]は複雑な文字列操作に最適なフレームワークを提供します。木構造データを操作するアルゴリズムはラムダ計算[[6]]を介して表現されます。各計算モデルの独自の属性は、多様なアルゴリズム構造を正確に表現するために、適応的で普遍的に適用可能な形式言語を必要とします。
+2. あるアルゴリズムの計算要求は、チューリングマシンやその同等物の広範な能力を必要としません。例えば、基本的な正則言語[[7]]の分類子を一般的な再帰関数で構築することは不要な複雑さかもしれません。計算能力が制限された計算モデルを通じて、より効率的な形成が可能であり、そのようなアルゴリズムの推論プロセスを簡素化します。したがって、チョムスキー階層[[8]]内のさまざまなレベルを設定できる普遍的な形式言語は、分析努力と認知資源を節約する上で重要です。
 
-With all this in mind, let us define two essential components of every abstract sequential automaton:
+これらを念頭に置いて、あらゆる抽象的な逐次オートマトンの二つの重要な要素を定義しましょう。
 
-- A countably infinite set $M$ of all possible memory states, along with the functions $in : X \to M$ and $out : M \to Y$, defining its interface with the environment;
-- A finite set of operators $Ops = \\{op_i : M \to (M \times R_i) \cup \\{\blacktriangledown\\}, i=\overline\{1,n\}\\}$, representing atomic memory-transforming actions, where each $R_i$ is a finite set of $op_i$ return values and $\blacktriangledown$ is our notation for program halting.
+- 全ての可能なメモリ状態の可算無限集合$M$、および環境とのインターフェースを定義する関数$in : X \to M$と$out : M \to Y$;
+- メモリ変換を行う原子的な操作を表す有限集合$Ops = \\{op_i : M \to (M \times R_i) \cup \\{\blacktriangledown\\}, i=\overline{1,n}\\}$、ここで各$R_i$は$op_i$の戻り値の有限集合であり、$\blacktriangledown$はプログラムの停止を表す記号です。
 
-In such terms, for a program $p$ every individual run of $\mathfrak M_p$ over a particular input $x$ (in case of its eventual termination) can be represented as a function composition $y = (out \circ \overline\{op_\{i_k\}\} \circ \ldots \circ \overline\{op_\{i_1\}\} \circ in) (x)$, where $\overline\{op_i\} : M_i \to M$ projects $op_i$ into its memory effect over $M_i = \\{m \in M \mid op_i(m) \neq \blacktriangledown\\}$, disregarding the return value. What remains a mystery is how the machine selects the particular sequence $op_\{i_1\}, \ldots, op_\{i_k\}$ of operators appropriate for each specific input $x$. Naturally, its behavior is defined by a program, which can be represented as a marked directed multigraph $p = \langle V, P, E, V_\blacktriangle \rangle$, where:
+このような用語で、プログラム$p$に対する$\mathfrak M_p$の各個別の実行（最終的に終了する場合）は、関数の合成として表すことができます：$y = (out \circ \overline{op_{i_k}} \circ \ldots \circ \overline{op_{i_1}} \circ in)(x)$。ここで、$\overline{op_i} : M_i \to M$は、$op_i$をそのメモリへの効果に投影し、$M_i = \\{m \in M \mid op_i(m) \neq \blacktriangledown\\}$は戻り値を無視してメモリ効果のみを考慮します。マシンが各特定の入力$x$に対して適切な演算子のシーケンス$op_{i_1}, \ldots, op_{i_k}$をどのように選択するかは謎のままです。自然に、その挙動はプログラムによって定義され、これはマーク付き有向多重グラフ$p = \langle V, P, E, V_\blacktriangle \rangle$として表すことができます。ここで：
 
-- $V$ is a finite set of vertices representing distinct execution states;
-- The mark $P : V \to Ops$ associates states with operators to be executed upon their activation;
-- A set of marked edges $E \subseteq \\{(v, r, w) \mid v, w \in V, r \in R_\{P(v)\}\\}$ represents possible paths of transitions from one active state $v$ to another $w$, depending on the return value $r$ of the executed operator $P(v)$;
-- A subset $V_\blacktriangle \subseteq V$ denotes the potential starting states of the program execution.
+- $V$は異なる実行状態を表す頂点の有限集合;
+- マーク$P : V \to Ops$は、アクティブ化時に実行される演算子を状態に関連付けます;
+- マーク付きエッジの集合$E \subseteq \\{(v, r, w) \mid v, w \in V, r \in R_{P(v)}\\}$は、実行された演算子$P(v)$の戻り値$r$に依存して、あるアクティブ状態$v$から別の$w$への可能な遷移パスを表します;
+- 部分集合$V_\blacktriangle \subseteq V$は、プログラム実行の潜在的な開始状態を示します。
 
-If $V_\blacktriangle$ consists of exactly one state, and for each pair $(v,r) \in V \times R_\{P(v)\}$ there is exactly one $w \in V : (v, r, w) \in E$, then such a program can be called deterministic. Using this notation for an abstract machine and program, we can represent a wide range of automatons across the power hierarchy.
+もし$V_\blacktriangle$が正確に一つの状態からなり、各ペア$(v,r) \in V \times R_{P(v)}$に対して、$E$に含まれるちょうど一つの$w \in V$が存在して$(v, r, w) \in E$を満たすならば、そのようなプログラムは決定的と呼ぶことができます。この抽象マシンとプログラムの表記を用いることで、パワーヒエラルキーにおける幅広いオートマトンを表現できます。
 
-### Example 1: Finite Automaton
+### 例1：有限オートマトン
 
-A class of acceptor finite-state automatons [[9]] over the alphabet $\Sigma$ can be described as a machine $\mathfrak M^F$ with memory $M = \Sigma^* \cup \\{\mathbf T, \mathbf F\\}$ holding either an arbitrary string or ending states of success/failure. Two operators needed for its execution are:
+アルファベット$\Sigma$上の受理有限状態オートマトン[[9]]のクラスは、$\mathfrak M^F$というマシンとして記述できます。メモリ$M = \Sigma^* \cup \\{\mathbf T, \mathbf F\\}$は、任意の文字列または成功/失敗の終了状態を保持します。その実行に必要な二つの演算子は：
 
-- $op_\{\tt next/t\}$ with $R_\{\tt next/t\} = \Sigma \cup \\{\blacktriangledown\\}$, which consumes the first symbol from the string in memory and passes it back as a return value, or, in the case of an empty string, sets the memory to the success state $\mathbf T$ and returns $\blacktriangledown$, otherwise, if the memory already holds one of the ending states, terminating the program;
-- $op_\{\tt next/f\}$ with identical $R_\{\tt next/f\} = \Sigma \cup \\{\blacktriangledown\\}$, has the same overall behavior except for setting the memory to the failure state $\mathbf F$;
+- $op_{\tt next/t}$で$R_{\tt next/t} = \Sigma \cup \\{\blacktriangledown\\}$、これはメモリから最初のシンボルを消費し、それを戻り値として返します。空文字列の場合、メモリを成功状態$\mathbf T$に設定し、$\blacktriangledown$を返します。メモリが既に終了状態を保持している場合、プログラムを終了します。
+- $op_{\tt next/f}$で同一の$R_{\tt next/f} = \Sigma \cup \\{\blacktriangledown\\}$、全体的な動作は同じですが、メモリを失敗状態$\mathbf F$に設定します。
 
-The construction of the program graph for this example is straightforward — each state of the finite automaton is represented as exactly one vertex with a looping $\blacktriangledown$-marked edge.
+この例のプログラムグラフの構築は簡単です—有限オートマトンの各状態は、$\blacktriangledown$でマークされたループエッジを持つ正確に一つの頂点として表されます。
 
-### Example 2: Turing Machine
+### 例2：チューリングマシン
 
-Another example too significant to overlook is the Turing machine $\mathfrak M^T$ over an alphabet $\Gamma = \\{\gamma_0, \ldots, \gamma_n\\}$ with a blank symbol $\gamma_0$, whose memory $M = \cal T \times \Z$ holds both the states of the tape $\bold t \in \cal T \subset \Z \to \Gamma$ and the position of the head $h \in \Z$. The ensemble of operators needed for $\mathfrak M^T$ execution includes:
+見逃せないもう一つの例は、空白シンボル$\gamma_0$を含むアルファベット$\Gamma = \\{\gamma_0, \ldots, \gamma_n\\}$上のチューリングマシン$\mathfrak M^T$です。そのメモリ$M = \mathcal{T} \times \mathbb{Z}$は、テープの状態$\boldsymbol{t} \in \mathcal{T} \subset \mathbb{Z} \to \Gamma$とヘッドの位置$h \in \mathbb{Z}$の両方を保持します。$\mathfrak M^T$の実行に必要な演算子の集合は以下を含みます。
 
-- $op_\{\tt read\}$ with $R_\{\tt read\}=\Gamma$, which has no effect on memory and returns $\bold t(h)$, the current symbol on the tape under the head;
-- $op_\{\tt write\_0\}, \ldots, op_\{\tt write\_n\}$ with $R_\{\tt write\_0\} = \ldots = R_\{\tt write\_n\}=\\{\checkmark\\}$, writing the corresponding individual symbol $\gamma_i \in \Gamma$ to the tape under the head, and replacing $\bold t$ with $\bold t|_h^\{\gamma_i\}$;
-- $op_\{\tt left\}$ and $op_\{\tt right\}$ with $R_\{\tt left\} = R_\{\tt right\} = \\{\checkmark\\}$, moving the head left and right by decrementing or incrementing $h$ respectively;
-- And obligatory $op_\{\blacktriangledown\}$, which terminates program execution.
+- $op_{\tt read}$で$R_{\tt read} = \Gamma$、メモリに影響を与えず、ヘッド下の現在のシンボル$\boldsymbol{t}(h)$を返します。
+- $op_{\tt write\_0}, \ldots, op_{\tt write\_n}$で$R_{\tt write\_0} = \ldots = R_{\tt write\_n} = \\{\checkmark\\}$、対応する個々のシンボル$\gamma_i \in \Gamma$をヘッド下のテープに書き込み、$\boldsymbol{t}$を$\boldsymbol{t}|_h^{\gamma_i}$に置き換えます。
+- $op_{\tt left}$と$op_{\tt right}$で$R_{\tt left} = R_{\tt right} = \\{\checkmark\\}$、ヘッドを左または右に移動し、$h$をデクリメントまたはインクリメントします。
+- 必須の$op_{\blacktriangledown}$、これはプログラムの実行を終了します。
 
-Here, constructing a program graph is relatively straightforward as well. When translating arbitrary Turing machines to $\mathfrak M^T$, for each state, one must create a corresponding $op_\{\tt read\}$ node (or the $op_\{\blacktriangledown\}$ ​node for the accepting state) and connect these through intersecting chains of $op_\{\tt write\_i\}$ and $op_\{\tt left|right\}$ intermediate nodes.
+ここで、プログラムグラフの構築も比較的簡単です。任意のチューリングマシンを$\mathfrak M^T$に変換する際、各状態に対応する$op_{\tt read}$ノード（または受理状態の$op_{\blacktriangledown}$ノード）を作成し、これらを交差する$op_{\tt write\_i}$と$op_{\tt left|right}$の中間ノードの連鎖で接続します。
 
-## Closing the Gap
+## ギャップを埋める
 
-Now, having outlined the definition of execution semantics, let's return to the verification problem. Using the above elaborations, we can start to comprehend what "given $\mathfrak M$" actually means. The semantics of $\mathfrak M$'s execution can be expressed through an axiomatic description of properties held by its ensemble of operators ($op_1, \ldots, op_n$). If we aim to ensure $\mathfrak M_p \in S$ for some program $p$, we can deduce the necessary logical connections between every $x$ and $\mathfrak M_p(x)$ by verifying that the control flow of $p$ can produce operator sequences adhering to it. This can be done in multiple ways; for example, we can pursue symbolic computation of $p$, eliminating branches that contradict our main supposition, and hope that automated formula composition exhausts the decision tree for us. Alternatively, we can manually construct a proof of the needed proposition by formulating useful intermediary invariants that every execution state preserves.
+さて、実行セマンティクスの定義を概説したので、検証問題に戻りましょう。上記の説明を用いて、「$\mathfrak M$が与えられたとき」の意味を理解し始めることができます。$\mathfrak M$の実行セマンティクスは、その演算子の集合（$op_1, \ldots, op_n$）が保持する特性の公理的な記述を通じて表現できます。$\mathfrak M_p \in S$を確実にするためには、$x$と$\mathfrak M_p(x)$の間の必要な論理的なつながりを導き出し、$p$の制御フローがそれに従う演算子のシーケンスを生成できることを検証します。これは複数の方法で行うことができます。例えば、$p$の記号的な計算を追求し、主な仮定と矛盾する分岐を排除し、自動化された式の構成が決定木を尽くすことを期待することができます。あるいは、有用な中間不変量を定式化し、各実行状態がそれを保持することを証明することで、必要な命題の手動証明を構築することができます。
 
-### Example 3: Totality of Finite Automatons
+### 例3：有限オートマトンの全体性
 
-Let's state a well-known fact about finite automata, formulated as a property of $\mathfrak M^F$:
+有限オートマトンに関するよく知られた事実を$\mathfrak M^F$の特性として述べましょう。
 
-> For every deterministic program $p$ and input $x \in \Sigma^*$, an execution of the $\mathfrak M^F_p(x)$ halts in either $\mathbf T$ or $\mathbf F$ state.
+> 任意の決定的なプログラム$p$と入力$x \in \Sigma^*$に対して、$\mathfrak M^F_p(x)$の実行は$\mathbf T$または$\mathbf F$状態で停止する。
 
-This can be proven by simple induction over the length of an input string at any point in $\mathfrak M^F_p$ execution:
+これは、$\mathfrak M^F_p$の実行時の入力文字列の長さに関する単純な帰納法で証明できます。
 
-1. $\left| x \right| = 0:$ when the active state is marked with $op_\{\tt next/t\}$ (or $op_\{\tt next/f\}$), its execution sets the memory to the $\mathbf T$ (or $\mathbf F$) state and triggers a transition through the edge marked with $\blacktriangledown$ marking. Regardless of the subsequent state's marking, the program terminates. The base case is proven.
-2. $\left| x \right| = l+1:$ irrespective of the active state's marking, the first letter $x$ will be consumed during its execution. For the subsequent active state, the memory holds a string of length $l$, and thus, the induction step is also proven. $\Box$
+1. $\left| x \right| = 0$の場合：アクティブな状態が$op_{\tt next/t}$（または$op_{\tt next/f}$）でマークされているとき、その実行はメモリを$\mathbf T$（または$\mathbf F$）状態に設定し、$\blacktriangledown$でマークされたエッジを通じて遷移を引き起こします。その後の状態のマークに関係なく、プログラムは終了します。基礎となるケースは証明されました。
+2. $\left| x \right| = l+1$の場合：アクティブな状態のマークに関係なく、最初の文字$x$はその実行中に消費されます。次のアクティブな状態では、メモリは長さ$l$の文字列を保持し、したがって帰納的なステップも証明されます。$\Box$
 
-This informal proof serves as a principal demonstration of the reasoning that assures us about facts not just for one particular input or one particular program, but for a whole class of automata operating on arbitrary programs and inputs.
+この非形式的な証明は、特定の入力や特定のプログラムだけでなく、任意のプログラムと入力に対して動作するオートマトンのクラス全体についての事実を保証する推論の主要なデモンストレーションとして機能します。
 
-## Conclusion
+## 結論
 
-In this article, we have presented our preliminary exploration of the domain of program verification, laying foundational insights into its complexities. While the examples provided are intentionally simplified to facilitate comprehension without the necessity of software aids, they nevertheless highlight the profound challenges inherent in this field. The endeavor of aligning an algorithm with its specification, as illustrated, can hinge on complex mathematical conjectures, such as the Four Color Theorem, whose proofs may elude straightforward analytical methods and instead require computational validation.
+本論文では、プログラム検証の領域における予備的な探求を提示し、その複雑さに関する基礎的な洞察を提供しました。提供された例は、理解を容易にするために意図的に簡略化されていますが、それにもかかわらず、この分野に固有の深い課題を強調しています。アルゴリズムとその仕様を一致させる試みは、四色定理のような複雑な数学的推測に依存することがあり、その証明は直接的な分析手法を回避し、むしろ計算的な検証を必要とする場合があります。
 
-This exploration underscores a critical aspect of modern software engineering: the necessity for robust, automated tools in program verification. Such tools are necessary, especially when the verification tasks involve ensuring that complex systems adhere to multifaceted specifications. As we have seen, even seemingly straightforward algorithms can depend on deeply layered logical structures, making manual verification a daunting, if not impractical, task. In the era where the reliability and correctness of software are paramount, the field of program verification emerges not merely as an academic interest but as a cornerstone in the development of dependable and secure software systems.
+この探求は、現代のソフトウェア工学の重要な側面を強調しています：プログラム検証における堅牢で自動化されたツールの必要性です。そのようなツールは、複雑なシステムが多面的な仕様に準拠していることを保証するために特に必要です。見てきたように、一見簡単なアルゴリズムでさえ、深く層状の論理構造に依存することがあり、手動による検証は困難で、実用的でない作業となる可能性があります。ソフトウェアの信頼性と正確性が最重要視される時代において、プログラム検証の分野は単なる学術的な関心事ではなく、信頼性が高く安全なソフトウェアシステムの開発における礎石として浮上しています。
 
-The ongoing evolution of program verification methodologies and tools will undoubtedly play a pivotal role in addressing future challenges in software engineering, thereby contributing significantly to the advancement of technology and its applications in our increasingly digital world.
+プログラム検証の方法論とツールの継続的な進化は、ソフトウェア工学における将来の課題に対処する上で間違いなく重要な役割を果たし、それによって技術の進歩とデジタル化が進む世界におけるその応用に大きく貢献するでしょう。
 
-## References
+## 参考文献
 
-- [Halting Problem. _wiki.c2._][1]
-- [Graph coloring. _Encyclopedia of Mathematics._][2]
-- [Four Color Theorem. _GitHub._][3]
-- [Turing machine. _Encyclopedia of Mathematics._][4]
-- [Normal algorithm. _Encyclopedia of Mathematics._][5]
-- [Lambda calculus. _Encyclopedia of Mathematics._][6]
-- [Regular event. _Encyclopedia of Mathematics._][7]
-- [Formal languages and automata. _Encyclopedia of Mathematics._][8]
-- [Finite Automaton. _Encyclopedia of Mathematics._][9]
+- [停止問題。_wiki.c2._][1]
+- [グラフの彩色。_数学百科事典._][2]
+- [四色定理。_GitHub._][3]
+- [チューリングマシン。_数学百科事典._][4]
+- [正規アルゴリズム。_数学百科事典._][5]
+- [ラムダ計算。_数学百科事典._][6]
+- [正則事象。_数学百科事典._][7]
+- [形式言語とオートマトン。_数学百科事典._][8]
+- [有限オートマトン。_数学百科事典._][9]
 
 [1]: http://wiki.c2.com/?HaltingProblem
 [2]: https://encyclopediaofmath.org/wiki/Graph_colouring
@@ -141,6 +141,5 @@ The ongoing evolution of program verification methodologies and tools will undou
 [8]: https://encyclopediaofmath.org/wiki/Formal_languages_and_automata
 [9]: https://encyclopediaofmath.org/wiki/Automaton,_finite
 
----
-
-Discuss [this paper](https://t.me/inferara/4) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" telegram_post_id="4" x_post_id="1775572601009774631">}}
+{{<ai-translated>}}

@@ -71,6 +71,4 @@ Of course, for such digital systems as smart contracts, design and modelling bas
 
 [4]: {{< ref "/papers/verification-driven-development" >}}
 
----
-
-Discuss [this blog](https://t.me/inferara/10) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials page_content_type="blog" telegram_post_id="10" x_post_id="1774858291727978818">}}

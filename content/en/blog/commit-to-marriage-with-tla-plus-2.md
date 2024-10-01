@@ -550,7 +550,4 @@ It is probably an awkward solution but it works 🐦‍⬛.
 [2]: https://lamport.azurewebsites.net/tla/learning.html
 [3]: https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf
 
-
----
-
-Discuss [this blog](https://t.me/inferara/16) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials page_content_type="blog" telegram_post_id="16">}}
