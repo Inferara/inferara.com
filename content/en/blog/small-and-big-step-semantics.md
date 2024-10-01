@@ -32,6 +32,4 @@ Small-step semantics offer a detailed view of execution, allowing for the analys
 
 Small-step semantics is often preferred in scenarios where the process of computation is as important as the result, such as in interactive systems, concurrent programming, and step-wise debugging tools. Big-step semantics is typically used when the interest lies in the outcome of computation, such as verifying the correctness of algorithms or functional equivalences between programs.
 
----
-
-Discuss [this blog](https://t.me/inferara/11) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials page_content_type="blog" telegram_post_id="11" x_post_id="1774985590670573849">}}

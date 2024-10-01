@@ -299,6 +299,4 @@ However, it should be understood that to truly confirm the behavior of a specifi
 [2]: https://en.wikipedia.org/wiki/Total_functional_programming
 [3]: https://en.wikipedia.org/wiki/Unrelated-machines_scheduling
 
----
-
-Discuss [this paper](https://t.me/inferara/19) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials telegram_post_id="19" x_post_id="1808780136860561828">}}

@@ -1,77 +1,77 @@
 +++
-title = 'Specifying Algorithms Using Non-Deterministic Computations'
+title = '非決定的計算を用いたアルゴリズムの仕様化'
 date = 2024-07-04T10:20:22+05:00
 draft = false
 math = "katex"
-tags = ["Program Verification", "Inference"]
-summary = "In this article, we will discuss the use of the formalism of non-deterministic computations as a language for specifying algorithms."
+tags = ["プログラム検証", "推論"]
+summary = "本記事では、アルゴリズムを仕様化する言語として、非決定的計算の形式主義の使用について議論します。"
 aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 +++
 
-## Table of Contents
+## 目次
 
-- [Introduction](#introduction)
-- [Non-Determinism and Formal Specifications](#non-determinism-and-formal-specifications)
-- [Problem](#problem)
-- [Solution](#solution)
-- [Unrelated-machines scheduling example](#unrelated-machines-scheduling-example)
-- [Conclusion](#conclusion)
-- [References](#references)
+- [はじめに](#はじめに)
+- [非決定性と形式的仕様](#非決定性と形式的仕様)
+- [問題](#問題)
+- [解決策](#解決策)
+- [無関連マシンのスケジューリング例](#無関連マシンのスケジューリング例)
+- [結論](#結論)
+- [参考文献](#参考文献)
 
-## Introduction
+## はじめに
 
-The spread of formal verification of algorithms is hindered by the fundamental differences between existing specification languages and what programmers are accustomed to dealing with in their regular work.
+アルゴリズムの形式的検証の普及は、既存の仕様言語とプログラマーが日常的に扱っているものとの間の根本的な違いによって妨げられています。
 
-Given the choice between maintaining their code with informal but understandable textual comments along with a test suite covering the main usage patterns, and a formal specification requiring an understanding of predicate logic, most programmers will likely choose the former, even recognizing the benefits of mathematical precision in describing program behavior.
+主要な使用パターンをカバーするテストスイートとともに、非公式だが理解可能なテキストコメントでコードを維持することと、述語論理の理解を必要とする形式的な仕様との間で選択を迫られた場合、プログラムの振る舞いを記述する上で数学的な正確性の利点を認識していても、ほとんどのプログラマーは前者を選ぶでしょう。
 
-This choice is quite understandable, as overcoming the analytical complexity barrier of studying and applying logical formalism in real life rarely truly compensates for meeting the reliability requirements of the code we write.
+この選択は非常に理解できます。実生活で論理形式主義を学び、適用するという分析的複雑性の壁を乗り越えることが、我々が書くコードの信頼性要件を満たすことに真に報われることは稀だからです。
 
-Let's face it, firmware for micro-controllers in medical equipment, nuclear reactors, and transport autopilots make up an invisible fraction of the code produced by engineers. In less critical tasks, iterative error correction based on operational results is considered a quite acceptable development method, given that the alternative, full formal verification, requires deep immersion into extremely complex areas of knowledge, hardly related to other applied tasks.
+正直に言えば、医療機器、原子炉、輸送用オートパイロットのマイクロコントローラー向けのファームウェアは、エンジニアが生産するコードの中で目に見えないほどのごく一部を占めています。より重要度の低いタスクでは、運用結果に基づく反復的なエラー修正が、完全な形式的検証という代替案が他の応用タスクとはほとんど関連のない極めて複雑な知識領域への深い没頭を必要とすることを考慮すると、非常に受け入れられる開発方法と見なされています。
 
-As a result, since few people study predicate logic for specifying their programs, formal specification loses its meaning even as an element of documentation, because why write what no one will read.
+その結果、プログラムを仕様化するために述語論理を学ぶ人はほとんどいないため、誰も読まないものを書く理由がないので、形式的な仕様はドキュメンテーションの要素としての意味さえ失います。
 
-If we think about it, the main problem here is precisely the height of the notorious analytical complexity barrier of studying and applying logical formalism, from which the task of specifying algorithms is inseparably perceived.
+考えてみると、ここでの主な問題は、論理形式主義を学び適用するという悪名高い分析的複雑性の壁の高さであり、アルゴリズムを仕様化するというタスクはそれと不可分に認識されていることです。
 
-Interestingly, this inseparability is actually only apparent, as the observed behavior of any program can be described with mathematical rigor without using predicate logic statements.
+興味深いことに、この不可分性は実際には見かけ上のものであり、任意のプログラムの観察された振る舞いは、述語論理の命題を使用せずに数学的な厳密さで記述することができます。
 
-Moreover, a program in any Turing-complete programming language can be specified, essentially, in the same language, supplemented with just a few additional constructs with non-deterministic semantics.
+さらに、チューリング完全な任意のプログラミング言語でのプログラムは、本質的に、非決定的なセマンティクスを持ついくつかの追加の構造を補った同じ言語で仕様化することができます。
 
-## Non-Determinism and Formal Specifications
+## 非決定性と形式的仕様
 
-Recalling that our reasoning about algorithm specification [[1]] is based on an arbitrary abstract machine $\mathfrak M : P \to X \rightharpoonup Y$ with a set of operations $Ops = \\{op_i : M \to (M \times R_i) \cup \\{\blacktriangledown\\}, i=\overline{1,n}\\}$, let's imagine its non-deterministic generalization $\overline {\mathfrak M} : \overline P \to 2^X \rightharpoonup 2^Y$ with a new program description language $\overline P$, supplemented with additional operations whose type can be described as $\overline{Ops} = \\{op_i : 2^M \rightharpoonup 2^{(M \times R_i)}, i \in \\{n+1,\ldots\\}\\}$.
+アルゴリズムの仕様化に関する我々の推論[[1]]が、演算子の集合$Ops = \{op_i : M \to (M \times R_i) \cup \{\blacktriangledown\}, i=\overline{1,n}\}$を持つ任意の抽象マシン$\mathfrak M : P \to X \rightharpoonup Y$に基づいていることを思い出すと、追加の演算子を補った新しいプログラム記述言語$\overline P$を持つ、その非決定的な一般化$\overline {\mathfrak M} : \overline P \to 2^X \rightharpoonup 2^Y$を想像してみましょう。その演算子の型は$\overline{Ops} = \{op_i : 2^M \rightharpoonup 2^{(M \times R_i)}, i \in \{n+1,\ldots\}\}$と記述できます。
 
-Here we should note several important aspects:
+ここで、いくつかの重要な側面に注意する必要があります。
 
-1. New operations perform computation not on individual states of the abstract machine, but on arbitrary sets of states.
-2. Unlike classic operations, non-deterministic operations do not have to be total [[2]] – on some inputs, their computation may not terminate.
-3. Quantitatively, new operations form a countably infinite set, as they can be parameterized by nested programs (both deterministic and non-deterministic).
+1. 新しい演算子は、抽象マシンの個々の状態ではなく、任意の状態の集合上で計算を行います。
+2. 古典的な演算子とは異なり、非決定的な演算子は全域的である必要はありません[[2]]。つまり、いくつかの入力では、その計算が終了しない場合があります。
+3. 定量的には、新しい演算子は可算無限集合を形成します。なぜなら、それらはネストされたプログラム（決定的および非決定的の両方）によってパラメータ化できるからです。
 
-The computational semantics of a non-deterministic program $\overline p = \langle V, \overline{op}, E, V_\blacktriangle \rangle$, where $V$ is the set of vertices of the control flow graph, $\overline{op} : V \to Ops \bigcup \overline{Ops}$ is the assignment of operations executed at the vertices, $E$ is the set of edges labeled with possible operation results, and $V_\blacktriangle$ is the set of start vertices, can be represented as an iterative process of building a computation tree, whose nodes are pairs of the form $(v, M_v) \in V \times 2^M$, associating the graph vertices with sets of machine states reachable at their input:
+制御フローグラフの頂点の集合$V$、頂点で実行される演算子の割り当て$\overline{op} : V \to Ops \bigcup \overline{Ops}$、可能な演算子の結果でラベル付けされたエッジの集合$E$、開始頂点の集合$V_\blacktriangle$を持つ非決定的プログラム$\overline p = \langle V, \overline{op}, E, V_\blacktriangle \rangle$の計算セマンティクスは、計算木を構築する反復的なプロセスとして表現できます。そのノードは$(v, M_v) \in V \times 2^M$の形式のペアであり、グラフの頂点をその入力で到達可能なマシン状態の集合と関連付けます。
 
-1. At the beginning of the computation, each vertex from $V_\blacktriangle$ is associated with the set $M_\blacktriangle = \\{m \in M \mid \exists x \in X : m = in(x)\\}$, i.e., all allowable initial states of the machine, forming the roots of the building tree.
-2. At each step, any unprocessed node $(v, M_v)$ is chosen in the tree, and for the operation $\overline{op}^v$ executed at it, a set of non-terminal outcomes $\overline{op}^v(M_v) \subseteq M \times R_{\overline{op}^v}$ is built according to the following rules:
-	- If the operation $\overline{op}^v$ is deterministic, then $\overline{op}^v(M_v) = \\{(m, r) \in M \times R_{\overline{op}^v} \mid \exists m_0 \in M_v : (m, r) = \overline{op}^v(m_0)\\}$ simply applies it to each reachable input state of the program, discarding $\blacktriangledown$ (successful computation completions).
-	- If the operation $\overline{op}^v$ is non-deterministic, then the computation $\overline{op}^v(M_v)$ is carried out according to special rules, which will be listed below.
-3. For each vertex $w \in V$, into which at least one edge leads from $v$, $M_w = \\{m \in M \mid \exists r \in R_{\overline{op}^v} : (v, r, w) \in E \lor (m, r) \in \overline{op}^v(M_v)\\}$ is built, i.e., the set of all states reachable when transitioning to it from the processed node.
-4. For each non-empty $M_w$, the tree is supplemented with a branch $(w, M_w)$, a child relative to the processed one. After the process is completed, the node $(v, M_v)$ is marked as processed, and if there are still unprocessed nodes, the algorithm repeats, starting from the step **2**.
-5. This algorithm either terminates upon exhaustion of unprocessed nodes or continues building the tree indefinitely.
+1. 計算の開始時に、$V_\blacktriangle$の各頂点は集合$M_\blacktriangle = \{m \in M \mid \exists x \in X : m = in(x)\}$と関連付けられます。すなわち、マシンの許容されるすべての初期状態であり、構築される木の根を形成します。
+2. 各ステップで、木の中から未処理のノード$(v, M_v)$が選ばれ、そこで実行される演算子$\overline{op}^v$に対して、以下のルールに従って非終端の結果の集合$\overline{op}^v(M_v) \subseteq M \times R_{\overline{op}^v}$が構築されます。
+   - もし演算子$\overline{op}^v$が決定的であれば、$\overline{op}^v(M_v) = \{(m, r) \in M \times R_{\overline{op}^v} \mid \exists m_0 \in M_v : (m, r) = \overline{op}^v(m_0)\}$であり、プログラムの各到達可能な入力状態にそれを単純に適用し、$\blacktriangledown$（計算の成功終了）を無視します。
+   - もし演算子$\overline{op}^v$が非決定的であれば、計算$\overline{op}^v(M_v)$は以下に列挙する特別なルールに従って実行されます。
+3. $v$から少なくとも1つのエッジが導かれる各頂点$w \in V$に対して、$M_w = \{m \in M \mid \exists r \in R_{\overline{op}^v} : (v, r, w) \in E \lor (m, r) \in \overline{op}^v(M_v)\}$が構築されます。すなわち、処理されたノードからそれに遷移するときに到達可能なすべての状態の集合です。
+4. 各非空の$M_w$に対して、木は$(w, M_w)$という枝で補われ、これは処理されたノードに対する子となります。プロセスが完了した後、ノード$(v, M_v)$は処理済みとしてマークされ、まだ未処理のノードがある場合、アルゴリズムはステップ**2**から繰り返します。
+5. このアルゴリズムは、未処理のノードが尽きると終了するか、無期限に木の構築を続けます。
 
-Currently, since we have not yet introduced additional non-deterministic instructions, it may seem that we are essentially talking about a type of symbolic computation. And yes, in some sense, this parallel is justified - if we limit ourselves to subsets of $M$ having a symbolic representation, then for classical operations, the above algorithm can be implemented quite straightforwardly.
+現時点では、まだ追加の非決定的な命令を導入していないので、本質的にはある種のシンボリック計算について話しているように思えるかもしれません。そして、ある意味では、この類似は正当化されます。もしシンボリックな表現を持つ$M$の部分集合に限定すれば、古典的な演算子に対して、上記のアルゴリズムはかなり直接的に実装できます。
 
-However, it should be understood that building an instance of the computation tree for a specific algorithm is not our goal - we are more interested in how the properties of this tree can testify to the algorithm's belonging to a given class.
+しかし、特定のアルゴリズムのために計算木のインスタンスを構築することが我々の目的ではないことを理解すべきです。我々は、この木の特性がアルゴリズムが特定のクラスに属していることをどのように証明できるかにより興味があります。
 
-To do this, we will introduce the following non-deterministic operations:
+これを行うために、次の非決定的な演算子を導入します。
 
-- $total_{\overline{pp}}$ is an operation, whose parameter is an arbitrary non-deterministic program $\overline{pp} \in \overline P$. The operation is terminal, i.e., $R_{total} = \emptyset$. For any input set of states $M_v \subseteq M$, the computation $total_{\overline{pp}}(M_v)$ completes successfully if and only if every computation tree built for the program $\overline{pp}$ and any finite subset of $M_v$ is finite. Otherwise, the computation $total_{\overline{pp}}(M_v)$ does not terminate;
-- $filter_{\overline{pp}}$ is an operation, whose parameter is an arbitrary non-deterministic program $\overline{pp} \in \overline P$. The operation can only have one result $R_{filter} = \\{\checkmark\\}$. For any subset of states $M_v \subseteq M$, the computation $ filter_{\overline{pp}}(M_v)$ terminates if and only if for each $m \in M$, it can be determined whether there is a node $(w, M_w)$ in the computation tree $\overline{pp}$ over $M_v$ such that $m \in M_w$ and $\overline{op}^w(m) = \blacktriangledown$. The resulting $filter_{\overline{pp}}(M_v) = \\{(m, \checkmark)\\}$ collects at the output all $m$ determined as terminal. If it is impossible to determine the terminality of any state, the computation $filter_{\overline{pp}}(M_v)$ does not terminate.
+- $total_{\overline{pp}}$は、そのパラメータが任意の非決定的なプログラム$\overline{pp} \in \overline P$である演算子です。この演算子は終端的であり、つまり$R_{total} = \emptyset$です。任意の入力状態の集合$M_v \subseteq M$に対して、計算$total_{\overline{pp}}(M_v)$は、プログラム$\overline{pp}$と$M_v$の任意の有限部分集合に対して構築されたすべての計算木が有限である場合にのみ成功裏に完了します。そうでない場合、計算$total_{\overline{pp}}(M_v)$は終了しません。
+- $filter_{\overline{pp}}$は、そのパラメータが任意の非決定的なプログラム$\overline{pp} \in \overline P$である演算子です。この演算子は1つの結果しか持てず、$R_{filter} = \{\checkmark\}$です。任意の状態の部分集合$M_v \subseteq M$に対して、計算$filter_{\overline{pp}}(M_v)$は、各$m \in M$について、$m \in M_w$かつ$\overline{op}^w(m) = \blacktriangledown$となるノード$(w, M_w)$が$M_v$上の$\overline{pp}$の計算木に存在するかどうかを判断できる場合にのみ終了します。結果として得られる$filter_{\overline{pp}}(M_v) = \{(m, \checkmark)\}$は、終端と判断されたすべての$m$を出力に集めます。どの状態の終端性も判断できない場合、計算$filter_{\overline{pp}}(M_v)$は終了しません。
 
-Here it becomes obvious that we define the semantics of additional operations through logical means, and, generally speaking, it is difficult to imagine a real device capable of performing the described computations - we are essentially talking about algorithms that iterate over the spaces of all possible states of the abstract machine, which for any interesting cases is clearly beyond the possible.
+ここで、追加の演算子のセマンティクスを論理的な手段で定義していることが明らかになります。一般的に言えば、記述された計算を実行できる実際の装置を想像するのは困難です。我々は本質的に、抽象マシンのあらゆる可能な状態の空間を反復するアルゴリズムについて話しており、これは興味深い場合には明らかに可能性を超えています。
 
-However, the use of the above semantics for algorithm specification does not imply the necessity of actually building computation trees - it is enough for us to be able to reason about their properties.
+しかし、アルゴリズムの仕様化に上記のセマンティクスを使用することは、実際に計算木を構築する必要性を意味しません。我々にとっては、その特性について推論できれば十分です。
 
-## Problem
+## 問題
 
-Let's consider the following example, written in a syntax that slightly extends Rust with a set of imaginary (for now) keywords:
+次の例を、Rustを少し拡張した構文で記述された（現時点では架空の）キーワードのセットを用いて考えてみましょう。
 
 ```rust
 type sf = fn(&mut [i32]);
@@ -115,31 +115,31 @@ fn proof() {
 }
 ```
 
-In this code, you can see three new keywords (`total`, `filter`, `verify`) and several calls to the function `::undef()`, associated with an unknown trait of primitive types. Let's go through them in order:
+このコードでは、3つの新しいキーワード（`total`、`filter`、`verify`）と、プリミティブ型の未知のトレイトに関連するいくつかの`::undef()`関数の呼び出しが見られます。これらを順番に見ていきましょう。
 
-- The keyword `total` declares that the block following it (or, in this case, the body of the function marked by it) performs a non-deterministic computation in the semantics of the eponymous operation. A total block, upon gaining control, completes successfully and without any side effects only if each of its allowable computations completes successfully.
-- The keyword `filter` also performs a non-deterministic computation of the corresponding operation over the block following it. A filtering block, upon gaining control, retains only those computations that complete successfully.
-- The keyword `verify` ensures the executability of a non-deterministic block in a given deterministic context. Here, for example, its application to calls of functions with total bodies means that the machine must check whether their computation is guaranteed to complete successfully on each input state where the parameter `func` refers to the function `foobar`. If the check is successful, the machine transfers control to the next instruction without changing its state.
-- The function `undef` is defined in a trait that can be formulated as a one-liner `trait Undefinable { fn undef() -> Self where Self: Sized; }`, and its behavior can be specified as - the computation `T::undef()` is guaranteed to complete and can return any representative of type `T`.
+- キーワード`total`は、その後に続くブロック（またはこの場合、そのマークされた関数の本体）が、同名の演算子のセマンティクスで非決定的な計算を行うことを宣言します。`total`ブロックは、制御を得ると、許容される各計算が成功裏に完了する場合にのみ、成功裏に副作用なしに完了します。
+- キーワード`filter`も、対応する演算子の非決定的な計算を、その後に続くブロック上で行います。`filter`ブロックは、制御を得ると、成功裏に完了する計算のみを保持します。
+- キーワード`verify`は、与えられた決定的なコンテキストで非決定的なブロックの実行可能性を保証します。ここでは、例えば、`total`本体を持つ関数の呼び出しへの適用は、マシンが、パラメータ`func`が関数`foobar`を参照する場合、その計算が各入力状態で確実に成功裏に完了するかどうかをチェックしなければならないことを意味します。チェックが成功すると、マシンは状態を変更せずに次の命令に制御を移します。
+- 関数`undef`は、`trait Undefinable { fn undef() -> Self where Self: Sized; }`のようなワンライナーで定式化できるトレイトで定義されており、その振る舞いは、計算`T::undef()`は完了が保証され、型`T`の任意の代表を返すことができる、と仕様化できます。
 
-It is quite obvious that it is extremely difficult to imagine a real compiler or interpreter for such a modified Rust - executing non-deterministic blocks with the described semantics essentially implies solving tasks that reduce to the halting problem.
+明らかに、そのように拡張されたRustの実際のコンパイラやインタープリタを想像するのは非常に困難です。記述されたセマンティクスを持つ非決定的なブロックを実行することは、本質的に停止問題に帰着するタスクを解くことを意味します。
 
-In practice, this means that no algorithm could automatically produce the required computation for any syntactically correct code beyond extremely limited cases of totality by construction (fixpoint functions with a decreasing argument on inductive data structures, for example).
+実際には、構築による全域性の非常に限られたケース（例えば、帰納的データ構造上の引数が減少する不動点関数）を超えて、任意の構文的に正しいコードに対して必要な計算を自動的に生成できるアルゴリズムは存在しないことを意味します。
 
-Nevertheless, we can hypothetically ask ourselves, "If we had a way to ensure that the call to the `proof()` function successfully completes with the call to `println!(...)`, what would that tell us about the behavior of the `foobar` function?"
+それにもかかわらず、仮に「`proof()`関数の呼び出しが、`println!(...)`の呼び出しとともに成功裏に完了することを保証できた場合、それは`foobar`関数の振る舞いについて何を伝えてくれるだろうか？」と自問することができます。
 
-So that readers can try to solve this simple puzzle on their own, the text of the diagnostic message contains a blank, which you can easily fill in by determining what properties of the argument are evidenced by the executability of `preserving_count(foobar)` and `procuring_sorted(foobar)`. The curious can stop now and think, while the rest will find the solution in the next section.
+読者がこの簡単なパズルを自分で解くことができるように、診断メッセージのテキストには空欄が含まれています。`preserving_count(foobar)`と`procuring_sorted(foobar)`の実行可能性が引き出す引数の特性を決定することで、この空欄を簡単に埋めることができます。興味のある方はここで考えるのを止めることができますが、他の方は次のセクションで解決策を見つけるでしょう。
 
-## Solution
+## 解決策
 
-Let's start with analyzing `verify preserving_count(foobar)`. When verifying a block with total semantics, the input set of states consists of a single element - the current state of the deterministic computation in which the call was made. We only know about it that the parametric variable `func` refers to `foobar` in it. After executing
+まず、`verify preserving_count(foobar)`の分析から始めましょう。全域的なセマンティクスを持つブロックを検証する際、入力状態の集合は呼び出しが行われた決定的な計算の単一の要素から成ります。我々は、その中でパラメトリック変数`func`が`foobar`を参照していることしか知りません。以下を実行した後、
 
 ```rust
 	let arr = Vec<i32>::undef();
 	let val = i32::undef();
 ```
 
- according to the `undef` specification, the local variable `arr` can contain absolutely any vector of 32-bit integers (both its length and content are arbitrary), and the local variable `val` can be any 32-bit integer. Thus, the set of reachable states at this point of the non-deterministic block becomes non-degenerate. Next, we proceed to the computation
+`undef`の仕様に従って、ローカル変数`arr`は32ビット整数の任意のベクトル（その長さと内容は任意）を含むことができ、ローカル変数`val`は任意の32ビット整数であり得ます。したがって、非決定的ブロックのこの時点での到達可能な状態の集合は非自明になります。次に、以下の計算に進みます。
 
 ```rust
 	let before = count_values(&arr, val);
@@ -147,23 +147,23 @@ Let's start with analyzing `verify preserving_count(foobar)`. When verifying a b
 	let after = count_values(&arr, val);
 ```
 
-Since only classical deterministic functions are called here, the computation on each reachable state is performed independently. For all conceivable combinations, we first count how many times `val` occurs in `arr`, then call `func`, somehow changing the content of `arr`, and then recount `val` in it.
+ここでは、古典的な決定的関数のみが呼び出されているため、各到達可能な状態での計算は独立して実行されます。考えられるすべての組み合わせについて、まず`arr`内の`val`の出現回数を数え、次に`func`を呼び出して`arr`の内容を何らかの方法で変更し、そして再度`val`を数えます。
 
-If the call to `func(&mut arr)` does not terminate or is interrupted by an invalid operation on at least one input, then according to the semantics of the total block, the entire non-deterministic computation cannot be successful, and further reasoning loses its meaning.
+もし`func(&mut arr)`の呼び出しが、少なくとも1つの入力で終了しなかったり、無効な操作によって中断されたりした場合、全域的ブロックのセマンティクスに従って、非決定的な計算全体が成功できず、以降の推論は意味を失います。
 
-If this does not happen, the set of reachable states does not change quantitatively, but in each of its elements, new local variables `before` and `after` appear, containing the corresponding count results.
+そうでない場合、到達可能な状態の集合は定量的に変化せず、その各要素に対応するカウント結果を含む新しいローカル変数`before`と`after`が現れます。
 
-Finally, our non-deterministic computation completes with the check
+最後に、非決定的な計算は以下のチェックで完了します。
 
 ```rust
 	assert!(before == after);
 ```
 
-Since each reachable state must independently pass this check, we can make a justified conclusion that the `foobar` function must preserve the count of elements in the arrays on which it is called, i.e., it only permutes their elements.
+各到達可能な状態がこのチェックを独立して通過しなければならないため、`foobar`関数は、それが呼び出される配列の要素数を保持し、つまり要素を並べ替えるだけであるという正当な結論を下すことができます。
 
-Let's remember this fact and move on to analyzing `verify procuring_sorted(foobar)`. 
+この事実を覚えておいて、`verify procuring_sorted(foobar)`の分析に進みましょう。
 
-The called total function, again, starts with
+呼び出された全域的な関数は再び以下から始まります。
 
 ```rust
 	let arr = Vec<i32>::undef();
@@ -171,7 +171,7 @@ The called total function, again, starts with
 	func(&mut arr);
 ```
 
-i.e., assigning the local variable an arbitrary array and applying the `foobar` function to its content. Then follows
+つまり、ローカル変数に任意の配列を割り当て、その内容に`foobar`関数を適用します。次に、
 
 ```rust
 	let i = usize::undef();
@@ -183,48 +183,50 @@ i.e., assigning the local variable an arbitrary array and applying the `foobar` 
 	}
 ```
 
-where we see the first use of the `filter` keyword. Here, we first introduce two local indices with unknown values, and then, according to the semantics of the filtering block, we consider all computations that fail at least one of the asserts as successfully completed.
+ここで`filter`キーワードの最初の使用が見られます。ここでは、未知の値を持つ2つのローカルインデックスを導入し、その後、フィルタリングブロックのセマンティクスに従って、少なくとも1つの`assert`に失敗する計算を成功裏に完了したものとして考えます。
 
-Since premature successful termination of the computation cannot affect the totality of the outer block, we only need to check the situations where `i` and `j` are different and ordered indices of the `arr` array. The final computation
+計算の早期の成功終了は外部ブロックの全域性に影響を与えられないため、`i`と`j`が`arr`配列の異なる順序付きインデックスである状況のみをチェックする必要があります。最終的な計算
 
 ```rust
 	assert!(arr[i] <= arr[j]);
 ```
 
-thus indicates that after applying the `foobar` function to any array, all elements in it end up being ordered in ascending order.
+は、任意の配列に`foobar`関数を適用した後、その中のすべての要素が昇順に並んでいることを示しています。
 
-At this point, most readers have probably already solved the puzzle. So, what do we usually call an algorithm that performs some manipulations on an arbitrary array such that:
-- the array's element count is preserved;
-- the array becomes sorted.
+この時点で、ほとんどの読者はパズルを解決したことでしょう。では、次のような操作を行うアルゴリズムを通常何と呼びますか：
 
-Let's fill in our answer in the diagnostic message of the `proof` function:
+- 配列の要素数が保持される。
+- 配列がソートされる。
+
+`proof`関数の診断メッセージの空欄に答えを埋めましょう。
 
 ```rust
 	println!("foobar is a sorting function");
 ```
 
-Indeed, if we had an interpreter capable of executing code in the extended Rust with the described non-deterministic semantics, then the appearance of this line on the screen would be an unequivocal indication that `foobar` can only be a sorting function.
+確かに、記述された非決定的なセマンティクスを持つ拡張Rustでコードを実行できるインタープリタがあれば、画面にこの行が表示されることは、`foobar`がソート関数であることを明確に示しています。
 
-Most notably, the reasoning by which we arrived at this conclusion is in no way invalidated by the fact that the above-described interpreter for non-deterministic code does not actually exist.
+特筆すべきは、我々がこの結論に至った推論は、上記の非決定的なコードのためのインタープリタが実際には存在しないという事実によって全く無効化されないことです。
 
-## Unrelated-machines scheduling example
+## 無関連マシンのスケジューリング例
 
-Consider another example of widely used algorithms of processing tasks on machines. The input consists of a finite set of tasks $N$, a finite set of machines $M$, and natural numbers $p_{i,j} \in \mathbb{Z}$ representing the duration of task $i \in N$ on machine $j \in M$. We need to find a mapping $f : N \to M$ such that 
-$$\max_{j \in M} \sum_{i \in N} \left[f(i) = j\right] p_{i,j}$$ 
-is minimized [[3]].
+マシン上でタスクを処理する広く使用されているアルゴリズムの別の例を考えてみましょう。入力は有限のタスク集合$N$、有限のマシン集合$M$、およびタスク$i \in N$がマシン$j \in M$上で実行される時間を表す自然数$p_{i,j} \in \mathbb{Z}$です。マッピング$f : N \to M$を見つける必要があり、
+
+$$\max_{j \in M} \sum_{i \in N} \left[f(i) = j\right] p_{i,j}$$
+
+が最小化されます[[3]]。
 
 ```rust
-// Specified function takes n*m array of p_{i,j} and outputs its
-// solution into the second array of size n. Return value is
-// minimax that solution aims to optimize.
+// 指定された関数はp_{i,j}のn*m配列を取り、その解をサイズnの2番目の配列に出力します。
+// 戻り値は解が最適化しようとするミニマックスです。
 type sf = fn(&[u32], &mut [usize]) -> u32;
 
-// Checks validity of input.
+// 入力の有効性をチェックします。
 fn valid_input(p: &[u32], n: usize) {
 	let nm = p.len();
 
-	assert!(nm > 0); // p must be non-empty
-	assert!(nm % n == 0); // p must be rectangular
+	assert!(nm > 0); // pは空であってはならない
+	assert!(nm % n == 0); // pは長方形でなければならない
 
 	let m = nm / n;
 
@@ -234,16 +236,16 @@ fn valid_input(p: &[u32], n: usize) {
 		for i in 0..n {
 			let old = acc;
 			acc += p[i * m + j];
-			// sum of p_{*,j} must not overflow u32
+			// p_{*,j}の合計がu32をオーバーフローしてはならない
 			assert!(acc >= old);
 		}
 	}
 }
 
-// Calculates minimax of solution candidate.
+// 解候補のミニマックスを計算します。
 fn calculate(p: &[u32], f: &[usize]) -> u32 {
     let m = p.len() / f.len();
-    // array of running sums for each j
+    // 各jの累積和の配列
     let mut res: Vec<u32> = vec![0; m];
 
     for (i, &fi) in f.iter().enumerate() {
@@ -254,25 +256,25 @@ fn calculate(p: &[u32], f: &[usize]) -> u32 {
     res.iter().max().unwrap()
 }
 
-// Specification of globally optimal solution.
+// グローバルに最適な解の仕様。
 total fn optimal(func: sf) {
 	let p = Vec<u32>::undef();
 	let mut f = Vec<usize>::undef();
 	let n = f.len();
 
-	// checking input
+	// 入力をチェック
 	filter valid_input(&p, n);
 
-	// running specified function
+	// 指定された関数を実行
 	let r = func(&p, &mut f);
 
-	// ensuring return value is correct
+	// 戻り値が正しいことを保証
 	assert!(r == calculate(&p, &f));
 
-	// generating all other possible solutions
+	// 他の可能な解をすべて生成
 	for i in 0..n { f[i] = usize::undef(); }
 
-	// ensuring that the candidate solution is the best
+	// 候補解が最良であることを保証
 	assert!(r <= filter calculate(&p, &f));
 }
 
@@ -283,22 +285,21 @@ fn proof() {
 }
 ```
 
-## Conclusion
+## 結論
 
-Thanks to the rigor of our reasoning, the presented code can serve as a formal specification for a sorting function, comparable to predicate logic statements from the previous article. Moreover, the notation naturally extends a tool already familiar to programmers, making the barrier to understanding such specifications significantly lower. Programmers without a mathematical background can more easily grasp the semantics of non-deterministic computations compared to predicate logic.
+我々の推論の厳密さのおかげで、提示されたコードは、前回の記事の述語論理の命題と同等に、ソート関数の形式的な仕様として機能します。さらに、この表記法はプログラマーに既に馴染みのあるツールを自然に拡張し、そのような仕様の理解の壁を大幅に低くします。数学的なバックグラウンドのないプログラマーでも、述語論理と比較して、非決定的な計算のセマンティクスをより簡単に把握できます。
 
-However, it should be understood that to truly confirm the behavior of a specific function against such a specification, additional tools in the form of proof assistants, which operate with logical formalisms, will still be necessary. We will continue the discussion of this topic in the next article.
+しかし、そのような仕様に対して特定の関数の振る舞いを真に確認するためには、論理形式主義を操作する証明支援ツールという形の追加のツールが依然として必要であることを理解すべきです。このトピックの議論は次の記事で続けます。
 
-## References
+## 参考文献
 
-- [Program Verification: Background and Notation][1]
-- [Total functional programming. _wiki_][2]
-- [Unrelated-machines scheduling. _wiki_][3]
+- [プログラム検証：背景と表記法][1]
+- [全域関数型プログラミング。_ウィキペディア_][2]
+- [無関連マシンのスケジューリング。_ウィキペディア_][3]
 
 [1]: {{< ref "/papers/program-verification-background-and-notation" >}}
 [2]: https://en.wikipedia.org/wiki/Total_functional_programming
 [3]: https://en.wikipedia.org/wiki/Unrelated-machines_scheduling
 
----
-
-Discuss [this paper](https://t.me/inferara/19) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" telegram_post_id="19" x_post_id="1808780136860561828">}}
+{{<ai-translated>}}

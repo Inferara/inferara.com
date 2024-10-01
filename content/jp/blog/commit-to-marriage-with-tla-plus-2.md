@@ -1,33 +1,33 @@
 +++
-title = "Commit to marriage with TLA+ pt.2"
+title = "TLA+で結婚をコミットする パート2"
 date = 2024-05-01T11:21:45+05:00
 draft = false
 math = "katex"
-summary = "The second part of the conspect of the \"Intoduction to TLA+\" course by Leslie Lamport."
-tags = ["Temporal Logic", "TLA+", "Model checking", "Alrorithms"]
+summary = "レスリー・ランポートによる「TLA+入門」コースのコンスペクトの第2部。"
+tags = ["時相論理", "TLA+", "モデルチェック", "アルゴリズム"]
 aliases = ["/blog/commit-to-marriage-with-tla-plus-2"]
 +++
 
-## Table of Contents
+## 目次
 
-- [Introduction](#introduction)
-- [Transaction Commit](#transaction-commit)
-- [Two-Phase Commit](#two-phase-commit)
-- [Conclusion](#conclusion)
-- [Notes](#notes)
-- [References](#references)
+- [はじめに](#はじめに)
+- [トランザクションコミット](#トランザクションコミット)
+- [ツーフェーズコミット](#ツーフェーズコミット)
+- [結論](#結論)
+- [注意事項](#注意事項)
+- [参考文献](#参考文献)
 
-## Introduction
+## はじめに
 
-This is the second blog post (here is the first one [[1]]) in the series of the conspectus of the "Introduction to TLA+" course by Leslie Lamport. As usual, all credits are to Leslie Lamport and his course that can be found on his [website][2]. In this part, we will consider the _Transaction Commit_ and _Two-Phase Commit_ algorithms.
+これは「TLA+入門」コースのコンスペクトの一連のブログ投稿の第2回目です（第1回目はこちら[[1]]）。いつものように、すべての功績はレスリー・ランポートと彼の[ウェブサイト][2]で見つけることができる彼のコースにあります。この部分では、_トランザクションコミット_と_ツーフェーズコミット_アルゴリズムを考察します。
 
-## Transaction Commit
+## トランザクションコミット
 
-In the first part we consider the _Transaction Commit_ algorithm [[3]], pp.2-4. In a distributed system, a transaction commit involves multiple resource managers (RMs) across different nodes that must unanimously decide to either commit or abort a transaction. The protocol ensures that all RMs either reach a committed state or an aborted state, supported by the conditions of stability and consistency, which mandate that once an RM reaches one of these states, it cannot revert, and no RM can be in the opposite state.
+最初の部分では、_トランザクションコミット_アルゴリズム[[3]]（2～4ページ）を考察します。分散システムでは、トランザクションコミットには、異なるノード間で複数のリソースマネージャー（RM）が関与し、彼らは全員一致でトランザクションをコミットまたは中止することを決定しなければなりません。このプロトコルは、すべてのRMがコミット状態または中止状態に達することを保証し、安定性と一貫性の条件によってサポートされます。これらの条件は、RMがこれらの状態のいずれかに達したら戻れないこと、そしてどのRMも反対の状態になれないことを要求します。
 
-A database transaction is performed by a collection of processes called _resource managers_. A transaction can either _commit_ or _abort_. It can commit only iif all resource manages are prepared to commit and must abort if any resource manager wants to abort.
+データベーストランザクションは、_リソースマネージャー_と呼ばれるプロセスの集合によって実行されます。トランザクションは_コミット_または_中止_することができます。すべてのリソースマネージャーがコミットする準備ができている場合にのみコミットでき、いずれかのリソースマネージャーが中止したい場合は中止しなければなりません。
 
-> All resource managers must agree on whether a transaction is committed or aborted.
+> すべてのリソースマネージャーは、トランザクションがコミットされたか中止されたかについて合意しなければなりません。
 {.important}
 
 ```goat
@@ -46,47 +46,44 @@ A database transaction is performed by a collection of processes called _resourc
 '------------'   '-----------'
 ```
 
-<span class="goat-caption">Fig. 1 The state/transition diagram of each resource manager</span>
+<span class="goat-caption">図1：各リソースマネージャーの状態/遷移図</span>
 
-Now, we consider the transcation commit spec with the details. You can find the full text below, under the black triangle.
+次に、詳細を含むトランザクションコミット仕様を考察します。完全なテキストは以下の黒い三角形の下にあります。
 
-{{< detail-tag "The full TCommit spec text is here" >}}
+{{< detail-tag "完全なTCommit仕様のテキストはこちら" >}}
 
 ```tlaplus
 ------------------------------ MODULE TCommit ------------------------------
 (***************************************************************************)
-(* This specification is explained in "Transaction Commit", Lecture 5 of   *)
-(* the TLA+ Video Course.                                                  *)
+(* この仕様は「トランザクションコミット」、TLA+ビデオコースのレクチャー5で説明されています。*)
 (***************************************************************************)
-CONSTANT RM       \* The set of participating resource managers
+CONSTANT RM       \* 参加するリソースマネージャーの集合
 
-VARIABLE rmState  \* rmState[rm] is the state of resource manager rm.
+VARIABLE rmState  \* rmState[rm]はリソースマネージャーrmの状態を表す。
 -----------------------------------------------------------------------------
 TCTypeOK == 
   (*************************************************************************)
-  (* The type-correctness invariant                                        *)
+  (* 型の正当性の不変条件                                                *)
   (*************************************************************************)
   rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]
-        
+            
 TCInit ==   rmState = [r \in RM |-> "working"]
   (*************************************************************************)
-  (* The initial predicate.                                                *)
+  (* 初期述語。                                                          *)
   (*************************************************************************)
 
 canCommit == \A r \in RM : rmState[r] \in {"prepared", "committed"}
   (*************************************************************************)
-  (* True iff all RMs are in the "prepared" or "committed" state.          *)
+  (* すべてのRMが「prepared」または「committed」状態にある場合に真。     *)
   (*************************************************************************)
 
 notCommitted == \A r \in RM : rmState[r] # "committed" 
   (*************************************************************************)
-  (* True iff no resource manager has decided to commit.                   *)
+  (* どのリソースマネージャーもコミットを決定していない場合に真。       *)
   (*************************************************************************)
 -----------------------------------------------------------------------------
 (***************************************************************************)
-(* We now define the actions that may be performed by the RMs, and then    *)
-(* define the complete next-state action of the specification to be the    *)
-(* disjunction of the possible RM actions.                                 *)
+(* 次に、RMが実行できるアクションを定義し、仕様の完全な次状態アクションを可能なRMアクションの選言と定義します。 *)
 (***************************************************************************)
 Prepare(r) == /\ rmState[r] = "working"
               /\ rmState' = [rmState EXCEPT ![r] = "prepared"]
@@ -100,36 +97,28 @@ Decide(r)  == \/ /\ rmState[r] = "prepared"
 
 TCNext == \E r \in RM : Prepare(r) \/ Decide(r)
   (*************************************************************************)
-  (* The next-state action.                                                *)
+  (* 次状態アクション。                                                   *)
   (*************************************************************************)
 -----------------------------------------------------------------------------
 TCConsistent ==  
   (*************************************************************************)
-  (* A state predicate asserting that two RMs have not arrived at          *)
-  (* conflicting decisions.  It is an invariant of the specification.      *)
+  (* 2つのRMが矛盾する決定に達していないことを主張する状態述語。これは仕様の不変条件です。 *)
   (*************************************************************************)
   \A r1, r2 \in RM : ~ /\ rmState[r1] = "aborted"
                        /\ rmState[r2] = "committed"
 -----------------------------------------------------------------------------
 (***************************************************************************)
-(* The following part of the spec is not discussed in Video Lecture 5.  It *)
-(* will be explained in Video Lecture 8.                                   *)
+(* 以下の部分はビデオレクチャー5では説明されていません。ビデオレクチャー8で説明されます。 *)
 (***************************************************************************)
 TCSpec == TCInit /\ [][TCNext]_rmState
   (*************************************************************************)
-  (* The complete specification of the protocol written as a temporal      *)
-  (* formula.                                                              *)
+  (* 時相論理式として書かれたプロトコルの完全な仕様。                   *)
   (*************************************************************************)
 
 THEOREM TCSpec => [](TCTypeOK /\ TCConsistent)
   (*************************************************************************)
-  (* This theorem asserts the truth of the temporal formula whose meaning  *)
-  (* is that the state predicate TCTypeOK /\ TCInvariant is an invariant   *)
-  (* of the specification TCSpec.  Invariance of this conjunction is       *)
-  (* equivalent to invariance of both of the formulas TCTypeOK and         *)
-  (* TCConsistent.                                                         *)
+  (* この定理は、状態述語TCTypeOK /\ TCInvariantが仕様TCSpecの不変条件であることを主張します。この連言の不変性は、TCTypeOKとTCConsistentの両方の不変性と同等です。 *)
   (*************************************************************************)
-
 
 =============================================================================
 ```
@@ -138,37 +127,37 @@ THEOREM TCSpec => [](TCTypeOK /\ TCConsistent)
 
 <br/>
 
-In $TLA^+$ every value is a set but the semantics of $TLA^+$ does not say what elements of a set are.
-The expression `rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]` represents a set of possible states that `rmState` can have according to the Fig. 1.
+$TLA^+$では、すべての値は集合ですが、$TLA^+$のセマンティクスは集合の要素が何であるかを示していません。
+式 `rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]` は、図1に従って `rmState` が取り得る可能な状態の集合を表しています。
 
-The `TCInit` declares an initial `rmState` which represents the array with the index set `RM` such that: $[r \in RM \mapsto working][rm]$ is an array, applied to the $rm$ equals the string $working$ for every resource manager $rm$, for all $r$ in $RM$.
+`TCInit` は初期の `rmState` を宣言し、それはインデックス集合 `RM` を持つ配列で、各リソースマネージャー `rm` に対して $[r \in RM \mapsto working][rm]$ は配列であり、`rm` に適用されると文字列 $working$ となります。すべての $r$ が $RM$ において。
 
-Simply saying: $\forall r \in RM, RM(rm) = working$. 
+簡単に言えば：$\forall r \in RM, RM(rm) = working$。
 
-The $TLA^+$ syntax for an array expression is as follows: $[ variable \in set \mapsto expression]$, where $\mapsto$ looks like |-> in ASCII.
+$TLA^+$ の配列式の構文は次のとおりです：$[ \text{variable} \in \text{set} \mapsto \text{expression}]$、ここで $\mapsto$ はASCIIでは |-> のように見えます。
 
-> For example: `sqr = [ i \in 1..42 |-> i**2]`, defines `sqr` to be an array with index set from 1 to 42 such that `sqr[i] = i**2` for all `i` in the range from 1 to 42.
+> 例：`sqr = [ i \in 1..42 |-> i**2]` は、`sqr[i] = i**2` となるインデックス集合が1から42までの配列 `sqr` を定義します。
 
-**Terminology that used in programming and math for the same things**
+**同じものに対してプログラミングと数学で使用される用語**
 
-Now, we need to take into account the terminology that is used in programming, math, and $TLA^+$. The terms on each row are equivalent.
+プログラミング、数学、そして $TLA^+$ で使用される用語を考慮する必要があります。各行の用語は同等です。
 
-| Programming | Math                 |
-| ----------- | -------------------- |
-| array       | function             |
-| index set   | domain of a function |
-| $f[e]$      | $f(e)$               |
+| プログラミング | 数学                      |
+| ------------- | ------------------------- |
+| 配列          | 関数                      |
+| インデックス集合 | 関数の定義域              |
+| $f[e]$        | $f(e)$                   |
 
-In $TLA^+$ we write formulas, not programs, so it uses the function and domain terminology; however, the $f[e]$ notation is used instead of $f(e)$ to escape possible ambiguity with other mathematical operations.
+$TLA^+$ ではプログラムではなく式を書きますので、関数と定義域の用語を使用します。ただし、他の数学的操作とのあいまいさを避けるために $f[e]$ 記法が使用されます。
 
-> $TLA^+$ allows a function to have any set as its domain — even an infinite set, for example, the set of all integers.
+> $TLA^+$ は、関数がその定義域として任意の集合を持つことを許します。たとえば、すべての整数の集合など、無限の集合でも可能です。
 {.note}
 
-Consider the group of formulas, including $Prepare$ and $Decide$ formulas, that defines states transitions of resource managers.
+リソースマネージャーの状態遷移を定義する $Prepare$ と $Decide$ の式を含む一連の式を考えます。
 
-The formula $\exists r \in RM : Prepare(r) \lor Decide(r)$ is $true$ iif there exists some $r$ in the set $RM$ where $Prepare(r) \lor Decide(r)$ is $true$.
+式 $\exists r \in RM : Prepare(r) \lor Decide(r)$ は、$RM$ の集合にあるある $r$ が存在し、$Prepare(r) \lor Decide(r)$ が真である場合に真となります。
 
-Suppose `RM = { "r1", "r2", "r3", "r4" }` then this formula equals to the following set of disjunctives:
+例えば、`RM = { "r1", "r2", "r3", "r4" }` とすると、この式は次の選言の集合に等しくなります。
 
 ```tlaplus
 \/ Prepare("r1") \/ Decide("r1")
@@ -177,9 +166,9 @@ Suppose `RM = { "r1", "r2", "r3", "r4" }` then this formula equals to the follow
 \/ Prepare("r4") \/ Decide("r4")
 ```
 
-$\exists$ declares `r` to be local to a formula.
+$\exists$ は `r` を式に局所的に宣言します。
 
-In case we define this formula with $\forall r$ instead $\exists r$ as follows: $\forall r \in RM : \text{Prepare}(r) \lor \text{Decide}(r)$, reads as "for all $r$ in $\text{RM}$..." in the same assumption regarding the values of $\text{RM}$ as above, this formula equals to the following
+この式を $\exists r$ ではなく $\forall r$ で定義した場合は次のようになります：$\forall r \in RM : \text{Prepare}(r) \lor \text{Decide}(r)$。これは「すべての $r$ が $\text{RM}$ において...」と読みます。上記と同じ $\text{RM}$ の値に関する仮定で、この式は次のようになります。
 
 ```tlaplus
 /\ Prepare("r1") \/ Decide("r1")
@@ -188,47 +177,47 @@ In case we define this formula with $\forall r$ instead $\exists r$ as follows: 
 /\ Prepare("r4") \/ Decide("r4")
 ```
 
-Recall the transition graph of the RM.
-$Prepare(r)$ describes the $working \rightarrow prepared$ state of the resource manager $r$.
-This step can only take place if the current state of $r$ is $working$.
-$Prepare(r) \equiv \land rmState[r] = working$ where $\land rmState[r] = working$ must be $true$.
+RMの遷移グラフを思い出してください。
+$Prepare(r)$ はリソースマネージャー $r$ の状態 $working \rightarrow prepared$ を記述します。
+このステップは、$r$ の現在の状態が $working$ である場合にのみ行うことができます。
+$Prepare(r) \equiv \land rmState[r] = working$ であり、$\land rmState[r] = working$ は真でなければなりません。
 
-The spec cannot say what the new state of $rmState'[r] = prepared$ is. It must say what the entire set of the $rmState'$ function is. The value of this function must be a function of the domain $RM$ like the following: $rmState' = [s \in RM \mapsto ...]$ where $...$ must be replaced with the new value of $rmState[s]$ for each resource manager $s$.
+仕様は、新しい状態 $rmState'[r] = prepared$ が何であるかを述べることはできません。$rmState'$ 関数全体が何であるかを述べる必要があります。この関数の値は、次のような定義域 $RM$ の関数でなければなりません：$rmState' = [s \in RM \mapsto ...]$、ここで $...$ は各リソースマネージャー $s$ に対する $rmState[s]$ の新しい値で置き換える必要があります。
 
-If $s$ is a resource manager $r$ then the value of the $RM$ state in a new state should be $prepared$ , any other resource managers should have a value in the new state same as in the old state.
+もし $s$ がリソースマネージャー $r$ であれば、新しい状態での $RM$ の状態の値は $prepared$ でなければなりません。他のリソースマネージャーは新しい状態で古い状態と同じ値を持つべきです。
 
-Here is the complete definition:
+完全な定義は次のとおりです：
 {{< math >}}
 $$
 \begin{split} \text{Prepare}(r) \equiv & \land rmState[r] = \text{working} \\
-& \land rmState' = [rmState EXCEPT \space ![r] = \text{prepared}]
+& \land rmState' = [rmState \text{ EXCEPT } ![r] = \text{prepared}]
 \end{split}
 $$
 {{< /math >}}
 
-$\text{Decide}(r)$ describes possible steps in which a resource manager $r$ reaches $\text{commited}$ or $\text{aborted}$ state. Its the disjunctions of two formulas describing the transition $\text{prepared} \rightarrow \text{commited}$ which can only occur if $r$ in the $\text{prepared}$ state.
+$\text{Decide}(r)$ は、リソースマネージャー $r$ が $\text{committed}$ または $\text{aborted}$ 状態に達する可能なステップを記述します。これは2つの式の選言であり、$r$ が $\text{prepared}$ 状態にある場合にのみ起こり得る遷移 $\text{prepared} \rightarrow \text{committed}$ を記述しています。
 
-$r$ can commit only if every resource manager is in the $\text{prepared}$ or in the $\text{commited}$ state. The second disjunction describes possible transitions to the $\text{abord}$ state. This transition can happen if $r$ state is $\text{working}$ or $\text{prepared}$ state. $r$ can abort only if no other resource manager is $\text{committed}$.
+$r$ は、すべてのリソースマネージャーが $\text{prepared}$ または $\text{committed}$ 状態にある場合にのみコミットできます。2番目の選言は、$\text{aborted}$ 状態への可能な遷移を記述しています。この遷移は、$r$ の状態が $\text{working}$ または $\text{prepared}$ 状態である場合に起こり得ます。$r$ は、他のリソースマネージャーが $\text{committed}$ でない場合にのみ中止できます。
 
 {{< math >}}
 $$
 \begin{split}
 \text{Decide}(r) \equiv \lor & \land rmState[r] = \text{prepared} \\
 & \land \text{canCommit} \\
-& \land rmState' = [rmState EXCEPT \space ![r] = \text{commited}] \\
+& \land rmState' = [rmState \text{ EXCEPT } ![r] = \text{committed}] \\
 \lor & \land rmState[r] \in \{ \text{working}, \text{prepared} \} \\
-& \land notCommited \\
-& \land rmState' = [rmState EXCEPT \space ![r] = \text{aborted}]
+& \land \text{notCommitted} \\
+& \land rmState' = [rmState \text{ EXCEPT } ![r] = \text{aborted}]
 \end{split}
 $$
 {{< /math >}}
 
-Now, we can define two formulas: $\text{canCommit}$ and $\text{notCommited}$.
+ここで、2つの式 $\text{canCommit}$ と $\text{notCommitted}$ を定義できます。
 
-We can commit a transaction if and only if all resource managers are in either $\text{prepared}$ or $\text{commited}$ state: $\forall s \in \text{RM} : \text{rmState}[s] \in \\{ \text{prepared}, \text{committed} \\}$.
-And a transaction is not committed if all resource managers' state not equals $\text{commited}$ : $\forall s \in \text{RM} : \text{rmState}[s] \neq \text{committed}$.
+すべてのリソースマネージャーが $\text{prepared}$ または $\text{committed}$ 状態にある場合にのみトランザクションをコミットできます：$\forall s \in \text{RM} : \text{rmState}[s] \in \\{ \text{prepared}, \text{committed} \\}$。
+トランザクションは、すべてのリソースマネージャーの状態が $\text{committed}$ でない場合にコミットされません：$\forall s \in \text{RM} : \text{rmState}[s] \neq \text{committed}$。
 
-> It is important to remember that to check a model we need to provide a set of invariants to be checked (a formula that is always $true$). This invariant is presented as 
+> モデルをチェックするには、チェックすべき不変条件（常に $true$ である式）を提供する必要があることを覚えておくことが重要です。この不変条件は次のように提示されます。
 {.important}
 
 {{< math >}}
@@ -240,79 +229,56 @@ TCConsistent \equiv  \forall r1, r2 \in RM : & \neg \land rmState[r1] = \text{ab
 $$
 {{< /math >}}
 
-After considering the $TCommit$ spec, and getting familiar with the used formulas and their semantics, we can proceed with more advanced example of the _Two-Phase Commit_ algorithm.
+$TCommit$ 仕様を考察し、使用されている式とそのセマンティクスに慣れたところで、より高度な例である _ツーフェーズコミット_ アルゴリズムを進めることができます。
 
-## Two-Phase Commit
+## ツーフェーズコミット
 
-To understand the _Two-Phase Commit_ algorithm, we recommend to read about it ([[3]], pp.5-7) and watch a video from Martin Kleppmann, which is a part of his great _Distributed Systems_ course.
+_ツーフェーズコミット_ アルゴリズムを理解するために、関連する資料を読むことをお勧めします（[[3]]、5～7ページ）し、マーティン・クレップマンのビデオを見ることをお勧めします。これは彼の素晴らしい _分散システム_ コースの一部です。
 
-In a nutshell, the _Two-Phase Commit_ protocol in distributed systems involves a transaction manager (TM) that coordinates the commitment process among resource managers (RMs), who follow a two-step communication process to either commit or abort a transaction. The protocol starts with an RM entering the prepared state and signaling the TM, which then instructs all RMs to prepare; if all RMs are prepared, the TM commands them to commit, or to abort if any RM cannot prepare. This method ensures consistency but can be costly and vulnerable to blocking if the TM fails.
+要するに、分散システムにおける _ツーフェーズコミット_ プロトコルは、トランザクションマネージャー（TM）がリソースマネージャー（RM）間のコミットプロセスを調整し、RMはトランザクションをコミットまたは中止するために2段階の通信プロセスに従います。プロトコルは、RMが準備状態に入り、TMに信号を送り、TMはすべてのRMに準備を指示します。すべてのRMが準備できていれば、TMは彼らにコミットを命じ、RMが準備できない場合は中止を命じます。この方法は一貫性を確保しますが、コストがかかり、TMが故障した場合にブロックされやすくなります。
 
 {{< youtube -_rdWB9hN1c >}}
 
-Before considering the spec for the _Two-Phase Commit_ algorithm, we need to understand the concept of _records_ in the $TLA^+$.
+_ツーフェーズコミット_ アルゴリズムの仕様を考察する前に、$TLA^+$ における _レコード_ の概念を理解する必要があります。
 
-The $r \equiv [ \text{prof} \mapsto \text{"Fred"}, \text{num} \mapsto 42]$ defines $r$ to be a _record_ with two fields $\text{prof}$ and $\text{num}$. It roughly corresponds to `struct` in `C`.
+$r \equiv [ \text{prof} \mapsto \text{"Fred"}, \text{num} \mapsto 42]$ は、2つのフィールド $\text{prof}$ と $\text{num}$ を持つ _レコード_ を定義します。これはおおよそ `C` の `struct` に対応します。
 
-This record is actually a function $f$ with the domain $\\{\text{"prof"},\text{"num"}\\}$, such that $f[\text{"prof"}] = \text{"Fred"}$ and $f[\text{"num"}] = 42$. Actually, record fields are accessible by the dot notation $f.prof$ as an abbreviation for $f[\text{"prof"}]$.
+このレコードは、定義域が $\\{\text{"prof"},\text{"num"}\\}$ である関数 $f$ であり、$f[\text{"prof"}] = \text{"Fred"}$、$f[\text{"num"}] = 42$ となります。実際には、レコードのフィールドはドット記法 $f.\text{prof}$ でアクセスでき、これは $f[\text{"prof"}]$ の省略形です。
 
-A notation $[f \space \text{EXCEPT!} [\text{"prof"}]=\text{"Red"}]$ equals to the same record as $f$ except its $\text{"prof"}$ field equals to $\text{"Red"}$. This expression can also be written as $[f \space \text{EXCEPT!.prof} = \text{"Red"}]$.
+$[f \text{ EXCEPT } ![\text{"prof"}]=\text{"Red"}]$ は、$\text{"prof"}$ フィールドが $\text{"Red"}$ に等しいことを除いて $f$ と同じレコードに等しいです。この式は $[f \text{ EXCEPT } .\text{prof} = \text{"Red"}]$ とも書けます。
 
-Now, we can consider the _Two-Phase Commit_ spec with the details. You can find the full text below, under the black triangle.
+では、詳細を含む _ツーフェーズコミット_ 仕様を考察します。完全なテキストは以下の黒い三角形の下にあります。
 
-{{< detail-tag "The full TwoPhase spec text is here" >}}
+{{< detail-tag "完全なTwoPhase仕様のテキストはこちら" >}}
 
 ```tlaplus
 ------------------------------ MODULE twophase ------------------------------
 
 (***************************************************************************)
-(* This specification is discussed in "Two-Phase Commit", Lecture 6 of the *)
-(* TLA+ Video Course.  It describes the Two-Phase Commit protocol, in      *)
-(* which a transaction manager (TM) coordinates the resource managers      *)
-(* (RMs) to implement the Transaction Commit specification of module       *)
-(* TCommit.  In this specification, RMs spontaneously issue Prepared       *)
-(* messages.  We ignore the Prepare messages that the TM can send to the   *)
-(* RMs.                                                                    *)
-(*                                                                         *)
-(* For simplicity, we also eliminate Abort messages sent by an RM when it  *)
-(* decides to abort.  Such a message would cause the TM to abort the       *)
-(* transaction, an event represented here by the TM spontaneously deciding *)
-(* to abort.                                                               *)
+(* この仕様は「ツーフェーズコミット」、TLA+ビデオコースのレクチャー6で議論されています。これは、トランザクションマネージャー（TM）がリソースマネージャー（RM）を調整してモジュールTCommitのトランザクションコミット仕様を実装するツーフェーズコミットプロトコルを記述しています。この仕様では、RMは自発的にPreparedメッセージを発行します。TMがRMに送るPrepareメッセージは無視します。*)
+(* *)
+(* 簡略化のため、RMが中止を決定したときに送信するAbortメッセージも省略します。そのようなメッセージは、TMがトランザクションを中止する原因となります。これはここではTMが自発的に中止を決定するイベントとして表現されます。*)
 (***************************************************************************)
-CONSTANT RM  \* The set of resource managers
+CONSTANT RM  \* リソースマネージャーの集合
 
 VARIABLES
-  rmState,       \* rmState[r] is the state of resource manager r.
-  tmState,       \* The state of the transaction manager.
-  tmPrepared,    \* The set of RMs from which the TM has received "Prepared"
-                 \* messages.
+  rmState,       \* rmState[r] はリソースマネージャー r の状態。
+  tmState,       \* トランザクションマネージャーの状態。
+  tmPrepared,    \* TMが「Prepared」メッセージを受信したRMの集合。
   msgs           
     (***********************************************************************)
-    (* In the protocol, processes communicate with one another by sending  *)
-    (* messages.  For simplicity, we represent message passing with the    *)
-    (* variable msgs whose value is the set of all messages that have been *)
-    (* sent.  A message is sent by adding it to the set msgs.  An action   *)
-    (* that, in an implementation, would be enabled by the receipt of a    *)
-    (* certain message is here enabled by the presence of that message in  *)
-    (* msgs.  For simplicity, messages are never removed from msgs.  This  *)
-    (* allows a single message to be received by multiple receivers.       *)
-    (* Receipt of the same message twice is therefore allowed; but in this *)
-    (* particular protocol, that's not a problem.                          *)
+    (* プロトコルでは、プロセスはメッセージを送信することで互いに通信します。簡単のため、送信されたすべてのメッセージの集合である変数msgsでメッセージ送信を表現します。メッセージはmsgs集合に追加することで送信されます。実装では、特定のメッセージの受信によって有効になるアクションは、ここではmsgsにそのメッセージが存在することで有効になります。簡単のため、メッセージはmsgsから削除されません。これにより、単一のメッセージが複数の受信者によって受信されることが可能になります。同じメッセージを2回受信することも許されますが、この特定のプロトコルでは問題ありません。*)
     (***********************************************************************)
 
 Messages ==
   (*************************************************************************)
-  (* The set of all possible messages.  Messages of type "Prepared" are    *)
-  (* sent from the RM indicated by the message's rm field to the TM.       *)
-  (* Messages of type "Commit" and "Abort" are broadcast by the TM, to be  *)
-  (* received by all RMs.  The set msgs contains just a single copy of     *)
-  (* such a message.                                                       *)
+  (* すべての可能なメッセージの集合。タイプが「Prepared」のメッセージは、そのメッセージのrmフィールドで示されるRMからTMに送信されます。タイプが「Commit」および「Abort」のメッセージはTMによってブロードキャストされ、すべてのRMが受信します。集合msgsにはそのようなメッセージの単一のコピーのみが含まれます。*)
   (*************************************************************************)
   [type : {"Prepared"}, rm : RM]  \cup  [type : {"Commit", "Abort"}]
    
 TPTypeOK ==  
   (*************************************************************************)
-  (* The type-correctness invariant                                        *)
+  (* 型の正当性の不変条件                                                *)
   (*************************************************************************)
   /\ rmState \in [RM -> {"working", "prepared", "committed", "aborted"}]
   /\ tmState \in {"init", "done"}
@@ -321,7 +287,7 @@ TPTypeOK ==
 
 TPInit ==   
   (*************************************************************************)
-  (* The initial predicate.                                                *)
+  (* 初期述語。                                                          *)
   (*************************************************************************)
   /\ rmState = [r \in RM |-> "working"]
   /\ tmState = "init"
@@ -329,16 +295,11 @@ TPInit ==
   /\ msgs = {}
 -----------------------------------------------------------------------------
 (***************************************************************************)
-(* We now define the actions that may be performed by the processes, first *)
-(* the TM's actions, then the RMs' actions.                                *)
+(* 次に、プロセスが実行できるアクションを定義します。まずTMのアクション、次にRMのアクションです。 *)
 (***************************************************************************)
 TMRcvPrepared(r) ==
   (*************************************************************************)
-  (* The TM receives a "Prepared" message from resource manager r.  We     *)
-  (* could add the additional enabling condition r \notin tmPrepared,      *)
-  (* which disables the action if the TM has already received this         *)
-  (* message.  But there is no need, because in that case the action has   *)
-  (* no effect; it leaves the state unchanged.                             *)
+  (* TMがリソースマネージャーrから「Prepared」メッセージを受信します。既にtmPreparedにrが含まれている場合、このアクションを無効にする追加の有効化条件r \notin tmPreparedを追加することもできます。しかし、その必要はありません。その場合、アクションは効果がなく、状態は変更されません。*)
   (*************************************************************************)
   /\ tmState = "init"
   /\ [type |-> "Prepared", rm |-> r] \in msgs
@@ -347,8 +308,7 @@ TMRcvPrepared(r) ==
 
 TMCommit ==
   (*************************************************************************)
-  (* The TM commits the transaction; enabled iff the TM is in its initial  *)
-  (* state and every RM has sent a "Prepared" message.                     *)
+  (* TMがトランザクションをコミットします。TMが初期状態にあり、すべてのRMが「Prepared」メッセージを送信した場合に有効です。*)
   (*************************************************************************)
   /\ tmState = "init"
   /\ tmPrepared = RM
@@ -358,7 +318,7 @@ TMCommit ==
 
 TMAbort ==
   (*************************************************************************)
-  (* The TM spontaneously aborts the transaction.                          *)
+  (* TMが自発的にトランザクションを中止します。                        *)
   (*************************************************************************)
   /\ tmState = "init"
   /\ tmState' = "done"
@@ -367,7 +327,7 @@ TMAbort ==
 
 RMPrepare(r) == 
   (*************************************************************************)
-  (* Resource manager r prepares.                                          *)
+  (* リソースマネージャーrが準備します。                                 *)
   (*************************************************************************)
   /\ rmState[r] = "working"
   /\ rmState' = [rmState EXCEPT ![r] = "prepared"]
@@ -376,8 +336,7 @@ RMPrepare(r) ==
   
 RMChooseToAbort(r) ==
   (*************************************************************************)
-  (* Resource manager r spontaneously decides to abort.  As noted above, r *)
-  (* does not send any message in our simplified spec.                     *)
+  (* リソースマネージャーrが自発的に中止を決定します。上記で述べたように、この仕様ではrはメッセージを送信しません。*)
   (*************************************************************************)
   /\ rmState[r] = "working"
   /\ rmState' = [rmState EXCEPT ![r] = "aborted"]
@@ -385,7 +344,7 @@ RMChooseToAbort(r) ==
 
 RMRcvCommitMsg(r) ==
   (*************************************************************************)
-  (* Resource manager r is told by the TM to commit.                       *)
+  (* リソースマネージャーrがTMからコミットするように指示されます。     *)
   (*************************************************************************)
   /\ [type |-> "Commit"] \in msgs
   /\ rmState' = [rmState EXCEPT ![r] = "committed"]
@@ -393,7 +352,7 @@ RMRcvCommitMsg(r) ==
 
 RMRcvAbortMsg(r) ==
   (*************************************************************************)
-  (* Resource manager r is told by the TM to abort.                        *)
+  (* リソースマネージャーrがTMから中止するように指示されます。         *)
   (*************************************************************************)
   /\ [type |-> "Abort"] \in msgs
   /\ rmState' = [rmState EXCEPT ![r] = "aborted"]
@@ -406,39 +365,30 @@ TPNext ==
          \/ RMRcvCommitMsg(r) \/ RMRcvAbortMsg(r)
 -----------------------------------------------------------------------------
 (***************************************************************************)
-(* The material below this point is not discussed in Video Lecture 6.  It  *)
-(* will be explained in Video Lecture 8.                                   *)
+(* 以下の部分はビデオレクチャー6では説明されていません。ビデオレクチャー8で説明されます。 *)
 (***************************************************************************)
 
 TPSpec == TPInit /\ [][TPNext]_<<rmState, tmState, tmPrepared, msgs>>
   (*************************************************************************)
-  (* The complete spec of the Two-Phase Commit protocol.                   *)
+  (* ツーフェーズコミットプロトコルの完全な仕様。                        *)
   (*************************************************************************)
 
 THEOREM TPSpec => []TPTypeOK
   (*************************************************************************)
-  (* This theorem asserts that the type-correctness predicate TPTypeOK is  *)
-  (* an invariant of the specification.                                    *)
+  (* この定理は、型の正当性の述語TPTypeOKが仕様の不変条件であることを主張します。 *)
   (*************************************************************************)
 -----------------------------------------------------------------------------
 (***************************************************************************)
-(* We now assert that the Two-Phase Commit protocol implements the         *)
-(* Transaction Commit protocol of module TCommit.  The following statement *)
-(* imports all the definitions from module TCommit into the current        *)
-(* module.                                                                 *)
+(* 次に、ツーフェーズコミットプロトコルがモジュールTCommitのトランザクションコミットプロトコルを実装していることを主張します。以下の文は、モジュールTCommitからすべての定義を現在のモジュールにインポートします。 *)
 (***************************************************************************)
 INSTANCE TCommit 
 
 THEOREM TPSpec => TCSpec
   (*************************************************************************)
-  (* This theorem asserts that the specification TPSpec of the Two-Phase   *)
-  (* Commit protocol implements the specification TCSpec of the            *)
-  (* Transaction Commit protocol.                                          *)
+  (* この定理は、ツーフェーズコミットプロトコルの仕様TPSpecがトランザクションコミットプロトコルの仕様TCSpecを実装していることを主張します。 *)
   (*************************************************************************)
 (***************************************************************************)
-(* The two theorems in this module have been checked with TLC for six      *)
-(* RMs, a configuration with 50816 reachable states, in a little over a    *)
-(* minute on a 1 GHz PC.                                                   *)
+(* このモジュールの2つの定理は、6つのRMでTLCによってチェックされ、50816の到達可能な状態を持つ構成が1GHzのPCで約1分で完了しました。 *)
 (***************************************************************************)
 =============================================================================
 ```
@@ -447,8 +397,8 @@ THEOREM TPSpec => TCSpec
 
 <br/>
 
-In this spec $CONSTANT RM$ and $VARIABLES rmState$ are the same as in the previous spec.
-Variables $tmState$ and $tmPrepared$ indicate the state and track $RM$ states of a transaction manager. A transaction manager tracks the state of resource managers memorizing which states are $\text{"committed"}$ and execute a transaction once receives a $\text{"committed"}$ state from all resource managers. $msgs$ describes the messages that are in transit.
+この仕様では $CONSTANT RM$ と $VARIABLES rmState$ は前の仕様と同じです。
+変数 $tmState$ と $tmPrepared$ はトランザクションマネージャーの状態を示し、$RM$ の状態を追跡します。トランザクションマネージャーは、リソースマネージャーがどの状態で $\text{"committed"}$ であるかを記憶し、すべてのリソースマネージャーから $\text{"committed"}$ 状態を受信するとトランザクションを実行します。$msgs$ は転送中のメッセージを記述します。
 
 {{< math >}}
 $$
@@ -461,20 +411,20 @@ TPTypeOK \equiv & \land \text{rmState} \in [RM \rightarrow \{ \text{"working"}, 
 $$
 {{< /math >}}
 
-The definition of $TPTypeOK$ states sets of possible values for $rmState$ and $tmState$ respectively. The values of $tmPrepared$ must be from the $RM$ and $msgs$ must be from $\text{Messages}$.
+$TPTypeOK$ の定義は、それぞれ $rmState$ と $tmState$ の可能な値の集合を示します。$\text{tmPrepared}$ の値は $RM$ からのものでなければならず、$msgs$ は $\text{Messages}$ からのものでなければなりません。
 
-> The goal of this spec is to describe the sending of messages. It does not specify the actual mechanism by which the messages are sent, but it specifies only what is required of message passing.
+> この仕様の目的は、メッセージの送信を記述することです。メッセージが送信される実際のメカニズムを指定するのではなく、メッセージ送信に必要なものだけを指定します。
 
-> There is one simplification introduced in the spec: since two-phase commit algorithm does not rely on the order of messages, we do not remove already picked messages from $msgs$. So, $msgs$ hold all ever sent messages and receivers can read messages from it. This is something that can actually happen in the real life, so we need to ensure the algorithm works in this case.
+> 仕様には1つの簡略化が導入されています：ツーフェーズコミットアルゴリズムはメッセージの順序に依存しないため、既に取り出したメッセージを $msgs$ から削除しません。したがって、$msgs$ にはこれまでに送信されたすべてのメッセージが含まれ、受信者はそれからメッセージを読むことができます。これは現実に実際に起こり得ることなので、この場合でもアルゴリズムが機能することを確認する必要があります。
 {.note}
 
-The definiton of $Messages$.
+$Messages$ の定義。
 
 $\text{Messages} \equiv [type : \\{\text{"Prepared"}, rm : RM\\}] \cup [type : \\{\text{"Commit"}, \text{"Abort"}\\}]$
 
-The left part of the union is a set of records whose $type$ field is an element of the set containing the single element $\text{"Prepared"}$ and $rm$ consists of the elements of $RM$. It can be written as $[type \mapsto \text{"Prepared"}, rm \mapsto r]$ — represents a _prepared_ message sent by $r$ to the transaction manager.
+和集合の左側は、$type$ フィールドが単一の要素 $\text{"Prepared"}$ を含む集合の要素であり、$rm$ が $RM$ の要素からなるレコードの集合です。これは $[type \mapsto \text{"Prepared"}, rm \mapsto r]$ と書くことができ、$r$ からトランザクションマネージャーに送信される _prepared_ メッセージを表します。
 
-The right part of the union is a set that represents messages sent by a transaction manager to all resource managers. This set equals to the set containing two elements $\\{[type \mapsto \text{"Commit"}],[type \mapsto \text{"Abort"}]\\}$.
+和集合の右側は、トランザクションマネージャーからすべてのリソースマネージャーに送信されるメッセージを表す集合です。この集合は2つの要素 $\\{[type \mapsto \text{"Commit"}],[type \mapsto \text{"Abort"}]\\}$ を含む集合に等しいです。
 
 {{< math >}}
 $$
@@ -487,7 +437,7 @@ TPInit \equiv & \land rmState = [r \in RM \mapsto \text{"working"}] \\
 $$
 {{< /math >}}
 
-In the $TPInit$ formula, $rmState$ — is a formula that assigns the string $\text{"working"}$ to every resource managers;
+$TPInit$ 式では、$rmState$ はすべてのリソースマネージャーに文字列 $\text{"working"}$ を割り当てる式です。
 
 {{< math >}}
 $$
@@ -500,49 +450,50 @@ TMRcvPrepared(r) \equiv & \land tmState = \text{"init"} \\
 $$
 {{< /math >}}
 
-The $TMRcvPrepared(r)$ sub-formula describes the receipt of a $Prepared$ message from a resource manager $r$ by the transaction manager.
+$TMRcvPrepared(r)$ サブ式は、トランザクションマネージャーがリソースマネージャー $r$ からの $Prepared$ メッセージを受信することを記述します。
 
-The message can be received only if the transaction manager in the $init$ state and there is a $Prepared$ message from the resource manager $r$ in the set $msgs$ of sent messages.
+メッセージは、トランザクションマネージャーが $init$ 状態にあり、送信されたメッセージの集合 $msgs$ にリソースマネージャー $r$ からの $Prepared$ メッセージが存在する場合にのみ受信できます。
 
-The new value of $\text{tmPrepared'}$ equals to its value and a union with the set of on element $r$, in another words, it adds $r$ to the set $\text{tmPrepared}$. 
+新しい値 $\text{tmPrepared'}$ は、その値と要素 $r$ との和集合に等しく、つまり $\text{tmPrepared}$ に $r$ を追加します。
 
-The entire $UNCHANGED$ formula is an equivalent to $\land rmState' = rmState \land tmState' = tmState \land msgs' = msgs$ which asserts that values of $rmState$, $rmState$, and $msgs$ remain unchanged.
+全体の $UNCHANGED$ 式は、$\land rmState' = rmState \land tmState' = tmState \land msgs' = msgs$ と等しく、$rmState$、$tmState$、$msgs$ の値が変更されないことを主張します。
 
-> In this formula, the first two conjunctions have no primes.  They are conditions on the first step of the step and called enabling conditions. They should go at the beginning of a formula.
+> この式では、最初の2つの結合はプライムがありません。これはステップの最初のステップに関する条件であり、有効化条件と呼ばれます。それらは式の冒頭に置くべきです。
 {.note}
 
-The order of conjuncts makes sense, like here the third conjunct declares adding an element $r$ into the $tmPrepared'$ set and all subsequent step occur with $r$ in $tmPrepared$ that implies $tmPrepared$ remain unchanged, because it said to contain either an element or not, it cannot contain two copies of $r$. In another words, on this step $r$ was moved to the $tmPrepared'$ set but not to the $tmPrepared$ set and then _assigned_ to the $tmPrepared'$.
+結合の順序には意味があります。ここでは、3番目の結合が $\text{tmPrepared'}$ 集合に要素 $r$ を追加することを宣言しており、以降のステップでは $\text{tmPrepared}$ に $r$ が含まれているため $\text{tmPrepared}$ は変更されないと暗に示しています。なぜなら、それが要素を含むか含まないかを示しており、$r$ の2つのコピーを含むことはできないからです。つまり、このステップで $r$ は $\text{tmPrepared}$ 集合ではなく $\text{tmPrepared'}$ 集合に移動し、その後 $\text{tmPrepared'}$ に代入されます。
 
-In TwoPhase commit every resource manager has an identical role, they are interchangeable. In TCL the set of possible interchangeable permutations is called a symmetry set. TLC will check fewer states if the model sets a symmetry set to a set of model values.
+ツーフェーズコミットでは、すべてのリソースマネージャーは同一の役割を持ち、相互に置き換えることができます。TCLでは、可能な置換の集合を対称性集合と呼びます。TLCは、モデルがモデル値の集合に対称性集合を設定すると、より少ない状態をチェックします。
 
-> Beware that TLC may miss errors if you claim a set is a symmetry set when it is not.
+> 対称性集合でない集合を対称性集合と主張すると、TLCはエラーを見逃す可能性があることに注意してください。
 {.danger}
 
-To check that the two-phase commit is an actual transaction commit protocol we should check that formula $TCConsistent$ of the $TCommit$ spec, which asserts that one resource manager cannot commit if another aborts, is also an invariant of the spec.
+ツーフェーズコミットが実際のトランザクションコミットプロトコルであることを確認するために、$TCommit$ 仕様の式 $TCConsistent$ が、あるリソースマネージャーが中止した場合に別のリソースマネージャーがコミットできないことを主張し、仕様の不変条件であることを確認する必要があります。
 
-The statement `INSTANCE TCommit` imports the definitions from $TCommit$ into module $TwoPhase$.
+`INSTANCE TCommit` ステートメントは、$TCommit$ からの定義をモジュール $TwoPhase$ にインポートします。
 
-So, in order to ensure the spec has no errors, you need to add **both** $TPTypeOK$ and $TCConsistent$ invariants into the TLA+ toolbox.
+したがって、仕様にエラーがないことを確認するためには、$TPTypeOK$ と $TCConsistent$ の**両方**の不変条件を TLA+ Toolbox に追加する必要があります。
 
-## Conclusion
+## 結論
 
-In this blog post, we considered the _Transaction Commit_ and _Two-Phase Commit_ algorithms. We have learned how to define multi-parties protocols, records, and symmetry sets. In the next blog, we will cover the Learning $TLA^+$ course part explaining the _Paxos_ algorithm.
+このブログ投稿では、_トランザクションコミット_ と _ツーフェーズコミット_ アルゴリズムを考察しました。マルチパーティプロトコル、レコード、および対称性集合の定義方法を学びました。次のブログでは、_パクソス_ アルゴリズムを説明する Learning $TLA^+$ コースの部分をカバーします。
 
-## Notes
+## 注意事項
 
-If you experience with errors (such as "unknown operator TPInit") when trying to run a model, check this thread https://groups.google.com/u/1/g/tlaplus/c/REfGFm9bJMU/m/BuJ9N8NnGwAJ.
+モデルを実行しようとしたときに（「未知の演算子 TPInit」のような）エラーが発生した場合は、このスレッドをチェックしてください：https://groups.google.com/u/1/g/tlaplus/c/REfGFm9bJMU/m/BuJ9N8NnGwAJ
 
-However, this above did not help me, so what I did to solve the problem:
-1. Create a new specification (right-click on the tree-view -> new specification)
-2. Paste $TwoPhase$ spec
-3. Create a new specification inside the current one (right-click on _modules_ -> new specification with the root module file as the current one)
-4. Paste $TCommit$ spec into the newly created spec (keep names consistent according to the `INSTANCE TCommit` expression).
+ただし、上記は私には役立ちませんでしたので、問題を解決するために行ったことは：
 
-It is probably an awkward solution but it works 🐦‍⬛.
+1. 新しい仕様を作成する（ツリービューを右クリック -> new specification）
+2. $TwoPhase$ 仕様を貼り付ける
+3. 現在のものの中に新しい仕様を作成する（_modules_ を右クリック -> new specification with the root module file as the current one）
+4. 新しく作成した仕様に $TCommit$ 仕様を貼り付ける（`INSTANCE TCommit` 式に従って名前を一貫させる）。
 
-## References
+おそらく奇妙な解決策ですが、動作します 🐦‍⬛。
 
-- [Do not die hard with TLA+ pt.1][1]
+## 参考文献
+
+- [TLA+でハードに死なないために パート1][1]
 - [Leslie Lamport. Learning TLA+][2]
 - [Jim Gray, Leslie Lamport. Consensus on Transaction Commit][3]
 
@@ -550,7 +501,5 @@ It is probably an awkward solution but it works 🐦‍⬛.
 [2]: https://lamport.azurewebsites.net/tla/learning.html
 [3]: https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf
 
-
----
-
-Discuss [this blog](https://t.me/inferara/16) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="16">}}
+{{<ai-translated>}}

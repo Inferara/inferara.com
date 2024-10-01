@@ -109,6 +109,4 @@ The development workflow described here can be called **verification-driven prog
 [3]: https://www.oreilly.com/library/view/mythical-man-month-the/0201835959/
 [4]: https://compcert.org/man/manual001.html#sec3
 
----
-
-Discuss [this paper](https://t.me/inferara/8) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials telegram_post_id="8" x_post_id="1775572897828085934">}}

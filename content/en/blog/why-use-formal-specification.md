@@ -28,6 +28,4 @@ You can read about the software development based on the specification/verificat
 
 [1]: {{< ref "/papers/verification-driven-development" >}}
 
----
-
-Discuss [this blog](https://t.me/inferara/5) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials page_content_type="blog" telegram_post_id="5" x_post_id="1774705080094335425">}}

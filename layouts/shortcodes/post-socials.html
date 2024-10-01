@@ -1,0 +1,47 @@
+{{- $language := .Get "language" | default "en" -}}
+{{- $telegramPostID := .Get "telegram_post_id" | default "" -}}
+{{- $xPostID := .Get "x_post_id" | default "" -}}
+{{- $pageContentType := .Get "page_content_type" | default "paper" -}}
+
+{{- $icons := dict
+    "x" ("https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white")
+    "telegram" ("https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white")
+    "discord" ("https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white")
+-}}
+
+{{- $socials := .Site.Params.socials -}}
+{{- $urls := dict
+    "x" (index $socials "x")
+    "telegram" (index $socials "telegram")
+    "discord" (index $socials "discord")
+-}}
+
+{{- if ne $telegramPostID "" }}
+    {{- $telegramLink := printf "https://t.me/inferara/%s" $telegramPostID -}}
+    {{- $urls = merge $urls (dict "telegram" $telegramLink) -}}
+{{- end -}}
+
+{{- if ne $xPostID "" }}
+    {{- $xLink := printf "https://x.com/Inferara_kk/status/%s" $xPostID -}}
+    {{- $urls = merge $urls (dict "x" $xLink) -}}
+{{- end -}}
+
+<hr/>
+{{- if eq $language "en" }}
+<p>Join this {{$pageContentType}} discussion:</p>
+{{- else if eq $language "jp" }}
+  {{- if eq $pageContentType "paper" }}
+    <p>この論文の議論に参加してください:</p>
+  {{- else if eq $pageContentType "blog" }}
+    <p>このブログ記事の議論に参加してください:</p>
+  {{- end -}}
+{{- end -}}
+<div class="post-social" style="display: flex; flex-direction: row; gap: 1rem;">
+    {{- range $key := slice "x" "discord" "telegram" -}}
+        <div>
+            <a href="{{ index $urls $key }}">
+                <img src="{{ index $icons $key }}" alt="{{ $key }}" />
+            </a>
+        </div>
+    {{- end -}}
+</div>

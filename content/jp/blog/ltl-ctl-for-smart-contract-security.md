@@ -1,76 +1,75 @@
 +++
-title = 'LTL and CTL Applications for Smart Contracts Security'
+title = 'スマートコントラクトのセキュリティにおけるLTLとCTLの応用'
 date = 2024-03-14T17:46:15+13:00
 draft = false
 math = "katex"
-summary = "In this blog we explore linear temporal logic as well as computation tree logic, and how we could use them to verify smart-contracts."
-tags = ["Temporal Logic", "LTL", "CTL"]
+summary = "このブログでは、線形時相論理および計算木論理を探求し、それらをどのようにスマートコントラクトの検証に使用できるかを説明します。"
+tags = ["時相論理", "LTL", "CTL"]
 aliases = ["/blog/ltl-ctl-for-smart-contract-security"]
 +++
 
-Both `LTL` and `CTL` are fragments of propositional logic and parts of `CTL`\*.
+`LTL`と`CTL`はどちらも命題論理の部分であり、`CTL`\*の一部でもあります。
 
-## Linear Temporal Logic (LTL)
+## 線形時相論理（LTL）
 
-`LTL` is a modal temporal logic with modalities referring to time [[1]]. In the context of smart contracts, `LTL` can be used to specify and verify properties that must hold over the sequences of states that a contract might pass through.
+`LTL`は時間を参照するモダリティを持つモーダルな時相論理です[[1]]。スマートコントラクトの文脈では、`LTL`はコントラクトが通過する可能性のある状態のシーケンスにわたって保持されなければならない特性を指定および検証するために使用できます。
 
-For example, it allows developers to make assertions like, "If condition $X$ is $true$, then condition $Y$ will eventually be $true$" (expressed as $X \implies \lozenge Y$ in `LTL`). This is particularly useful for smart contracts, which may need to guarantee certain outcomes after a sequence of events.
+例えば、開発者は「もし条件$X$が$true$ならば、条件$Y$は最終的に$true$になる」というような主張を行うことができます（`LTL`では$X \implies \lozenge Y$と表されます）。これは、イベントのシーケンスの後に特定の結果を保証する必要があるスマートコントラクトに特に有用です。
 
-Imagine a smart contract that has a critical function to ensure that once a user deposits a certain amount of assets, they will eventually receive interest payments. With `LTL`, we could formally verify this property by expressing it as:
+ユーザーが一定量の資産をデポジットすると、最終的に利息の支払いを受け取ることを保証する重要な機能を持つスマートコントラクトを想像してください。`LTL`を使用して、この特性を次のように正式に検証できます。
 
 $$
 G(\text{deposit} \implies F\text{ interest payment})
 $$
 
-This `LTL` formula states that it is globally $true$ ($G$) that if a deposit action occurs, it will be followed eventually ($F$) by an interest payment. This kind of temporal logic allows developers and security analysts to prove that the smart contract will behave as intended over time.
+この`LTL`の式は、デポジットアクションが発生すると、それが最終的に（$F$）利息の支払いに続くことがグローバルに$true$（$G$）であることを示しています。この種の時相論理により、開発者やセキュリティアナリストは、スマートコントラクトが時間をかけて意図したとおりに動作することを証明できます。
 
-`LTL` uses temporal operators to express logical statements about the future, such as:
+`LTL`は時相演算子を使用して、未来に関する論理的なステートメントを表現します。例えば：
 
-- $G$ (Globally): A condition must hold in all future states.
-- $F$ (Finally): A condition will eventually hold in some future state.
-- $X$ (ne**X**t): A condition will hold in the next state.
-- $U$ (Until): A condition will hold until another condition holds.
+- $G$（グローバルに）：ある条件がすべての未来の状態で保持されなければならない。
+- $F$（最終的に）：ある条件が将来のある状態で最終的に保持される。
+- $X$（ネクスト）：ある条件が次の状態で保持される。
+- $U$（アンティル）：ある条件が別の条件が保持されるまで保持される。
 
-## Computation Tree Logic (CTL)
+## 計算木論理（CTL）
 
-While `LTL` is linear and considers the flow of time as a single path, `CTL` allows for branching time, where multiple future possibilities can be considered from any given point [[2]]. `CTL` introduces path quantifiers to specify properties of computation trees — structures representing all possible executions of a system from any given state.
+`LTL`が線形で時間の流れを単一のパスとして考慮するのに対し、`CTL`は分岐時間を可能にし、任意の時点から複数の未来の可能性を考慮できます[[2]]。`CTL`はパス量化子を導入して、任意の状態からのシステムのすべての可能な実行を表す構造である計算木の特性を指定します。
 
-The two path quantifiers are:
+2つのパス量化子は：
 
-- $A$ (for All paths): Specifies that a property must hold on all possible future paths.
-- $E$ (there Exists a path): Specifies that there is at least one possible future path where a property holds.
+- $A$（すべてのパスについて）：特性がすべての可能な未来のパスで保持されなければならないことを指定します。
+- $E$（パスが存在する）：特性が保持される少なくとも1つの可能な未来のパスが存在することを指定します。
 
-`CTL` uses the same temporal operators as `LTL`, but prefixed with path quantifiers. So, you might see formulas like $AG$ (on all paths, globally) or $EF$ (there exists a path where finally).
+`CTL`は`LTL`と同じ時相演算子を使用しますが、パス量化子が前に付きます。したがって、$AG$（すべてのパスでグローバルに）や$EF$（最終的に到達するパスが存在する）のような式を見ることがあります。
 
-For instance, a smart contract might have a function that only allows funds to be withdrawn by a specific party after a certain date. `CTL` can be used to validate this by expressing properties like "For all paths, if the withdrawal function is called, then for every possible continuation of that path, either the caller is the authorized party, and the date is correct, or the withdrawal fails."
+例えば、特定の日付以降にのみ特定の当事者が資金を引き出すことを許可する関数を持つスマートコントラクトがあるかもしれません。`CTL`を使用して、「すべてのパスにおいて、もし引き出し関数が呼び出された場合、そのパスのすべての可能な継続において、呼び出し者が認可された当事者であり、日付が正しいか、または引き出しが失敗する」という特性を表現してこれを検証できます。
 
-In `CTL`, this could be expressed as:
+`CTL`では、これは次のように表現できます：
 
 $$
 A[\text{withdraw} \implies (E[\text{caller} = \text{authorized} \land \text{date} \geq \text{specified}] \lor E[\text{transaction reverted}])]
 $$
 
-This states that along all paths ($A$), if a withdrawal attempt occurs, there exists a path ($E$) where either the caller is authorized and the date is on or after the specified date, or there exists a path where the transaction is reverted, ensuring funds can't be incorrectly withdrawn.
+これは、すべてのパス（$A$）において、引き出しの試みが発生した場合、呼び出し者が認可され、日付が指定された日付以降であるパス、または取引が取り消されるパス（$E$）が存在することを示しています。これにより、資金が誤って引き出されないことを保証します。
 
-Keeping in mind: `LTL` synthesis and the problem of verification of games against an `LTL` winning condition is 2EXPTIME-complete [[3]].
+念頭に置くべきこと：`LTL`の合成と`LTL`の勝利条件に対するゲームの検証の問題は2EXPTIME完全です[[3]]。
 
-We think these logics can be used to verify; hence, cover high-level logical scenarios for smart-contract as within a single transaction as in a sequence of blocks.
+これらの論理は、スマートコントラクト内の単一のトランザクションやブロックのシーケンス内の高レベルの論理シナリオをカバーするために使用して検証できると考えています。
 
-Of course, for such digital systems as smart contracts, design and modelling based on temporal logic should be done before the actual implementation. [The same is true of any other considered digital system]. This is a part of the **Verification-Driven Development** process [[4]] and to reduce the number of possible errors, it must be a predecessor of code.
+もちろん、スマートコントラクトのようなデジタルシステムにとって、時相論理に基づく設計とモデリングは、実際の実装の前に行われるべきです。[他の検討されるデジタルシステムについても同様です]。これは**検証駆動開発**プロセス[[4]]の一部であり、可能なエラーの数を減らすために、コードの前に行われなければなりません。
 
-## References
+## 参考文献
 
-- [Linear Temporal Logic][1]
-- [Computation Tree Logic][2]
+- [線形時相論理][1]
+- [計算木論理][2]
 - [2EXPTIME][3]
-- [Verification-Driven Development][4]
+- [検証駆動開発][4]
 
-[1]: https://en.wikipedia.org/wiki/Linear_temporal_logic
-[2]: https://en.wikipedia.org/wiki/Computation_tree_logic
+[1]: https://ja.wikipedia.org/wiki/線形時相論理
+[2]: https://ja.wikipedia.org/wiki/計算木論理
 [3]: https://en.wikipedia.org/wiki/2-EXPTIME
 
 [4]: {{< ref "/papers/verification-driven-development" >}}
 
----
-
-Discuss [this blog](https://t.me/inferara/10) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="10" x_post_id="1774858291727978818">}}
+{{<ai-translated>}}

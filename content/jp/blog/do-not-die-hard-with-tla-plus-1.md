@@ -1,105 +1,105 @@
 +++
-title = "Do not die hard with TLA+ pt.1"
+title = "TLA+でハードに死なないために パート1"
 date = 2024-04-10T12:56:17+05:00
 draft = false
 math = "katex"
-summary = "The first part of the conspect of the \"Intoduction to TLA+\" course by Leslie Lamport."
-tags = ["Temporal Logic", "TLA+", "Model checking"]
+summary = "レスリー・ランポートによる「TLA+入門」コースのコンスペクトの第1部。"
+tags = ["時相論理", "TLA+", "モデルチェック"]
 aliases = ["/blog/do-not-die-hard-with-tla-plus-1"]
 +++
 
-## Table of Contents
+## 目次
 
-- [Introduction](#introduction)
-- [Introduction to $TLA^+$](#inroduction-to-tla)
-- [State Machines in $TLA^+$](#state-machines-in-tla)
-- [Resources and tools](#resources-and-tools)
-- [Model Checking](#model-checking)
-  - [Behavior spec](#behavior-spec)
-  - [Model](#model)
-- [Die Hard](#die-hard)
-- [References](#references)
+- [はじめに](#はじめに)
+- [$TLA^+$の紹介](#tlaの紹介)
+- [$TLA^+$における状態機械](#tlaにおける状態機械)
+- [リソースとツール](#リソースとツール)
+- [モデルチェック](#モデルチェック)
+  - [振る舞い仕様](#振る舞い仕様)
+  - [モデル](#モデル)
+- [ダイ・ハード](#ダイ・ハード)
+- [参考文献](#参考文献)
 
-## Introduction
+## はじめに
 
-This is the first blog post in the series of the conspectus of the "Introduction to TLA+" course by Leslie Lamport. It would directly follows the course structure and would be a good reference for those who are taking the course because it adds some more additional information and explanations to the course material. So all credits are to Leslie Lamport and his course that can be found on his [website][1].
+これは、レスリー・ランポートによる「TLA+入門」コースのコンスペクトの一連のブログ投稿の最初のものです。コースの構成に直接従い、コース教材に追加の情報や説明を加えることで、コースを受講している方々にとって良い参考になるでしょう。したがって、すべての功績はレスリー・ランポートと彼の[ウェブサイト][1]で見つけることができる彼のコースにあります。
 
-$TLA^+$ is based on temporal logic, so you may read about it in the [LTL and CTL Applications for Smart Contracts Security][2] blog post.
+$TLA^+$は時相論理に基づいていますので、[スマートコントラクトのセキュリティにおけるLTLとCTLの応用][2]のブログ投稿を読むことができます。
 
-## Inroduction to $TLA^+$
+## $TLA^+$の紹介
 
-$TLA^+$ is a language for **high-level** (design level, above the code) systems (modules, algorithms, etc.) modelling and consists of the following components:
+$TLA^+$は、**高レベル**（コードの上位、設計レベル）のシステム（モジュール、アルゴリズムなど）のモデリング言語であり、以下のコンポーネントで構成されています。
 
-- TLC — the model checker;
-- TLAPS — the $TLA^+$ proof system;
-- $TLA^+$ Toolbix — the IDE.
+- TLC — モデルチェッカー
+- TLAPS — $TLA^+$の証明システム
+- $TLA^+$ Toolbox — IDE
 
-$TLA^+$ system is used to model **critical parts** of digital systems, abstracting away less-critical parts and lower-level implementation details. $TLA^+$ was designed for designing concurrent and **distributed systems** in order to help find and correct **design errors** that are hard to find by testing and **before** writing any single line of code.
+$TLA^+$システムは、デジタルシステムの**重要な部分**をモデル化するために使用され、重要度の低い部分や低レベルの実装の詳細を抽象化します。$TLA^+$は、並行および**分散システム**を設計するために設計され、テストでは見つけにくい**設計エラー**を発見し修正するのに役立ちます。そして、コードを一行も書く**前に**それを行います。
 
-OpenComRTOS is a commercial network-centric, real-time operating system [[3]] that heavily used $TLA^+$ during the design and development process and shared their experience in the freely available book [[4]]. And showed that using design gratefully reduce the code base size and number of errors and boost the engineering view overall.
+OpenComRTOSは、商用のネットワーク中心のリアルタイムオペレーティングシステムであり[[3]]、設計と開発プロセスの中で$TLA^+$を大いに活用し、その経験を無料で入手可能な書籍で共有しました[[4]]。そして、設計を使用することでコードベースのサイズとエラーの数を大幅に削減し、エンジニアリングの視点を全体的に向上させることを示しました。
 
-Consequently, $TLA^+$ provides programmers and engineers **a new way of thinking** that **makes them better programmers and engineers** even when $TLA^+$ are not useful. $TLA^+$ forces engineers to think more abstractly.
+結果として、$TLA^+$はプログラマーやエンジニアに**新しい思考方法**を提供し、$TLA^+$が役に立たない場合でも**より優れたプログラマーやエンジニア**にします。$TLA^+$はエンジニアにより抽象的に考えることを強制します。
 
-> Abstraction — the process of removing irrelevant details and the most important part of engineering. Without them, we cannot design and understand small systems.
+> **抽象化** — 関連性のない詳細を取り除くプロセスであり、エンジニアリングの最も重要な部分です。これなしでは、小さなシステムを設計し理解することはできません。
 {.note}
 
-An example of using $TLA^+$ in a huge company for verifying a system that many of us use daily is Amazon Web Services. They use $TLA^+$ to verify the correctness of their distributed algorithms and AWS system design [[5]]. The problem of algorithms and communication in distributed systems is well described in Leslie Lamport's paper "Time, Clocks, and the Ordering of Events in a Distributed System" [[6]].
+多くの人が日常的に使用しているシステムを検証するために$TLA^+$を使用している大企業の例として、Amazon Web Servicesがあります。彼らは$TLA^+$を使用して、分散アルゴリズムとAWSシステム設計の正確性を検証しています[[5]]。分散システムにおけるアルゴリズムと通信の問題は、レスリー・ランポートの論文「分散システムにおける時間、クロック、およびイベントの順序付け」でよく説明されています[[6]]。
 
-A system design is expressed in a formal way called _specification_.
+システム設計は、_仕様_と呼ばれる正式な方法で表現されます。
 
-> Specification — the precise high-level model.
+> **仕様** — 正確な高レベルのモデル。
 {.note}
 
-$TLA^+$ defines the specification, but it cannot produce the code. But it helps come with much clearer architecture and write more precise, accurate, in some cases compact code. It is able to check properties that express conditions on an individual execution (a system satisfies a property if and only if every single execution satisfies it).
+$TLA^+$は仕様を定義しますが、コードを生成することはできません。しかし、より明確なアーキテクチャを考案し、より正確で精密な、場合によってはコンパクトなコードを書くのに役立ちます。個々の実行に対する条件を表現する特性をチェックすることができます（システムが特性を満たすのは、すべての実行がそれを満たす場合に限ります）。
 
-The underlying abstraction of $TLA^+$ is as follows: an execution of a system is represented as a sequence of discrete steps, where a step is the change from one state to the next one:
+$TLA^+$の基礎となる抽象化は以下の通りです。システムの実行は一連の離散的なステップとして表され、ステップはある状態から次の状態への変化です。
 
-- discrete — continuous evolution is a sequence of discrete events (computer is a discrete events-based system);
-- sequence — a concurrent system can be simulated with a sequential program;
-- step — a state change;
-- state — an assignment of values to variables.
+- **離散的** — 連続的な進化は一連の離散的なイベントです（コンピュータは離散的なイベントベースのシステムです）。
+- **シーケンス** — 並行システムはシーケンシャルなプログラムでシミュレートできます。
+- **ステップ** — 状態の変化。
+- **状態** — 変数への値の割り当て。
 
-> Behavior — a sequence of states.
+> **振る舞い** — 状態のシーケンス。
 {.note}
 
-A state machine in the context of $TLA^+$ system is described by:
+$TLA^+$システムのコンテキストでの状態機械は、以下によって記述されます。
 
-1. all possible initial states – \[what the variables are] and \[their possible initial values];
-2. what next states can follow any given state – a relation between their values in the current state and their possible values in the next state;
-3. halts if there is no possible next state.
+1. すべての可能な初期状態 — \[変数が何であるか] と \[それらの可能な初期値]。
+2. 任意の与えられた状態に続く可能な次の状態 — 現在の状態での値と次の状態での可能な値との関係。
+3. 次の状態が可能でない場合、停止します。
 
-> Control state — the next to be executed statement.
+> **制御状態** — 次に実行されるステートメント。
 {.note}
 
-State machines eliminate low-level implementation details, and $TLA^+$ is a language to describe state machines.
+状態機械は低レベルの実装の詳細を排除し、$TLA^+$は状態機械を記述するための言語です。
 
-## State Machines in $TLA^+$
+## $TLA^+$における状態機械
 
-$TLA^+$ uses ordinary, simple math. Consider a defined state machine example for the following `C` code
+$TLA^+$は普通のシンプルな数学を使用します。次の`C`コードのために定義された状態機械の例を考えてみましょう。
 
 ```c
 int i;
 void main()
 {
-	i = someNumber();
-	i = i + 1;
+    i = someNumber();
+    i = i + 1;
 }
 ```
 
-In order to turn this code into the $TLA^+$ state machine definition we need to pack the execution flow of this code into states (sets of variables). For the given example, it is obvious how to define `i` variable. But we also need to instantiate the control state. We call it a `pc` such as:
+このコードを$TLA^+$の状態機械の定義に変換するためには、このコードの実行フローを状態（変数の集合）にパックする必要があります。この例では、`i`変数を定義する方法は明らかです。しかし、制御状態もインスタンス化する必要があります。それを`pc`と呼び、以下のようにします。
 
-- `pc = "start"` = `i = someNumber();`
-- `pc = "middle"` = `i = i + 1;`
-- `pc = "done"` = execution is finished.
+- `pc = "start"` は `i = someNumber();` に対応
+- `pc = "middle"` は `i = i + 1;` に対応
+- `pc = "done"` は実行が終了したことを示す
 
-_Assume for this example `someNumber()` returns an integer from the `[0:1000]` interval._
+_この例では、`someNumber()`は`[0:1000]`の範囲から整数を返すと仮定します。_
 
-To define the system we need to define the _initial_ state of the system the the _next_ possible system state, expressed as a formula, that can be reached from the current state.
+システムを定義するためには、システムの_初期_状態と、現在の状態から到達可能な_次の_システム状態を定義する必要があります。
 
-Here is the **formula** of the `C` code above, not the sequence of execution.
+これは上記の`C`コードの**式**であり、実行のシーケンスではありません。
 
-- Initial-state formula: `(i = 0) /\ (pc = "start")`
-- Next-state formula:
+- 初期状態の式：`(i = 0) /\ (pc = "start")`
+- 次の状態の式：
 
 ```tlaplus
 \/    /\ pc = "start"
@@ -110,9 +110,9 @@ Here is the **formula** of the `C` code above, not the sequence of execution.
       /\ pc' = "done"
 ```
 
-Since this is the formula, it respects such formulas properties as commutativity, associativity, etc.
+これは式であるため、交換法則や結合法則などの式の性質を尊重します。
 
-Sub-formulas can also be extracted into their own definitions to make a spec more compact.
+サブ式は、仕様をよりコンパクトにするために、それぞれ独自の定義に抽出することもできます。
 
 ```tlaplus
 A == /\ pc = "start"
@@ -126,102 +126,101 @@ B == /\ pc = "middle"
 Next == A \/ B
 ```
 
-From this spec, we see that there are two possible _next states_ that can be reached beginning from the _initial_ state. `A` states the beginning of the execution, assigning a number to `i` and moving to the next `pc` state equals `p'`, `B` states the increment of `i` and moving to the final state.
+この仕様から、_初期_状態から到達可能な2つの可能な_次の状態_があることがわかります。`A`は実行の開始を示し、`i`に数値を割り当て、次の`pc`状態（`p'`と等しい）に移動します。`B`は`i`をインクリメントし、最終状態に移動します。
 
-## Resources and tools
+## リソースとツール
 
-There are not many learning resources of $TLA^+$; however, there are some that we need to mention:
+$TLA^+$の学習リソースは多くありませんが、いくつか言及すべきものがあります。
 
-- [Learning TLA+](https://lamport.azurewebsites.net/tla/learning.html) — a portal with useful links;
-- [TLA+ toolbox binaries](https://github.com/tlaplus/tlaplus/releases) — a `Java` based $TLA^+$ IDE;
-- [pdflatex](https://gist.github.com/rain1024/98dd5e2c6c8c28f9ea9d) — a required component to render `pdf`;
+- [Learning TLA+](https://lamport.azurewebsites.net/tla/learning.html) — 有用なリンクを含むポータル
+- [TLA+ toolbox binaries](https://github.com/tlaplus/tlaplus/releases) — `Java`ベースの$TLA^+$ IDE
+- [pdflatex](https://gist.github.com/rain1024/98dd5e2c6c8c28f9ea9d) — `pdf`をレンダリングするために必要なコンポーネント
 
-## Model Checking
+## モデルチェック
 
-Now, let us talk about TLC and model-checking related topics.
+さて、TLCとモデルチェックに関連するトピックについて話しましょう。
 
-> TLC computes all possible behaviors allowed by the spec. More precisely, TLC checks a *model* of the specification.
+> **TLCは仕様によって許可されるすべての可能な振る舞いを計算します。より正確には、TLCは仕様の**モデル**をチェックします。**
 {.note}
 
-- TLC reports **deadlock** if execution stopped when it was not supposed to;
-- TLC reports **termination** if execution stopped when it was supposed to.
+- TLCは、実行が予期せず停止した場合、**デッドロック**を報告します。
+- TLCは、実行が予期通りに停止した場合、**終了**を報告します。
 
-$TLA^+$ allows writing theorems and formal proofs of those theorems.
-TLAPS (`TLA` proof system) is a tool for checking those proofs, it can check proofs of correctness of algorithms.
+$TLA^+$は定理とその定理の正式な証明を書くことを可能にします。TLAPS（`TLA`証明システム）はそれらの証明をチェックするためのツールであり、アルゴリズムの正確性の証明をチェックすることができます。
 
-Practically, the term _spec_ (a specification) means:
+実際には、_spec_（仕様）という用語は以下を意味します。
 
-1. the set of modules, including imported modules consists of `.tla` files;
-2. the `TLA` formula specifies the set of allowed behaviors of the system or algorithm being specified.
+1. モジュールのセット。インポートされたモジュールを含む`.tla`ファイルで構成されます。
+2. 指定されたシステムまたはアルゴリズムの可能な振る舞いを記述する$TLA$式。
 
-A specification may contain multiple models. The model tells TLC what it should do. Here are the parts of the model that must be explicitly chosen:
+仕様には複数のモデルを含めることができます。モデルはTLCに何をすべきかを伝えます。モデルで明示的に選択する必要がある部分は以下の通りです。
 
-- what the behavior spec is (The behavior spec is the formula or pair of formulas that describe the possible behaviors of the system or algorithm you want to check);
-- what TLC should check;
-- what values to substitute for constant parameters.
+- **振る舞い仕様**とは何か（振る舞い仕様は、チェックしたいシステムまたはアルゴリズムの可能な振る舞いを記述する式または式のペアです）。
+- TLCがチェックすべきこと。
+- 定数パラメータに代入する値。
 
-### Behavior spec
+### 振る舞い仕様
 
-There are two ways to write the behavior spec:
+振る舞い仕様を書く方法は2つあります。
 
-1. **Init and Next**
-   - A pair of formulas that specify the initial state and the next-state relation, respectively.
-2. **Single formula**
-   - A single temporal formula of the form  $Init \land [][Next]_{vars} \land F$,  where
-     - $Init$ is the initial predicate;
-     - $Next$ is the next-state relation;
-     - $vars$ is the tuple of variables;
-     - and $F$ is an optional fairness formula.
+1. **InitとNext**
+   - 初期状態と次の状態の関係をそれぞれ指定する式のペア。
+2. **単一の式**
+   - $Init \land [][Next]_{vars} \land F$の形式の単一の時相式。ただし、
+     - $Init$は初期述語。
+     - $Next$は次の状態の関係。
+     - $vars$は変数のタプル。
+     - $F$はオプションの公正性の式。
 
-The only way to write a behavior spec that includes fairness is with a temporal formula, otherwise a spec would not have variables and in this case, TLC will check assumptions and evaluate a constant expression.
+公正性を含む振る舞い仕様を書く唯一の方法は時相式を使用することです。そうでない場合、仕様には変数がなく、この場合、TLCは仮定をチェックし、定数式を評価します。
 
-There are three kinds of properties of the behavior spec that TLC can check:
+TLCがチェックできる振る舞い仕様の特性は3種類あります。
 
-- **Deadlock** — A *deadlock* is said to occur in a state for which the next-state relation allows no successor states;
-- **Invariants** — a state predicate that is true of all reachable states--that is, states that can occur in a behavior allowed by the behavior spec;
-- **Properties** — TLC can check if the behavior spec satisfies (implies) a temporal property, which is expressed as a temporal-logic formula.
+- **デッドロック** — 次の状態の関係が後続の状態を許可しない状態でデッドロックが発生したと言います。
+- **不変条件** — 到達可能なすべての状態で真である状態述語。つまり、振る舞い仕様で許可される振る舞いで発生する可能性のある状態。
+- **特性** — TLCは、振る舞い仕様が時相論理式として表現される時相特性を満たす（暗黙的に含む）かどうかをチェックできます。
 
-### Model
+### モデル
 
-The most basic part of a model is a set of assignments of values to declared constants.
+モデルの最も基本的な部分は、宣言された定数への値の割り当てのセットです。
 
-**Ordinary assignment**
+**通常の割り当て**
 
-It is possible to set the value of the constant to any constant $TLA^+$ expression that contains only symbols defined in the spec.  The expression can even include declared constants, as long as the value assigned to a constant does not depend on that constant (escape circular dependencies). A model must specify the values of all declared constants.
+定数の値を、仕様で定義された記号のみを含む任意の定数$TLA^+$式に設定できます。その式には宣言された定数を含めることもできますが、その定数に割り当てられる値がその定数に依存しない限りです（循環依存を避けます）。モデルはすべての宣言された定数の値を指定する必要があります。
 
-**Model value**
+**モデル値**
 
-A model value is an unspecified value that TLC considers to be unequal to any value that you can express in $TLA^+$.  You can substitute the set  $\{p1, p2, p3\}$  of three model values for  $Proc$ .  If by mistake you write an expression like  $p+1$ where the value of  $p$ is a process, TLC will report an error when it tries to evaluate that expression because it knows that a process is a model value and thus not a number.  An important reason for substituting a set of model values for  $Proc$  is to let TLC take advantage of symmetry.
+モデル値は、TLCが$TLA^+$で表現できる任意の値と等しくないと見なす未指定の値です。例えば、`Proc`に3つのモデル値の集合`{p1, p2, p3}`を代入することができます。誤って`p+1`のような式を書いた場合、`p`の値がプロセスである場合、TLCはその式を評価しようとしたときにエラーを報告します。なぜなら、プロセスはモデル値であり、数値ではないことを知っているからです。`Proc`にモデル値の集合を代入する重要な理由は、TLCが対称性を活用できるようにすることです。
 
-> Example: `NotANat == CHOOSE n : n \notin Nat`
+> **例**: `NotANat == CHOOSE n : n \notin Nat`
 >
-> It defines  `NotANat`  to be an arbitrary value that is not a natural number.  TLC cannot evaluate this definition because it cannot evaluate the unbounded  `CHOOSE`  expression.  To allow TLC to handle the spec, you need to substitute a model value for  `NotANat`.  The best model value to substitute for it is one named  `NotANat`.  This is done by the Definition Override.  The $TLA^+$ Toolbox creates the appropriate entry in that section when it creates a model if it finds a definition having the precise syntax above or the syntax:
-> `NotANat == CHOOSE n: ~(n \in Nat)`, where `Nat` can be any expression, and `NotANat` and `n` can be any identifiers.
+> これは`NotANat`を自然数でない任意の値に定義します。TLCは無限の`CHOOSE`式を評価できないため、この定義を評価できません。TLCが仕様を扱えるようにするためには、`NotANat`にモデル値を代入する必要があります。代入する最良のモデル値は`NotANat`という名前のものです。これは**定義のオーバーライド**によって行われます。$TLA^+$ Toolboxは、上記の正確な構文または以下の構文を持つ定義を見つけた場合、モデルを作成するときにそのセクションに適切なエントリを作成します。
+> `NotANat == CHOOSE n: ~(n \in Nat)`。ここで、`Nat`は任意の式であり、`NotANat`と`n`は任意の識別子であり得ます。
 
-**Model values can be typed as follows: a model value has type  `T`  if and only if its name begins with the two characters  `T_` .**
+**モデル値は次のように型付けできます。モデル値は名前が2文字の`T_`で始まる場合に限り、型`T`を持ちます。**
 
-A model value declared in the model can be used as an ordinary value in any expression that is part of the model's specification.
+モデルで宣言されたモデル値は、モデルの仕様の任意の式で通常の値として使用できます。
 
-**Symmetry**
+**対称性**
 
-Consider a specification of a memory system containing a declared constant `Val` that represents the set of possible values of a memory register. The set `Val` of values is probably a *symmetry set* for the memory system's behavior specification, meaning that permuting the elements in the set of values does not change whether or not a behavior satisfies that behavior spec. TLC can take advantage of this to speed up its checking.  Suppose we substitute a set `{v1, v2, v3}` of model values for `Val`. We can use the *Symmetry set* option to declare this set of model values to be a symmetry set of the behavior spec. This will reduce the number of reachable states that TLC has to examine by up to `3!`, or `6`.
+メモリシステムの仕様を考え、そのシステムは宣言された定数`Val`を含み、メモリレジスタの可能な値の集合を表します。値の集合`Val`は、おそらくメモリシステムの振る舞い仕様に対する**対称性集合**であり、値の集合の要素を置換しても、その振る舞いがその振る舞い仕様を満たすかどうかは変わりません。TLCはこれを利用してチェックを高速化できます。`Val`にモデル値の集合`{v1, v2, v3}`を代入するとします。**対称性集合**オプションを使用して、このモデル値の集合を振る舞い仕様の対称性集合であると宣言できます。これにより、TLCが調べる必要のある到達可能な状態の数を最大で`3!`、すなわち`6`まで減らすことができます。
 
-You can declare more than one set of model values to be a symmetry set. However, the union of all the symmetry sets cannot contain two typed model values with different types.
+複数のモデル値の集合を対称性集合として宣言できます。ただし、すべての対称性集合の合併には、異なる型の2つの型付きモデル値を含めることはできません。
 
-TLC does not check if a set you declare to be a symmetry set really is one. If you declare a set to be a symmetry set and it isn't, then TLC can fail to find an error that it otherwise would find. An expression is *symmetric* for a set `S` if and only if interchanging any two values of `S` does not change the value of the expression. The expression `{{v1, v2}, {v1, v3}, {v2, v3}}` is symmetric for the set `{v1, v2, v3}` — for example, interchanging `v1` and `v3` in this expression produces `{{v3, v2}, {v3, v1}, {v2, v1}}`, which is equal to the original expression. You should declare a set `S` of model values to be a symmetry set only if the specification and all properties you are checking are symmetric for `S` after the substitutions for constants and defined operators specified by the model are made. For example, you should not declare `{v1, v2, v3}` to be a symmetry set if the model substitutes `v1` for some constant. The only $TLA^+$ operator that can produce a non-symmetric expression when applied to a symmetric expression is `CHOOSE`. For example, the expression `CHOOSE x \in {v1, v2, v3} : TRUE` is not symmetric for `{v1, v2, v3}`.
+TLCは、あなたが対称性集合として宣言した集合が本当にそうであるかどうかをチェックしません。もし対称性集合でない集合を対称性集合として宣言した場合、TLCはそれ以外の場合に見つけるエラーを見つけられない可能性があります。式は、集合`S`に対して、`S`の任意の2つの値を入れ替えても式の値が変わらない場合に限り、`S`に対して**対称的**です。例えば、式`{{v1, v2}, {v1, v3}, {v2, v3}}`は集合`{v1, v2, v3}`に対して対称的です。例えば、この式で`v1`と`v3`を入れ替えると`{{v3, v2}, {v3, v1}, {v2, v1}}`となり、これは元の式と等しいです。モデルが指定する定数や定義された演算子への代入が行われた後、仕様とチェックしているすべての特性が`S`に対して対称的である場合にのみ、モデル値の集合`S`を対称性集合として宣言すべきです。例えば、モデルがある定数に`v1`を代入する場合、`{v1, v2, v3}`を対称性集合として宣言すべきではありません。$TLA^+$の演算子のうち、対称的な式に適用したときに非対称的な式を生成する可能性があるのは`CHOOSE`だけです。例えば、式`CHOOSE x \in {v1, v2, v3} : TRUE`は`{v1, v2, v3}`に対して対称的ではありません。
 
-> Symmetry sets should not be used when checking liveness properties. Doing so can make TLC fail to find errors, or to report nonexistent errors.
+> **対称性集合はライブネス特性をチェックするときに使用すべきではありません。これにより、TLCはエラーを見つけられなくなったり、存在しないエラーを報告する可能性があります。**
 {.danger}
 
-## Die Hard
+## ダイ・ハード
 
-Die Hard is an action movie from 1988. In this movie, there is a scene where are heroes need to solve a problem with two jugs in order to disable a bomb. The problem is to measure 4 gallons of water using 3 and 5-gallon jugs.
+「ダイ・ハード」は1988年のアクション映画です。この映画では、主人公たちが2つの水差しを使って問題を解き、爆弾を無効化するシーンがあります。問題は、3ガロンと5ガロンの水差しを使って4ガロンの水を測ることです。
 
-For the plot, search: "Die Hard Jugs problem" on YouTube or simply click here 🙂. We will solve this problem using $TLA^+$.
+プロットについては、「ダイ・ハード 水差し問題」をYouTubeで検索するか、ここをクリックしてください🙂。この問題を$TLA^+$を使って解決します。
 
 {{< youtube 2vdF6NASMiE >}}
 
-First, we need to write the behavior. Let values of $small$ and $big$ represent a number of gallons in each jug.
+まず、振る舞いを書き出す必要があります。$small$と$big$の値がそれぞれの水差しのガロン数を表すとします。
 
 {{< math >}}
 
@@ -243,41 +242,41 @@ $$
 
 {{< /math >}}
 
-Filling a jug is a single step; there are no intermediate steps.
+水差しを満たすことは単一のステップであり、中間的なステップはありません。
 
-> Real specifications are written to eliminate some kinds of errors.
+> **実際の仕様は、いくつかの種類のエラーを排除するために書かれます。**
 {.tip}
 
-$TLA^+$ has no type declarations; however it important to define a formula that asserts type correctness. It helps to understand the spec and TLC can check types by checking if such a formula is always $true$.
+$TLA^+$には型宣言はありませんが、型の正確性を主張する式を定義することが重要です。これは仕様を理解するのに役立ち、TLCはそのような式が常に$true$であるかどうかをチェックすることで型をチェックできます。
 
 ```tlaplus
 TypeOK == /\ small \in 0..3
           /\ big   \in 0..5
 ```
 
-Here, we define that `small` is an integer in the range `[0:3]` and `big` is an integer in the range `[0:5]`. But this definition is not a part of the spec.
+ここでは、`small`が`[0:3]`の範囲の整数であり、`big`が`[0:5]`の範囲の整数であることを定義しています。しかし、この定義は仕様の一部ではありません。
 
-The **Initial-State Formula** `Init == small = 0 /\ big = 0` defines the initial state of the system.
-The **Next-State Formula** defines possible transfers from state to state and is usually written as $F_1 \lor F_2 \lor ... \lor F_n$, where each formula $F_i$ allows a different kind of step.
+**初期状態の式** `Init == small = 0 /\ big = 0` はシステムの初期状態を定義します。
+**次の状態の式** は状態から状態への可能な遷移を定義し、通常は $F_1 \lor F_2 \lor ... \lor F_n$ と書かれ、各式 $F_i$ は異なる種類のステップを許可します。
 
-Our problem has 3 kinds of steps:
+この問題には3種類のステップがあります。
 
-- fill a jug;
-- empty a jug;
-- pour from one jug into the other.
+- 水差しを満たす
+- 水差しを空にする
+- 一方の水差しからもう一方の水差しに水を注ぐ
 
-We define the spec as follows:
+仕様は次のように定義します。
 
 ```tlaplus
-Next == \/ FillSmall  \* fill the small jug
-        \/ FillBig    \* fill the big jug
-        \/ EmptySmall \* empty the small jug
-        \/ EmptyBig   \* empty the big jug
-        \/ SmallToBig \* pour water from small jug in the big jug
-        \/ BigToSmall \* pour water from the big jug in the small jug
+Next == \/ FillSmall  \* 小さい水差しを満たす
+        \/ FillBig    \* 大きい水差しを満たす
+        \/ EmptySmall \* 小さい水差しを空にする
+        \/ EmptyBig   \* 大きい水差しを空にする
+        \/ SmallToBig \* 小さい水差しから大きい水差しに水を注ぐ
+        \/ BigToSmall \* 大きい水差しから小さい水差しに水を注ぐ
 ```
 
-> The names of definitions (like `FillSmall`, etc.) must be defined before the usage (precede the definition of `Next`).
+> **定義の名前（`FillSmall`など）は、使用する前に定義されている必要があります（`Next`の定義より前に）。**
 {.important}
 
 ```tlaplus
@@ -285,14 +284,14 @@ FillSmall == /\ small' = 3
              /\ big' = big
 ```
 
-When defining formulas we need to keep in mind thinking of the system as a whole and about steps as a transition from one state to another. In our case, it means that we cannot define `FillSmall` as `FillSmall == small' = 3` because this formula doesn't have a part defining the second part of the program state (`big`). In another words, this formula turns $true$ if `small'` equals `3` and `big'` equals whatever. But this is not correct. In fact, if we fill the small jug, we keep the big jug in the state it is without changes.
+式を定義するときには、システム全体として考え、ステップをある状態から別の状態への遷移として考えることを念頭に置く必要があります。我々の場合、`FillSmall`を`FillSmall == small' = 3`と定義することはできません。なぜなら、この式はプログラム状態の2番目の部分（`big`）を定義する部分がないからです。言い換えれば、この式は`small'`が`3`であり、`big'`が何でもよい場合に$true$になります。しかし、これは正しくありません。実際には、小さい水差しを満たす場合、大きい水差しは変化せずそのままの状態にあります。
 
-Now, we define `SmallToBig`. There are two possible cases we need to consider:
+次に、`SmallToBig`を定義します。考慮すべき2つの可能なケースがあります。
 
 ```tlaplus
 SmallToBig == /\ IF big + small <= 5
-                  THEN /* There is room -> empty small.
-                  ELSE /* There is no room -> fill big.
+                  THEN /* 余裕がある -> 小さい水差しを空にする
+                  ELSE /* 余裕がない -> 大きい水差しを満たす
 ```
 
 ```tlaplus
@@ -303,7 +302,7 @@ SmallToBig == /\ IF big + small <= 5
                        /\ small' = small - (5 - big)
 ```
 
-{{< detail-tag "The full spec text is here" >}}
+{{< detail-tag "完全な仕様のテキストはこちら" >}}
 
 ```tlaplus
 ------------------------------ MODULE DieHard ------------------------------
@@ -356,44 +355,43 @@ Next == \/ FillSmall
 
 <br/>
 
-If we create and run a model for this spec we will see no errors and this is fine; however, it doesn't check any particular invariant of our spec.
+この仕様に対してモデルを作成して実行すると、エラーがないことがわかります。これは良いことですが、仕様の特定の不変条件をチェックしているわけではありません。
 
-> Invariant is a formula that is $true$ in every reachable state.
+> **不変条件**とは、到達可能なすべての状態で$true$である式です。
 {.note}
 
-We have defined a `TypeOK` as a type definition for `small` and `big`, so we can add this formula as an invariant to check that this invariant is not broken.
+`TypeOK`を`small`と`big`の型定義として定義しましたので、この式を不変条件として追加し、この不変条件が破られないことを確認できます。
 
-![alt text](/img/do-not-die-hard-with-tla-plus-1/add_typeok_invariant.png)
+![不変条件TypeOKを追加](/img/do-not-die-hard-with-tla-plus-1/add_typeok_invariant.png)
 
-If we run it now, we still see no errors meaning `small` and `big` respecting their types in every reachable state.
+これを実行すると、依然としてエラーは表示されず、`small`と`big`が到達可能なすべての状態でその型を尊重していることを意味します。
 
-Now we can solve the _die hard_ problem of pouring `big` with exactly 4 gallons of water. To do it, we add a new invariant `big /= 4` into the invariants section.
+次に、`big`に正確に4ガロンの水を注ぐという_ダイ・ハード_の問題を解決できます。そのために、新しい不変条件`big /= 4`を不変条件セクションに追加します。
 
-![alt text](/img/do-not-die-hard-with-tla-plus-1/add_big_neq_4_invariant.png)
+![不変条件big /= 4を追加](/img/do-not-die-hard-with-tla-plus-1/add_big_neq_4_invariant.png)
 
-Here, this invariant works as a counterexample. An invariant is a formula that turns to $true$ in **every** reachable state. We need to find a state (actually a state sequence) where `big = 4`, so we negate this by the `/=` symbol that equals to $\neq$. With this new formula if we run the model, it finds an error (a state where an invariant is broken) and shows a sequence of states that led to this state.
+ここで、この不変条件は反例として機能します。不変条件は、**すべての**到達可能な状態で$true$になる式です。我々は`big = 4`となる状態（実際には状態のシーケンス）を見つける必要がありますので、`/=`記号を使用してこれを否定します。新しい式でモデルを実行すると、エラーが見つかり（不変条件が破られる状態が見つかり）、その状態に至る状態のシーケンスが表示されます。
 
-![alt text](/img/do-not-die-hard-with-tla-plus-1/run_result.png)
+![実行結果](/img/do-not-die-hard-with-tla-plus-1/run_result.png)
 
-Now, we can see the exact steps that are required to be done to solve the problem and our heroes can move on.
+これで、問題を解決するために必要な正確なステップを見ることができ、主人公たちは先に進むことができます。
 
-## References
+## 参考文献
 
 - [Leslie Lamport. Learning TLA+][1]
-- [LTL and CTL Applications for Smart Contracts Security][2]
+- [スマートコントラクトのセキュリティにおけるLTLとCTLの応用][2]
 - [OpenComRTOS][3]
 - [Eric Verhulst, Raymond T. Boute, José Miguel Faria, Bernhard H C Sputh, Vitaliy Mezhuyev. Formal Development of a Network-Centric RTOS. January 2011. DOI:10.1007/978-1-4419-9736-4. ISBN: 978-1-4419-9735-7][4]
-- [Chris Newcombe, Tim Rath, Fan Zhang, Bogdan Munteanu, Marc Brooker and Michael Deardeuff.How Amazon Web Services uses formal methods. 2015, Communications of the ACM][5]
-- [Leslie Lamport. Time, Clocks, and the Ordering of Events in a Distributed System. 1978. Massachusetts Computer Associates, Inc.][6]
+- [Chris Newcombe, Tim Rath, Fan Zhang, Bogdan Munteanu, Marc Brooker and Michael Deardeuff. Amazon Web Servicesが形式手法をどのように使用しているか。2015年、Communications of the ACM][5]
+- [Leslie Lamport. 分散システムにおける時間、クロック、およびイベントの順序付け。1978年。Massachusetts Computer Associates, Inc.][6]
 
 [1]: https://lamport.azurewebsites.net/tla/learning.html
 
 [2]: {{< ref "/blog/ltl-ctl-for-smart-contract-security" >}}
-[3]: https://en.wikipedia.org/wiki/OpenComRTOS
+[3]: https://ja.wikipedia.org/wiki/OpenComRTOS
 [4]: https://www.researchgate.net/publication/315385340_Formal_Development_of_a_Network-Centric_RTOS
 [5]: https://www.amazon.science/publications/how-amazon-web-services-uses-formal-methods
 [6]: https://amturing.acm.org/p558-lamport.pdf
 
----
-
-Discuss [this blog](https://t.me/inferara/14) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="14">}}
+{{<ai-translated>}}

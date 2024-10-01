@@ -91,6 +91,4 @@ Deductive program verification has remained a mathematical artifact for more tha
 [5]: {{< ref "/papers/verification-driven-development" >}}/#escape-from-tarpit
 [6]: https://www.sec.gov/news/statement/gensler-statement-spot-bitcoin-011023
 
----
-
-Discuss [this paper](https://t.me/inferara/13) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials telegram_post_id="13" x_post_id="1776091018150162468">}}

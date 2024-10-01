@@ -1,114 +1,113 @@
 +++
-title = 'Verification-driven development'
+title = '検証駆動開発'
 date = 2024-03-06T21:21:31+08:00
 draft = false
 math = "katex"
-tags = ["Program Verification", "Verification Driven Development"]
-summary = "In this paper the 'reasonable machine' term is presented along with the hypothesis that all practically applicable computing paradigms can be represented in the form of such machines."
+tags = ["プログラム検証", "検証駆動開発"]
+summary = "本論文では、「合理的なマシン」という用語を提示し、実用的に適用可能なすべての計算パラダイムがそのようなマシンの形で表現できるという仮説を示します。"
 aliases = ["verification-driven-development"]
 +++
 
-## Table of Contents
+## 目次
 
-- [Introduction](#introduction)
-- [Formal specifications 101](#formal-specifications-101)
-- [Modular testing tarpit](#modular-testing-tarpit)
-- [Escape from tarpit](#escape-from-tarpit)
-- [Conclusion](#conclusion)
-- [References](#references)
+- [はじめに](#はじめに)
+- [形式的仕様入門](#形式的仕様入門)
+- [モジュールテストの沼](#モジュールテストの沼)
+- [沼からの脱出](#沼からの脱出)
+- [結論](#結論)
+- [参考文献](#参考文献)
 
-## Introduction
+## はじめに
 
-In the previous publication [[1]] we have formalized the operational side of the algorithm-specification problem. Now, we elaborate on what it means when one says they want to define an algorithm. In the most common sense, a program specification procedure usually takes the form of setting restrictions that are implied onto the algorithm's behaviour; thus, creating an equivalence class of programs, constricted by the same set of rules.
+前回の出版物[[1]]では、アルゴリズム仕様問題の操作的側面を形式化しました。今回は、アルゴリズムを定義したいと言うとき、それが何を意味するのかを詳述します。一般的な意味では、プログラムの仕様手順は通常、アルゴリズムの振る舞いに対して暗黙的に課される制限を設定する形を取ります。したがって、同じ一連のルールで制限されたプログラムの同値類を作成します。
 
-## Formal specifications 101
+## 形式的仕様入門
 
-When one says that _$s$ is a sorting algorithm over a sequence of $\Gamma$ elements according to the strict order $\prec$_, the expected $\mathfrak M_s : \Gamma^* \rightharpoonup \Gamma^*$ behaviour can be formalized as following:
+「_$s$は、厳密な順序$\prec$に従って$\Gamma$の要素列をソートするアルゴリズムである」と言うとき、期待される$\mathfrak M_s : \Gamma^* \rightharpoonup \Gamma^*$の振る舞いは以下のように形式化できます。
 
-1. $\forall x \in \Gamma^*, \exists y = \mathfrak M_s(x)$, i.e. $\mathfrak M_s$ is total;
-2. $\forall x \in \Gamma^*, y = \mathfrak M_s(x), \forall \gamma \in \Gamma, \displaystyle\sum_\{i=1\}^\{\left| x \right|\} [x_i=\gamma] = \displaystyle\sum_\{i=1\}^\{\left| y \right|\} [y_i=\gamma]$, i.e. output of $\mathfrak M_s$ is always a permutation of the input (written using Iverson bracket [[2]] notation);
-3. $\forall x \in \Gamma^*, y = \mathfrak M_s(x), \forall i,j \in \\{1, \ldots, \left| x \right|\\}, y_i \prec y_j \rArr i < j$, i.e. an output of $\mathfrak M_s$ is always sorted.
+1. $\forall x \in \Gamma^*, \exists y = \mathfrak M_s(x)$、すなわち$\mathfrak M_s$は全域的である。
+2. $\forall x \in \Gamma^*, y = \mathfrak M_s(x), \forall \gamma \in \Gamma, \displaystyle\sum_{i=1}^{\left| x \right|} [x_i=\gamma] = \displaystyle\sum_{i=1}^{\left| y \right|} [y_i=\gamma]$、すなわち$\mathfrak M_s$の出力は常に入力の置換である（アイバーソンのブラケット[[2]]記法を使用）。
+3. $\forall x \in \Gamma^*, y = \mathfrak M_s(x), \forall i,j \in \{1, \ldots, \left| x \right|\}, y_i \prec y_j \Rightarrow i < j$、すなわち$\mathfrak M_s$の出力は常にソートされている。
 
-These three formulas of the first-order logic together exhaustively describe a set of all sorting algorithms. In other words, every program that implements all three can be called a "sorting algorithm", and every sorting algorithm must implement all three.
+これら3つの一階述語論理の公式は、一緒にすべてのソートアルゴリズムの集合を網羅的に記述します。言い換えれば、これらすべてを実装するプログラムは「ソートアルゴリズム」と呼ぶことができ、すべてのソートアルゴリズムはこれらすべてを実装しなければなりません。
 
-The most important consequence of creating an equivalence class like the above is the ability to dismiss every implementation detail of a specified algorithm in the context of reasoning about its properties. One can design a complex program $p(\ldots, s, \ldots)$, embed arbitrary sorting algorithm $s$ as a subroutine, and ensure that if $s'$ is a sorting algorithm, then the reasoning about the properties of $p(\ldots, s', \ldots)$ will be exactly the same. It is important to understand though, that such a consideration leads to indistinguishability of reasoning about program properties, and **not about the indistinguishability of the program behaviour**, as an algorithm specification covers only the essential aspects, disregarding the non-important ones. For example, consider a partially ordered alphabet $\Gamma = \\{\mathtt A, \mathtt B, \mathtt C, \mathtt D\\}$:
+上記のような同値類を作成することの最も重要な結果は、その特性について推論する文脈で、指定されたアルゴリズムのすべての実装詳細を無視できることです。複雑なプログラム$p(\ldots, s, \ldots)$を設計し、任意のソートアルゴリズム$s$をサブルーチンとして組み込み、もし$s'$がソートアルゴリズムであれば、$p(\ldots, s', \ldots)$の特性についての推論はまったく同じになることを保証できます。しかし、このような考慮はプログラムの特性についての推論の区別不能性につながるのであって、**プログラムの振る舞いの区別不能性ではない**ことを理解することが重要です。アルゴリズムの仕様は重要な側面のみをカバーし、重要でないものは無視します。例えば、部分順序付けされたアルファベット$\Gamma = \{\mathtt A, \mathtt B, \mathtt C, \mathtt D\}$を考えてみましょう。
 
-- $\mathtt A \prec \mathtt B \prec \mathtt D$,
-- $\mathtt A \prec \mathtt C \prec \mathtt D$,
+- $\mathtt A \prec \mathtt B \prec \mathtt D$、
+- $\mathtt A \prec \mathtt C \prec \mathtt D$、
 
-where $\tt B$ and $\tt C$ are not comparable. Then at least two different sorting algorithms $s$ and $s'$ can emerge. The application of these algorithms to the same sequence $\tt CDACB$ produce two different outputs:
+ここで$\tt B$と$\tt C$は比較できません。すると、少なくとも2つの異なるソートアルゴリズム$s$と$s'$が現れます。これらのアルゴリズムを同じシーケンス$\tt CDACB$に適用すると、2つの異なる出力が得られます。
 
 - $\mathfrak M_s(\{\tt CDACB\}) = \{\tt ABCCD\}$
-- $\mathfrak M_\{s'\}(\{\tt CDACB\}) = \{\tt ACCBD\}$
+- $\mathfrak M_{s'}(\{\tt CDACB\}) = \{\tt ACCBD\}$
 
-Such discrepancies do not validate the correctness, meaning that a certain specification does not restrict the algorithm's behaviour more than required. Consequently, composite programs $p(\ldots, s, \ldots)$ and $p(\ldots, s', \ldots)$ can behave differently too, but the reasoning about their properties that relies only on the correctness of $s$ and $s'$ will be the same. This approach prevents one of the most dangerous classes of software engineering predicaments &mdash; **modular testing tarpit** [[3], page 4].
+このような不一致は正確性を無効にしません。つまり、特定の仕様は必要以上にアルゴリズムの振る舞いを制限しません。したがって、合成プログラム$p(\ldots, s, \ldots)$と$p(\ldots, s', \ldots)$も異なる振る舞いをする可能性がありますが、$s$と$s'$の正確性のみに依存するその特性についての推論は同じになります。このアプローチは、ソフトウェア工学の最も危険な問題の一つである—**モジュールテストの沼**[[3], p.4]を防ぎます。
 
-## Modular testing tarpit
+## モジュールテストの沼
 
-Consider a case of a program design $\mathfrak M_p : X \rightharpoonup Z$ so it implements a formally defined specification $\forall x \in X, \mathtt\{test\}(x, \mathfrak M_p(x)) = \mathtt\{true\}$. Where $\mathtt\{test\} : X \times Z \to Bool$ is computable, and exists a natural enumeration $(x_i \in X, i \in \N)$ of a domain, that can be used to test the final solution for conformity with the specification. The high-level view of the development cycle of such a program could look like an incremental process, starting with an empty operation $p_0$. Next, the repetitive patching of code, every $p_i$ to $p_\{i+1\}$ improves its quality until the desired observable behaviour is reached [[4]]. With the natural enumeration of $X$ the term _quality_ of $p_i$ can be considered as a set of passed tests before encountering the first failure. In such terms, the goal of the development is to approach such iteration $n$, that the _quality_ of a $p_n$ turns out to be impossible to measure, because the failed test cannot be found.
+プログラム設計$\mathfrak M_p : X \rightharpoonup Z$があり、それが形式的に定義された仕様$\forall x \in X, \mathtt{test}(x, \mathfrak M_p(x)) = \mathtt{true}$を実装するとします。ここで$\mathtt{test} : X \times Z \to Bool$は計算可能であり、ドメインの自然な列挙$(x_i \in X, i \in \N)$が存在し、それを用いて最終的な解が仕様に適合しているかテストできます。そのようなプログラムの開発サイクルの高レベルビューは、空の操作$p_0$から始まるインクリメンタルなプロセスのように見えるでしょう。次に、コードの繰り返しの修正、すなわち各$p_i$から$p_{i+1}$への修正がその品質を向上させ、望ましい観察可能な振る舞いが達成されます[[4]]。$X$の自然な列挙により、$p_i$の「品質」という用語は、最初の失敗に遭遇する前にパスしたテストの集合と考えることができます。このような観点で、開発の目標は、その品質$p_n$が測定不可能になるような反復$n$に近づくことです。なぜなら、失敗したテストが見つからないからです。
 
-This concept looks good, and frankly, it would not have became an industrial standard without a reason &mdash; it is truly simple and approachable. However, this workflow has some hidden drawbacks that can emerge when scrutinized deeper to the tactical level. In case of operating in the complex endeavors the patching $p_i$ to $p_\{i+1\}$ without quality degradation is a non-trivial process. It is difficult to think about a complex system as a whole. This problem is usually tackled by dissecting the big features into subtasks that are considered independently in some sense. Usually, the changes are narrowed to individual components instead of the entire codebase. The quality of that changes usually relies on the individual thinking about the imposed quality of whole $p$.
+この概念は一見良さそうに見え、率直に言って、それには理由があって産業標準になったのでしょう。それは本当にシンプルで取り組みやすいからです。しかし、このワークフローには、戦術レベルで深く精査すると現れる隠れた欠点があります。複雑な作業において、品質を劣化させずに$p_i$から$p_{i+1}$への修正を行うことは非自明なプロセスです。複雑なシステムを全体として考えることは困難です。この問題は通常、大きな機能を独立して考慮されるサブタスクに分解することで対処されます。通常、変更はコードベース全体ではなく、個々のコンポーネントに絞られます。その変更の品質は通常、全体の$p$に課された品質についての個々の考えに依存します。
 
-Consider $\mathfrak M_p := \mathfrak M_\{\hat p\} \circ \mathfrak M_\{\check p\}$ as a composition of two parts, a _producer_ $\mathfrak M_\{\check p\} : X \rightharpoonup Y$ and a _consumer_ $\mathfrak M_\{\hat p\} : Y \rightharpoonup Z$. An interface between these two parts is described as a countable set $Y$ of possible intermediate data structures passed from the _producer_ to the _consumer_. Naturally, such modularization works only if it is possible to specify a behavior of the components with testing functions $\mathtt\{test/prod\} : X \times Y \to Bool$ and $\mathtt\{test/cons\} : Y \times Z \to Bool$, in a way that $\forall x \in X, z \in Z, \mathtt\{test\}(x, z) \hArr \exists y \in Y : \mathtt\{test/prod\}(x, y) \land \mathtt\{test/cons\}(y, z)$. Please note that we are talking about a theoretical possibility of an individual test function existences as a formal prerequisite of a proper modularization, and not about an actual formalization, as in real-life cases traditional development workflow does not consider it obligatory.
+$\mathfrak M_p := \mathfrak M_{\hat p} \circ \mathfrak M_{\check p}$を2つの部分、すなわちプロデューサー$\mathfrak M_{\check p} : X \rightharpoonup Y$とコンシューマー$\mathfrak M_{\hat p} : Y \rightharpoonup Z$の合成として考えます。これら2つの部分間のインターフェースは、プロデューサーからコンシューマーに渡される可能性のある中間データ構造の可算集合$Y$として記述されます。自然に、そのようなモジュール化が機能するのは、テスト関数$\mathtt{test/prod} : X \times Y \to Bool$と$\mathtt{test/cons} : Y \times Z \to Bool$を用いてコンポーネントの振る舞いを指定できる場合のみです。そして$\forall x \in X, z \in Z, \mathtt{test}(x, z) \implies \exists y \in Y : \mathtt{test/prod}(x, y) \land \mathtt{test/cons}(y, z)$となります。ここで、適切なモジュール化の形式的な前提条件として、個々のテスト関数が存在するという理論的な可能性について話しており、実際の形式化ではありません。実際のケースでは、伝統的な開発ワークフローはそれを義務的とは考えていません。
 
-Now, consider the case where $\mathtt\{test/prod\}$ and $\mathtt\{test/cons\}$ are formalized before the module segregation. Therefore, it is required to implement the smaller parts of the task, so for any $\mathfrak M_\{\check p\}$ adhering to $\mathtt\{test/prod\}$ and $\mathfrak M_\{\hat p\}$ adhering to $\mathtt\{test/cons\}$, the composition $\mathfrak M_\{\hat p\} \circ \mathfrak M_\{\check p\}$ will be adhering to $\mathtt\{test\}$, as a consequence of a proper specification design. However, an iterative process of the program development is complicated by the fact that programs are not developed error-free.
+次に、$\mathtt{test/prod}$と$\mathtt{test/cons}$がモジュール分割の前に形式化された場合を考えます。したがって、タスクの小さな部分を実装する必要があります。つまり、$\mathtt{test/prod}$に準拠する任意の$\mathfrak M_{\check p}$と$\mathtt{test/cons}$に準拠する任意の$\mathfrak M_{\hat p}$に対して、適切な仕様設計の結果として、合成$\mathfrak M_{\hat p} \circ \mathfrak M_{\check p}$は$\mathtt{test}$に準拠します。しかし、プログラム開発の反復プロセスは、プログラムがエラーなしで開発されないという事実によって複雑化します。
 
-The quality of the producer can be defined in the same way as the quality of the whole program is &mdash; by testing it against the natural enumeration of the domain $X$, determining the quality of the consumer turns out to be a non-trivial task. The intermediate domain $Y$ was defined arbitrarily, so it does not have any given natural enumeration. The quality of a consumer tested against a fixed enumeration $(y_i \in Y, i \in \N)$ has a questionable impact on the quality of the whole program, as it requires an application of $\mathfrak M_\{\hat p\}$ to the artificial enumeration $(\mathfrak M_\{\check p\}(x_i), i \in \N)$ that necessarily depends on the particular _implementation_ of a producer. This leads to one of the most well-known and universal problems of iterative development of modular programs:
+プロデューサーの品質は、全体のプログラムの品質と同じ方法で定義できます。すなわち、ドメイン$X$の自然な列挙に対してテストすることによってです。コンシューマーの品質を決定することは非自明なタスクであることが判明します。中間ドメイン$Y$は任意に定義されたので、与えられた自然な列挙を持ちません。固定された列挙$(y_i \in Y, i \in \N)$に対してテストされたコンシューマーの品質は、全体のプログラムの品質に疑問を投げかけます。なぜなら、それは必然的に特定のプロデューサーの**実装**に依存する人工的な列挙$(\mathfrak M_{\check p}(x_i), i \in \N)$に$\mathfrak M_{\hat p}$を適用することを要求するからです。これは、モジュールプログラムの反復開発の最もよく知られた普遍的な問題の一つにつながります。
 
-> Lehman and Belady have studied the history of successive releases in a large operating system. They find that the total number of modules increases linearly with release number, but that the number of modules affected increases exponentially with release number. All repairs tend to destroy the structure, to increase the entropy and disorder of the system. Less and less effort is spent on fixing original design flaws; more and more is spent on fixing flaws introduced by earlier fixes. As time passes, the system becomes less and less well-ordered. Sooner or later the fixing ceases to gain any ground. Each forward step is matched by a backward one. Although in principle usable forever, the system has worn out as a base for progress. Furthermore, machines change, configurations change, and user requirements change, so the system is not in fact usable forever. A brand-new, from-theground-up redesign is necessary [[3], page 122].
+> レーマンとベラディは、大規模なオペレーティングシステムにおける連続するリリースの歴史を研究しました。彼らは、モジュールの総数はリリース番号とともに線形に増加しますが、影響を受けるモジュールの数はリリース番号とともに指数関数的に増加することを発見しました。すべての修正は構造を破壊し、システムのエントロピーと無秩序を増加させる傾向があります。元の設計上の欠陥を修正するための努力はますます少なくなり、以前の修正によって導入された欠陥を修正するための努力はますます多くなります。時間が経つにつれて、システムはますます秩序が悪くなります。遅かれ早かれ、修正は何の進展ももたらさなくなります。前進する一歩ごとに後退する一歩が続きます。原理的には永遠に使用可能であっても、システムは進歩の基盤としては使い古されています。さらに、マシンは変化し、構成は変化し、ユーザーの要件は変化するので、システムは実際には永遠に使用可能ではありません。ゼロからの真新しい再設計が必要です[[3], p.122]。
 
-Problem, that was described by Frederick P. Brooks Jr. in his monumental "The Mythical Man-Month", on the large part can be attributed to the inadequacy of quality metric implied by testing. A patch, making producer pass a larger sequence of tests against a natural enumeration of the domain, can come at the cost of a changing its behaviour through the earlier tests. Even if such changes are valid within the specification of the producer, a consumer that was well-tested against the producer's output at the previous development iteration may start encountering failures earlier, due to the novel testing environment. That is, in the quality metric of testing, improvement of the producer may lead to degradation of the whole program, which raises a concern about the validity of such metric.
+フレデリック・P・ブルックス・ジュニアがその不朽の名著『人月の神話』で述べた問題は、大部分がテストによって暗示される品質指標の不適切さに起因すると言えます。プロデューサーをドメインの自然な列挙に対するより多くのテストをパスさせるパッチは、以前のテストを通じてその振る舞いを変更する代償を伴う可能性があります。たとえそのような変更がプロデューサーの仕様内で有効であっても、前の開発反復でプロデューサーの出力に対して十分にテストされたコンシューマーは、新しいテスト環境のために以前より早く失敗に遭遇し始めるかもしれません。つまり、テストの品質指標では、プロデューサーの改善がプログラム全体の劣化につながる可能性があり、そのような指標の妥当性に疑問を投げかけます。
 
-## Escape from tarpit
+## 沼からの脱出
 
-Here, we raise an important question: "If a paradigm of modular testing can sometimes fail, what could be an alternative?". If the assertion that the submodule environmental behaviour validation can be wrong, the submodule behaviour verification against the specification of its environment can be an option. Following the concept stated above, modularization now should begin with the dissection of a program specification into the independent subspecs of its parts and it needs to be taken to the logical endpoint if independently specified submodules are small enough to be verified by formal reasoning, the verification of whole program becomes possible by rules of logical inference.
+ここで、重要な質問を提起します。「モジュールテストのパラダイムが時々失敗する可能性があるなら、代替案は何か？」もし、サブモジュールの環境的な振る舞いの検証が間違っている可能性があるという主張があるなら、サブモジュールの振る舞いをその環境の仕様に対して検証することが一つの選択肢となり得ます。上記のコンセプトに従って、モジュール化は今やプログラム仕様の分解から始めるべきであり、もし独立して指定されたサブモジュールが形式的な推論によって検証できるほど小さいならば、論理推論のルールによってプログラム全体の検証が可能になります。
 
-Consider a specification $S = \\{f : X \rightharpoonup Y \mid \ldots\\}$, that is used in the implementation in a program $p$ for the executable machine $\mathfrak M$. Instead of starting with empty an program $\mathfrak M_\{p_0\} \notin S$ and incrementally amending it up to $\mathfrak M_\{p_n\} \in S$ (contra cannot be caught by testing), it instead would be rewritten as $S$ using the rules of logical equivalence until the trivial, to implement correctly iteration is reached. To describe the suggested procedure in detail, introduce some notation first:
+実行可能なマシン$\mathfrak M$のプログラム$p$での実装で使用される仕様$S = \{f : X \rightharpoonup Y \mid \ldots\}$を考えます。空のプログラム$\mathfrak M_{p_0} \notin S$から始めて、段階的にそれを$\mathfrak M_{p_n} \in S$に修正する代わりに（テストでは捕捉できない）、論理的同値のルールを使用して$S$を書き換え、正しく実装するのが簡単な反復に到達するまで行います。提案された手順を詳細に説明するために、まずいくつかの記法を導入します。
 
-- $\left|p\right| \in \N$ denotes the complexity of a program $p$ with a metric (number of distinct execution states, for example);
-- $\left|S / \mathfrak M\right| = \displaystyle\min_\{p,\mathfrak M_p \in S\}\left|p\right|$, denotes the complexity of the simplest $S$ implementation on $\mathfrak M$;
-- $q(p_1, \ldots, p_k) : P \times \ldots \times P \to P$ denotes a _program template_ &mdash; a computable function, that aggregates several arbitrary programs into one;
-- $T(S_1, \ldots, S_k) : 2^\{X \rightharpoonup Y\} \times \ldots \times 2^\{X \rightharpoonup Y\} \to 2^\{X \rightharpoonup Y\}$ denotes a _specification template_ &mdash; a non-computable function, that aggregates several arbitrary specifications into one;
-- $q \models T$ denotes a relation of the _template congruity_ interpreted as follows $\forall p_1, \ldots, p_k \in P, S_1, \ldots, S_k \subseteq X \rightharpoonup Y, \mathfrak M_\{p_1\} \in S_1 \land \ldots \land \mathfrak M_\{p_k\} \in S_k \rArr \mathfrak M_\{q(p_1, \ldots, p_k)\} \in T(S_1, \ldots, S_k)$.
+- $\left|p\right| \in \N$は、プログラム$p$の複雑さを示す（例えば、異なる実行状態の数）。
+- $\left|S / \mathfrak M\right| = \displaystyle\min_{p,\mathfrak M_p \in S}\left|p\right|$は、$\mathfrak M$上での最も簡単な$S$の実装の複雑さを示す。
+- $q(p_1, \ldots, p_k) : P \times \ldots \times P \to P$は、複数の任意のプログラムを一つに集約する計算可能な関数である**プログラムテンプレート**を表す。
+- $T(S_1, \ldots, S_k) : 2^{X \rightharpoonup Y} \times \ldots \times 2^{X \rightharpoonup Y} \to 2^{X \rightharpoonup Y}$は、複数の任意の仕様を一つに集約する非計算可能な関数である**仕様テンプレート**を表す。
+- $q \models T$は、以下のように解釈される**テンプレートの適合性**の関係を示す。$\forall p_1, \ldots, p_k \in P, S_1, \ldots, S_k \subseteq X \rightharpoonup Y, \mathfrak M_{p_1} \in S_1 \land \ldots \land \mathfrak M_{p_k} \in S_k \implies \mathfrak M_{q(p_1, \ldots, p_k)} \in T(S_1, \ldots, S_k)$。
 
-Inroduce one important definition:
+重要な定義を一つ紹介します。
 
-> A machine $\mathfrak M$ is called _reasonable_ if it has a finite system of _congruent templates_ $q_1 \models T_1, \ldots, q_t \models T_t$ and _triviality bound_ $n \in \N$ that is for every specification $S$ of the complexity $n < \left|S / \mathfrak M\right| < \infty$ can be refined to $\empty \sub T_i(S_1, \ldots, S_k) \subseteq S$ for some $i \in \\{1, \ldots, t\\}$ with $\forall j \in \\{1, \ldots, k\\}, \left|S_j / \mathfrak M\right| < \left|S / \mathfrak M\right|$.
+> マシン$\mathfrak M$は、有限の**適合するテンプレート**のシステム$q_1 \models T_1, \ldots, q_t \models T_t$と**自明性の境界**$n \in \N$を持つ場合、**合理的**と呼ばれます。つまり、複雑さが$n < \left|S / \mathfrak M\right| < \infty$であるすべての仕様$S$に対して、ある$i \in \{1, \ldots, t\}$が存在し、$\emptyset \subset T_i(S_1, \ldots, S_k) \subseteq S$に精緻化でき、$\forall j \in \{1, \ldots, k\}, \left|S_j / \mathfrak M\right| < \left|S / \mathfrak M\right|$となる。
 
-Informally, $\mathfrak M$ is called _reasonable_ if every specification $S$, that implementation is feasible and complex enough, can be dissected congruently into a collection of sub-specifications $S_1, \ldots, S_k$, that is easier to implement than $S$. This property allows the following procedure to be used as an incremental development workflow:
+非形式的に言えば、$\mathfrak M$は**合理的**と呼ばれます。もし実装が可能で十分に複雑なすべての仕様$S$が、その実装が$S$よりも容易なサブ仕様$S_1, \ldots, S_k$の集合に適合的に分解できるならば。この特性により、以下の手順をインクリメンタルな開発ワークフローとして使用できます。
 
-1. Start with a formal specification $S_\varepsilon = \\{f : X \rightharpoonup Y \mid \ldots\\}$ of the program's intended behavior and put $\lambda := \varepsilon$ as index variable of recursion.
-2. If $\left|S_\lambda / \mathfrak M\right| \leq n$, then $p_\lambda : \mathfrak M_\{p_\lambda\} \in S_\lambda$ is trivial enough to find directly.
-3. If $\left|S_\lambda / \mathfrak M\right| > n$, then there is $\empty \sub T_i(S_\{\lambda.1\}, \ldots, S_\{\lambda.k\}) \subseteq S_\lambda, i \in \\{1, \ldots, t\\}$, where $\forall j \in \\{1, \ldots, k\\}, \left|S_\{\lambda.j\} / \mathfrak M\right| < \left|S_\lambda / \mathfrak M\right|$. For each $j$ apply procedure recursively with $\lambda := \lambda.j$ producing $p_\{\lambda.j\} : \mathfrak M_\{p_\{\lambda.j\}\} \in S_\{\lambda.j\}$. By relation of congruity $\mathfrak M_\{p_\{\lambda.1\}\} \in S_\{\lambda.1\} \land \ldots \land \mathfrak M_\{p_\{\lambda.k\}\} \in S_\{\lambda.k\} \rArr \mathfrak M_\{q_i(p_\{\lambda.1\}, \ldots, p_\{\lambda.k\})\} \in T_i(S_\{\lambda.1\}, \ldots, S_\{\lambda.k\})$, so we can settle on $p_\lambda = q_i(p_\{\lambda.1\}, \ldots, p_\{\lambda.k\})$ to have $\mathfrak M_\{p_\lambda\} \in S_\lambda$.
+1. プログラムの意図された振る舞いの形式的な仕様$S_\varepsilon = \{f : X \rightharpoonup Y \mid \ldots\}$から開始し、再帰のインデックス変数として$\lambda := \varepsilon$を設定します。
+2. もし$\left|S_\lambda / \mathfrak M\right| \leq n$ならば、$p_\lambda : \mathfrak M_{p_\lambda} \in S_\lambda$は直接見つけるのに十分自明です。
+3. もし$\left|S_\lambda / \mathfrak M\right| > n$ならば、ある$i \in \{1, \ldots, t\}$が存在し、$\emptyset \subset T_i(S_{\lambda.1}, \ldots, S_{\lambda.k}) \subseteq S_\lambda$となり、$\forall j \in \{1, \ldots, k\}, \left|S_{\lambda.j} / \mathfrak M\right| < \left|S_\lambda / \mathfrak M\right|$です。各$j$に対して、$\lambda := \lambda.j$で手順を再帰的に適用し、$p_{\lambda.j} : \mathfrak M_{p_{\lambda.j}} \in S_{\lambda.j}$を生成します。適合性の関係により、$\mathfrak M_{p_{\lambda.1}} \in S_{\lambda.1} \land \ldots \land \mathfrak M_{p_{\lambda.k}} \in S_{\lambda.k} \implies \mathfrak M_{q_i(p_{\lambda.1}, \ldots, p_{\lambda.k})} \in T_i(S_{\lambda.1}, \ldots, S_{\lambda.k})$となるので、$p_\lambda = q_i(p_{\lambda.1}, \ldots, p_{\lambda.k})$とすれば$\mathfrak M_{p_\lambda} \in S_\lambda$となります。
 
-As this procedure is _structurally recursive_, i.e. goes deeper only on incrementally simpler specifications, it eventually stops, producing $p_\varepsilon$ as tree-like application of branching templates to collection of small hand-picked programs as leaves. Soundness of such design, i.e. $\mathfrak M_\{p_\varepsilon\} \in S_\varepsilon$, comes as natural conclusion to three sets of premises:
+この手順は**構造的再帰**であり、つまり段階的に単純な仕様にのみ深く進むので、最終的に停止し、葉として小さな手作業で選ばれたプログラムの集合に分岐テンプレートをツリー状に適用した$p_\varepsilon$を生成します。このような設計の健全性、つまり$\mathfrak M_{p_\varepsilon} \in S_\varepsilon$は、次の3つの前提セットから自然に結論付けられます。
 
-- proven congruity of templates $q_1 \models T_1, \ldots, q_t \models T_t$;
-- proven inclusion of all recursive steps $\empty \sub T_i(S_\{\lambda.1\}, \ldots, S_\{\lambda.k\}) \subseteq S_\lambda$;
-- correct picking of all trivial snippets $p_\lambda : \mathfrak M_\{p_\lambda\} \in S_\lambda$.
+- テンプレートの適合性$q_1 \models T_1, \ldots, q_t \models T_t$が証明されている。
+- すべての再帰的ステップの包含$\emptyset \subset T_i(S_{\lambda.1}, \ldots, S_{\lambda.k}) \subseteq S_\lambda$が証明されている。
+- すべての自明なスニペット$p_\lambda : \mathfrak M_{p_\lambda} \in S_\lambda$が正しく選ばれている。
 
-If all components are in place, the resulting program comes with correctness vindication, which is much stronger than one can be assured with any finite test coverage with a possibility of the counterargument not being found, because the constructive proof exists. The situation of suddenly finding a new input case that reveals the bug, which correction induces cascading degradations of behaviour in other parts of the program, simply cannot arise. Of course, such insurance does not come with no cost — the programmable machine must be reasonable according to the definition above.
+すべての要素が揃っていれば、結果として得られるプログラムは正確性の証明を伴います。これは、建設的な証明が存在するため、反論が見つからない可能性のある有限のテストカバレッジで保証されるよりもはるかに強力です。バグを明らかにする新しい入力ケースを突然発見し、その修正がプログラムの他の部分の振る舞いの連鎖的な劣化を引き起こすという状況は、単に発生し得ません。もちろん、そのような保証は無料ではありません。プログラマブルなマシンは、上記の定義に従って合理的でなければなりません。
 
-At Inferara, we believe in the following informally stated hypothesis:
+Inferaraでは、次のような非公式に述べられた仮説を信じています。
 
-> All machines with sensible operational semantics are reasonable. For any programming paradigm that allows incremental development in a classic sense, it is possible to construct an exhaustive system of congruent templates that relate to intuitive rules of algorithm modularization. Moreover, the triviality bound for such a system is always manageably small.
+> 実用的な操作セマンティクスを持つすべてのマシンは合理的である。古典的な意味でのインクリメンタルな開発を可能にするあらゆるプログラミングパラダイムに対して、アルゴリズムのモジュール化の直感的なルールに関連する完全な適合テンプレートのシステムを構築することが可能である。さらに、そのようなシステムの自明性の境界は常に管理可能な小ささである。
 
-## Conclusion
+## 結論
 
-The development workflow described here can be called **verification-driven programming**. This new concept is based on the observation that a classical workflow of test-driven development has unavoidable limitations, that prevent programmers from reliably reaching a state of program correctness when the complexity of their task starts requiring non-trivial modularization of algorithm. Here we propose a new method that allows machine-assisted confirmation of program semantics's adherence to the developer's intentions, formulated as a tightly coupled hierarchy of sub-specifications, descending from the most abstract formalization of observable behaviour to the fine-grain description of algorithm structure. We believe such an approach is an invaluable safety rope over the infamous modular testing tarpit that have been consuming countless human resources. It is feasible to correctly implement programs on the first attempt if an engineering group properly designs a reasoning set before an actual implementation.
+ここで説明した開発ワークフローは、**検証駆動プログラミング**と呼ぶことができます。この新しいコンセプトは、テスト駆動開発の古典的なワークフローには避けられない限界があり、タスクの複雑さがアルゴリズムの非自明なモジュール化を必要とし始めると、プログラマーがプログラムの正確性の状態に確実に到達することを妨げるという観察に基づいています。ここでは、開発者の意図に対するプログラムセマンティクスの機械支援による確認を可能にする新しい方法を提案します。それは、観察可能な振る舞いの最も抽象的な形式化からアルゴリズム構造の細粒度の記述まで、密接に結合されたサブ仕様の階層として定式化されます。このようなアプローチは、無数の人的資源を消費してきた悪名高いモジュールテストの沼に対する貴重な安全ロープであると信じています。実装前にエンジニアリンググループが推論セットを適切に設計すれば、初回でプログラムを正しく実装することが可能です。
 
-## References
+## 参考文献
 
-- [Program verification: background and notation][1]
-- [Iverson bracket][2]
-- [Frederick P. Brooks Jr. – The Mythical Man-Month (Anniversary Edition) – 1995 – ark:/13960/t6b339c1v][3]
-- [Compcert manual][4]
+- [プログラム検証：背景と表記法][1]
+- [アイバーソンのブラケット][2]
+- [フレデリック・P・ブルックス・ジュニア - 人月の神話（記念版）- 1995年 - ark:/13960/t6b339c1v][3]
+- [CompCertマニュアル][4]
 
 [1]: {{< ref "/papers/program-verification-background-and-notation" >}}
 [2]: https://ozaner.github.io/iverson-bracket/
 [3]: https://www.oreilly.com/library/view/mythical-man-month-the/0201835959/
 [4]: https://compcert.org/man/manual001.html#sec3
 
----
-
-Discuss [this paper](https://t.me/inferara/8) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials language="jp" telegram_post_id="8" x_post_id="1775572897828085934">}}
+{{<ai-translated>}}

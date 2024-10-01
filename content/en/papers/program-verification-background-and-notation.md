@@ -141,6 +141,4 @@ The ongoing evolution of program verification methodologies and tools will undou
 [8]: https://encyclopediaofmath.org/wiki/Formal_languages_and_automata
 [9]: https://encyclopediaofmath.org/wiki/Automaton,_finite
 
----
-
-Discuss [this paper](https://t.me/inferara/4) in our telegram channel [@inferara](https://t.me/inferara/).
+{{<post-socials telegram_post_id="4" x_post_id="1775572601009774631">}}
