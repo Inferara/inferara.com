@@ -30,7 +30,7 @@ aliases = ["/blog/commit-to-marriage-with-tla-plus-2"]
 > すべてのリソースマネージャーは、トランザクションがコミットされたか中止されたかについて合意しなければなりません。
 {.important}
 
-```goat {style="width: 250; height: 300px"}
+```goat
 .------------.                
 |   working  +---------.      
 '-----+------'         |      
