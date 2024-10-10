@@ -160,3 +160,13 @@
 .post-content p {
     text-align: justify;
 }
+
+.inference-block {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.inference-block-subtitle {
+    font-weight: 600;
+    color: var(--accent_color);
+}
