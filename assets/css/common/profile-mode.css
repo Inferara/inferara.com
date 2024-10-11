@@ -170,3 +170,31 @@
     font-weight: 600;
     color: var(--accent_color);
 }
+
+.services-block {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.services-block p {
+    margin-top: 1rem;
+}
+
+.services-list {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.services-list div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.services-list div :first-child {
+    font-weight: 600;
+}
