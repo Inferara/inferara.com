@@ -166,7 +166,14 @@
     text-align: center;
 }
 
+.inference-block p {
+    font-size: 16px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 .inference-block-subtitle {
+    font-size: 18px;
     font-weight: 600;
     color: var(--accent_color);
 }
