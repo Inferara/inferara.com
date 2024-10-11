@@ -170,3 +170,9 @@
     font-weight: 600;
     color: var(--accent_color);
 }
+
+.centered-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
