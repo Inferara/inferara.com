@@ -15,51 +15,74 @@ In the realm of distributed systems, achieving consensus across multiple nodes o
 ---
 
 ### What is the Paxos Algorithm?
+Certainly! **Paxos Commit** is a more complex consensus protocol than Two-Phase Commit (2PC), and it's designed to address some of the issues that 2PC has, like blocking due to the failure of the coordinator. Paxos Commit ensures that a group of servers can agree on a single value, even in the presence of network delays or failures, by using a majority-based mechanism.
 
-The **Paxos algorithm** is a fault-tolerant distributed consensus protocol. It allows a group of nodes (called "acceptors" in Paxos terminology) to agree on a single value even when some nodes may fail or the network may partition. It ensures that once a value is chosen, it remains chosen, maintaining consistency across the nodes.
+### High-Level Example Scenario
+Let’s say we have three servers: **Server A**, **Server B**, and **Server C**. They need to agree on whether to **commit** or **abort** a transaction to transfer money between two accounts.
 
-Paxos is particularly useful for coordinating actions in distributed systems, such as database replication, leader election, or distributed configuration management. The protocol's key features include:
+### Key Players
+- **Proposer**: The server that proposes a value (e.g., "Let's commit the transaction").
+- **Acceptors**: A majority of servers (including the proposer itself) that need to agree on the proposed value.
+- **Learners**: Servers that learn the outcome of the consensus (often the same as acceptors).
 
-- **Safety**: Paxos guarantees that only one value is chosen and that chosen values do not change.
-- **Fault Tolerance**: It can tolerate failures of some nodes, as long as a majority (quorum) of nodes remain operational.
-- **Asynchronous Operation**: Paxos makes no assumptions about message delivery times, making it suitable for networks with unpredictable delays.
-
-Paxos divides participants into three roles:
-- **Proposers**: Propose values to be agreed upon.
-- **Acceptors**: Vote on proposed values and help reach consensus.
-- **Learners**: Learn the chosen value and act on the decision.
-
-Despite its theoretical elegance, Paxos is known for being challenging to understand and implement due to the intricate interplay between its phases and roles. Variants like Multi-Paxos and Raft have been developed to address some of these complexities.
+### Paxos Commit Process
+Paxos Commit can be broken down into three phases: **Prepare Phase**, **Accept Phase**, and **Decide Phase**.
 
 ---
 
-### Example of How Paxos Works
+### Phase 1: Prepare Phase
+1. **Proposer Sends Prepare Request**:
+   - Suppose **Server A** is the proposer. It wants to initiate the process for committing the transaction.
+   - Server A sends a `PREPARE(n)` message to a majority of acceptors (e.g., A, B, and C).
+     - Here, `n` is a unique proposal number, used to ensure that proposals are processed in order.
 
-To better understand the Paxos algorithm, let’s walk through a simplified example:
-
-1. **Preparation Phase**:
-   - A **proposer** (e.g., Node A) selects a proposal number `n` and sends a "prepare" request to a majority of **acceptors**.
-   - Each **acceptor** responds with a promise not to accept any proposal with a number less than `n`. If the acceptor has already accepted a proposal with a number `n'` (where `n' < n`), it includes that proposal’s value in its response.
-
-2. **Acceptance Phase**:
-   - If the proposer receives a majority of promises, it sends an "accept" request to the same acceptors, proposing a value `v`. If any of the acceptors returned a previously accepted proposal in the preparation phase, the proposer must propose the value from the highest-numbered proposal it received.
-   - The **acceptors** then decide whether to accept the proposal based on the conditions of the promise they made earlier.
-
-3. **Commitment Phase**:
-   - Once a majority of **acceptors** have accepted a proposal, the value is considered **chosen**.
-   - The proposer then sends a message to **learners** (potentially including itself) to inform them of the chosen value.
-
-#### Example Scenario:
-- Three nodes (A, B, C) are running Paxos.
-- Node A proposes a value `5` with proposal number `n=1` and sends a "prepare" request to B and C.
-- B and C promise not to accept any proposals with a number less than `1`.
-- A then sends an "accept" request for value `5` with `n=1`.
-- If B and C accept this proposal, the value `5` is chosen.
-- A then notifies the other nodes that `5` is the agreed-upon value.
-
-The key aspect of Paxos is that even if A crashes after sending the accept request, the agreement on `5` remains intact as long as a majority of nodes remember it. This resilience against failures makes Paxos a reliable choice for consensus in distributed systems.
+2. **Acceptors Respond with Promise**:
+   - Each acceptor that receives the `PREPARE(n)` message responds with a `PROMISE` if `n` is higher than any previous proposal number it has seen.
+   - The acceptors also include information about any previously accepted proposals (if any) with their `PROMISE`.
+   - This prevents acceptors from accepting proposals with a lower number later on.
 
 ---
+
+### Phase 2: Accept Phase
+3. **Proposer Sends Accept Request**:
+   - If **Server A** (the proposer) receives `PROMISE` responses from a majority (e.g., B and C), it selects a value (e.g., `COMMIT`).
+   - It then sends an `ACCEPT(n, v)` message to the same acceptors, where `v` is the value chosen (in this case, `COMMIT`).
+
+4. **Acceptors Respond**:
+   - Each acceptor that receives an `ACCEPT(n, v)` message checks if `n` is still the highest proposal number it has seen.
+   - If so, it sends back an `ACCEPTED(n, v)` response, acknowledging that it has accepted this proposal.
+
+---
+
+### Phase 3: Decide Phase
+5. **Proposer Decides on a Value**:
+   - If the proposer (**Server A**) receives `ACCEPTED` responses from a majority (e.g., B and C), it knows that a majority has agreed on `v = COMMIT`.
+   - **Server A** then sends a `DECIDE(COMMIT)` message to all the servers (including the acceptors).
+
+6. **Acceptors Commit the Decision**:
+   - Upon receiving the `DECIDE(COMMIT)` message, each server (including A, B, and C) commits the transaction locally.
+
+---
+
+### Summary of the Example
+- **Server A** proposes a `COMMIT` for the transaction.
+- It gets promises from a majority of servers (B and C).
+- After receiving these promises, it sends an `ACCEPT` message with the decision.
+- If a majority of servers acknowledge the `ACCEPT`, it finalizes the decision by sending out a `DECIDE(COMMIT)` message.
+
+This ensures that the transaction is either committed or aborted based on the consensus of a majority of servers, even if some servers fail during the process.
+
+---
+
+### Why is Paxos Commit More Reliable?
+- **Majority Agreement**: Instead of relying on a single coordinator, the decision depends on a majority of servers. This means that even if one or two servers fail, the protocol can still proceed.
+- **Non-Blocking Nature**: If a proposer fails midway, another server can take over as the new proposer using a higher proposal number, making the system more resilient to failures.
+
+### Example of a Potential Failure and Recovery
+- If **Server A** fails after sending `ACCEPT(n, COMMIT)` but before sending `DECIDE(COMMIT)`, **Server B** or **Server C** could become a new proposer.
+- They can start a new round with a higher proposal number (e.g., `n+1`) and get promises from the other servers to continue the process.
+
+This example illustrates how Paxos Commit builds upon the core ideas of 2PC but with a focus on handling failures and ensuring progress, making it suitable for distributed systems where consensus is critical.
 
 ### Defining Paxos in TLA+
 
