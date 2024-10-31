@@ -36,7 +36,7 @@ This sentence has two possible interpretations:
 
 When we are conversing in real life, there is often context that we can use to infer the correct meaning, or ask the other person for clarification. But, when making mathematical arguments, there can be no room for ambiguity at all, so we need something else: a simpler language that unambiguously encodes what we want to say, one with well defined rules which can be reasoned about. If we want computers to automatically do this correctness checking for us, it should be rigid enough so that we can write programs to verify and manipulate statements in this language. Despite natural language being the wrong tool for the job, it is familiar. So let's start off by thinking about it anyway, and see if we can derive something simpler.
 
-We usually make arguments by working with sentences that "declare" something to be true, sentences that say something about the world. For example, consider these two English sentences:
+We usually make arguments by working with sentences that "declare" something to be true; sentences that say something about the world. For example, consider these two English sentences:
 > If it is raining and I don't have an umbrella, then I will get wet. It was raining and I did not get wet.
 
 and
@@ -71,6 +71,193 @@ They all convey the same information. The only difference between these three se
 Let $p$, our first propositional atom, mean "it is winter." And, let $q$, our second propositional atom, mean "it is cold." Then:
 
 - The connective $\land$ is like the English "and." It means that the statements, or formulae, on both sides are true. For instance, $p\land q$ would mean "It is winter, and it is cold." The connective itself is called "conjunction", and the things on either side are called the "conjuncts." The conjunction as a whole is true if and only if both of the conjuncts are true.
-- Similarly, $\lor$ is akin to the English "or." It means that at least one of the statements is true. $p\lor q$ would mean "It is winter or it is cold." An important thing to know is that, unlike in usual English, this is what's called an "inclusive" or. That means that it's perfectly okay for _both_ statements to be true. The operation is called disjunction, and the formulae on the sides are called "disjuncts." The disjunction as a whole is true if at least one of the disjuncts is true.
+- Similarly, $\lor$ is akin to the English "or." It means that at least one of the statements is true. $p\lor q$ would mean "It is winter or it is cold." The operation is called disjunction, and the formulae on the sides are called "disjuncts." The disjunction as a whole is true if at least one of the disjuncts is true.
 - $\lnot$ is the only operator out of the lot which doesn't actually connect two things together - it just inverts a single formula, like the English "not." E.G. $\lnot p$ would mean "it's not winter." The operation is called negation, and it is true if the thing you are negating is false.
-- The final connective is $\rightarrow$, which is called "implication." It is like the English "If ... then ...", so the order matters! For example, $p\rightarrow q$ means "If it's winter, then it's cold," whereas $q\rightarrow p$ means "If it's cold, then it's winter." The order is very important, for example consider the sentence "If I am making a loaf of bread, then I am baking." This is true. But if you swap them around and say "If I am baking, then I am making a loaf of bread," it is now false, because perhaps I could be baking a cake instead! The statement to the left of the arrow is called the antecedent, and the one on the right is called the consequent. The final confusing thing about implication is that, in logic, we are not concerned about causation. In English, the sentence "If the moon is blue, then the atomic number of carbon is 12" makes no sense, because there's no obvious reason why the atomic number of carbon has anything to do with the moon, but logically it is an okay statement.
+- The final connective is $\rightarrow$, which is called "implication." It is like the English "If ... then ...", so the order matters! For example, $p\rightarrow q$ means "If it's winter, then it's cold," whereas $q\rightarrow p$ means "If it's cold, then it's winter." The formula to the left of the arrow is called the "antecedent", and the formula on the right of the arrow is called the "consequent." Implication is only false when the anticedent is true, and the consequent is false. 
+
+There are a few additional things I would like to mention about these connectives. The first one is related to disjunction: I said it was similar to how we use the word "or" in English, but there is a small difference. In English, when we say "$a$ or $b$," we usually mean one or the other, _but not both_. This is what's called an _exclusive_ or, because we are _excluding_ both options from being true. However, disjucntion is _inclusive_ - it's still true if both of the disjuncts are true. Next, I would like to emphasise that order really matters when working with logical implication. Consider the statement
+> If I am making bread, then I am baking.
+
+, which is correct. But if you swap the antecedent and the consequent around, you get this:
+> If I am baking, then I am making bread.
+
+Now this is clearly false; perhaps I could be baking a cake instead! Finally, I will also mention that when working with implications in logic, we are not concerned about causality. That is, there doesn't have to be any relationship between the anticedent and the consequent when we say that one thing implies another. For example, consider the sentence
+> If the Egyptians built the pyramids, then carrots are orange.
+
+In English, this does not make sense, because the Egyptian pyramids have nothing to do with the color of carrots. But logically, we don't care about these relationships.
+
+Now we have a way of taking simple statements (propositional atoms) and using logical connectives to compose them into formulae that say something more interesting about the world. Here are some examples, if we let the first atom $d$ mean "It is dark inside", the second atom $s$ mean "the sun has set" and $l$ mean "the lights are on:"
+- $s\land l$: The sun has set and the lights are on
+- $(s\land(\lnot l))\rightarrow d$: If the sun has set and the lights aren't on, then it is dark inside.
+- $(\lnot d)\rightarrow ((\lnot s)\lor l)$: If it isn't dark inside, then either the sun hasn't set or the lights are on. (This is equivalent to the last statement.)
+
+Writing brackets all the time is annoying, so instead there is an "order of operations," just like with arithmetic. Negation comes first, followed by conjunctions and disjunctions. Finally, implications come last. Therefore, the correct way to interpret this statement:
+> $\lnot a \lor b \rightarrow c$
+
+is 
+> $((\lnot a) \lor b) \rightarrow c$
+
+## Summary of key ideas:
+- Since we only care about logical structure instead of concrete meaning, we denote simple sentences that can't be broken down further (propositional atoms) using single letters.
+- There is a set of four connectives which we can use to combine propositional atoms together into logical formulae.
+- The connectives have an order of application.
+- This lets us unambiguously encode statements about the world into a form that can be rigorously argued about.
+
+# Syntax
+Now that we can encode what we would like to say about the world into logical statements, there is still something big we are missing. That is, how do we make arguments using these logical statements? How can we show that one statement entails another, and how can we justify that? This is where we reach a fork in the road, as there are two ways of doing this. The first way involves arguing about the _semantics_, or _meaning of the connectives_. It's done using truth tables, and I will explain this in a later section. For now, I will explain the second method: arguing about the _syntax_, or _structure of the formula_.
+
+We start with a set of very simple rules - some of them are so simple that it's awkward to write more than a few sentences about them. Then, the "argument" or proof is structured like this:
+- We write down the formulae we are given; what we know to be true.
+- We apply a rule to a formula - this gives us another formula which we know to be true.
+- We keep applying rules until we reach the desired result.
+
+The tricky part is knowing which rules to apply in which order - figuring that out can be quite an entertaining puzzle. Each rule is listed like this:
+$$
+\frac{\text{What you have}}{\text{What you can infer}}(\text{Rule name})
+$$
+For example, here is the rule for introducing a conjuction (and:)
+$$
+\frac{a,b}{a\land b} \medspace (\land_i)
+$$
+This rule reads as follows: "If we know that $a$ is true, and we know that $b$ is true, then we can infer that $a$ and $b$ is true." The rule is named $\land_i$. There are also rules for getting rid of, or eliminating, a conjunction:
+$$
+\frac{a\land b}{a}\medspace (\land_{e1})\thickspace\frac{a\land b}{b}\medspace (\land_{e2})
+$$
+The first one reads as so: "If we know that $a$ and $b$ are both true, then it follows that $a$ must be true." The idea is the same for the second rule. There are also rules for double negation:
+$$
+\frac{a}{\lnot\lnot a}\medspace(\lnot\lnot_i)\thickspace\frac{\lnot\lnot a}{a}\medspace(\lnot\lnot_e)
+$$
+Think of it like this: if I tell you "It isn't not raining," that's just a weird way of saying "it's raining," and vice-versa. This is essentially what these two rules are saying. In order to understand the next few rules, we need to extend the proof system a little bit. At any point in the proof, you are free to assume that something is true - but the catch is that your final result cannot depend on this assumption. Let's look at the rules for implication:
+$$
+\frac{[a\dots b]}{a\rightarrow b}\medspace(\rightarrow_i)
+$$
+The $[a\dots b]$ means "a sub-proof assuming $a$ and concluding $b$." Essentially, what this rule is saying, is this: If we can show that $b$ is true assuming that $a$ is true, then it means $a$ implies $b$. If you find this confusing, we're allowed to do this because the implication holding doesn't actually say anything about the truth value of $a$. For instance, the statement "If I am tired, then I will go to bed" doesn't mention anything about me being tired or not. Here is the other rule for implications; this one is a lot simpler:
+$$
+\frac{a\rightarrow b,a}{b}\medspace(\rightarrow_e)
+$$
+This rule says "If $a$ implies $b$, and $a$ is true, then $b$ must be true too." Here are the rules for disjunctions (or:)
+$$
+\frac{a}{a\lor b}\medspace(\lor_i)\thickspace\frac{a\lor b, [a\dots c], [b\dots c]}{c}\medspace(\lor_e)
+$$
+The first rule states that, if $a$ is true, then $a$ or $b$ is true. The reason this works is because for disjunction to be true, only _one_ of the disjuncts has to be true. Therefore, if we know that $a$ is true, it doesn't matter if $b$ is true or not - the disjunction will still hold. The second, more intimidating rule is for eliminating a disjunction. Suppose we know that $a$ or $b$ is true - we don't know which one of them is true, so we can't just get rid of the other disjunct like we did with conjunction elimination. So we have to be able to show that, no matter which one of these is true, $a$ or $b$, we can always conclude that $c$ will be true. And to do that, we must provide two subproofs - one assuming $a$ and concluding $c$, and another one assuming $b$ and concluding $c$. That way, no matter which one of the two is true, we always have a way to get to $c$.
+
+With these rules, we can write our first (not very exciting) proofs. The first result we'd like to show is that, if $a$ and $b$ are true, then $a$ or $b$ is also true. That is, we would like to prove $$a\land b \vdash a\lor b$$. The $\vdash$ symbol means "entails." Here is the proof:
+1. $a\land b$ (Premise)
+2. $a$ $\quad\land_{e1} 1$
+3. $a\lor b$ $\quad\lor_e 2$
+
+Starting off with our $a\land b$, we first apply the rule $\land_{e1}$ to line 1, giving us $a$. Then, to conclude the proof, all we have to do is use the $\lor_e$ rule on line 2. Notice that the entailment only goes one way. We've just proved that $a\land b\vdash a\lor b$, but it not possible to prove that $a\lor b\vdash a\land b$. 
+
+For the second example, we'll use a sub-proof. Let's try and show that, if $a$ implies that $b$ and $c$ are true, then $a$ implies $b$.
+$$
+\begin{aligned}
+  \text{1. } & \quad a\rightarrow (b\land c)\quad & \text{(Premise)}\\\
+  & \begin{bmatrix}
+    \text{2. }& \quad a\quad & \text{(Assumption)}\\\
+    \text{3. }& \quad b\land c\quad & \rightarrow_e 1\\\
+    \text{4. }& \quad b \quad & \land_{e1} 3
+  \end{bmatrix}\\\
+  \text{5. }&\quad a\rightarrow b\quad&\rightarrow_i2-4
+\end{aligned}
+$$
+
+Here, we first assume that $a$ is true. The scope of the assumption is indicated with a box. Then, assuming that $a$ is true, we can infer that $b\land c$ is true, and thus $b$ is true. Finally, we have a sub-proof that concludes $b$ given $a$, thus we can close the assumption box, and conclude that $a\rightarrow b$.
+
+The final few rules deal with contradiction. A contradiction happens when something is shown to be both true and false at the same time. It's represented with the $\bot$ symbol:
+$$
+\frac{a,\lnot a}{\bot}\medspace(\bot_i)
+$$
+An interesting property is that you can derive anything from contradiction:
+$$
+\frac{\bot}{a}\medspace(\bot_e)
+$$
+If you assume something and it leads to a contradiction, then whatever you assumed can't be true.
+$$
+\frac{[a\dots\bot]}{\lnot a}\medspace(\lnot_i)
+$$
+And finally, this rule states that if $a$ implies $b$ and $b$ is false, then $a$ must be false too. Otherwise, there would be a contradiction. This rule is actually a combination of some of the other rules, but it is useful so I will mention it. The name of the rule is "modus tollens."
+$$
+\frac{a\rightarrow b,\lnot b}{\lnot a}\medspace\text{M.T.}
+$$
+With all the rules in place, we can finally prove these statements which we made in the first section.
+> If it is raining, and I do not have an umbrella, then I will get wet. It was raining and I did not get wet.
+
+First we assign each of the atoms to letters: let $r$ mean "it was raining", $w$ mean "I got wet", and $u$ mean "I had an umbrella." Then here are our premises and the proof:
+$$
+\begin{aligned}
+  \text{1. } & \quad (r\land\lnot u)\rightarrow w\quad & \text{(Premise)}\\\
+  \text{2. } & \quad r\land\lnot w \quad & \text{(Premise)}\\\
+  \text{3. } & \quad \lnot w \quad & \land_{e2}2\\\
+  \text{4. } & \quad r \quad & \land_{e1}2\\\
+  \text{5. } & \quad \lnot(r\land\lnot u) \quad & \text{M.T.} 1,3\\\
+  & \begin{bmatrix}
+    \text{6. }& \quad \lnot u\quad & \text{(Assumption)}\\\
+    \text{7. }& \quad r\land\lnot u \quad & \land_i 4,6\\\
+    \text{8. }& \quad\bot\quad & \bot_i 7,5
+  \end{bmatrix}\\\
+  \text{9. }&\quad \lnot\lnot u\quad&\lnot_i 6-8\\\
+  \text{10. }&\quad u \quad & \lnot\lnot_e 9
+\end{aligned}
+$$
+
+This proof is one by contradiction. In line 6 we assume that you _did not_ have an umbrella. If this is the case, then it means you were out in the rain without an umbrella, meaning you would have gotten wet - however in the second premise, it says that you did _not_ get wet. So we've reached a contradiction, meaning that our original assumption must be false. Therefore, you must have had an umbrella. 
+
+Recall the other example that we had from the first section:
+> If a matrix is square and its determinant is not zero, then it is invertible. The matrix is square, but not invertible.
+
+The logical proof for this would look the exact same as the one above - except maybe you would choose different letters to represent the propositional atoms.
+
+## Summary of key ideas:
+- You can make logical arguments by examining the syntax (structure of the formula.)
+- This is done applying a set of simple rules to the formulae you are given in order to infer new formulae. You keep applying these rules until you infer what you wanted to show.
+- Proofs can contain sub-proofs and contradictions
+
+# Semantics
+An interesting observation about arguing syntactically is that it is purely symbolic. Imagine this: you could just write down the inference rules on a sheet of paper, and give them to someone else without telling them what the connectives actually represent. Then this person would be able to write a logic proof, even though they have no idea what the formulae even mean. But, there is an alternative way of making logical arguments: instead of working with the structure of the formula, you work with the meaning of the connectives. Consider the following formula:
+> $a \lor b$ 
+
+Whether this formula is true or not depends on whether $a$ or $b$ are true or not, and also the _meaning_ of the connective $\lor$. We can write down the "meaning" of each connective in what's called a _truth table_. In each row of this table, we assign each variable to be either true or false, and then write down the truth value of the whole formula. Here's the truth table for each connective:
+
+| $p$ | $q$ | $\lnot p$ | $p\land q$ | $p\lor q$ | $p\rightarrow q$ |
+|-----|-----|-----------|------------|-----------|------------------|
+| T   |  T  |     F     |  T         |    T      |  T               | 
+| T   |  F  |     F     |  F         |    T      |  F               | 
+| F   |  T  |     T     |  F         |    T      |  T               | 
+| F   |  F  |     T     |  F         |    F      |  T               | 
+
+We can see that $\lnot$ just "flips" the truth value from T to F, or vice-versa. $\land$ is true only if both the conjuncts are true. $\lor$ is true if at least one of the disjuncts are true. Implication is a little bit more strange, but here is an explanation: Suppose I promised to my friend that if it is raining, then I will visit him. In logic, that would be $raining\rightarrow visit$. Now, in which of these cases do I keep my promise?
+- If it is raining, and I visit him, then I have kept my promise.
+- If it is raining, and I do not visit him, then I have broken my promise, and the implication is false.
+- If it is not raining, and I visit him, then I still have kept my promise, as my friend never said that I could _only_ visit him if it was raining.
+- If it is not raining, and I do not visit him, then I have not broken my promise either.
+
+Now that we are able to work out the truth value of a formula given the truth value of all the variables involved, how can we actually show that one formula entails another? Well, if one formula entails another, then it means that whenever the former is true, the latter should be true as well, like logical implication. Therefore, if we write out the truth tables of both formulae side-by-side, we can compare them and see if this holds. For example, does $a\land b$ entail $a\lor b$? Here are the truth tables of both formulae:
+| $a$ | $b$ | $a\land b$ | $a\lor b$ |
+|-----|-----|------------|-----------|
+| __T__   |  __T__  |     __T__      |    __T__      |
+| T   |  F  |     F      |    T      |
+| F   |  T  |     F      |    T      |
+| F   |  F  |     F      |    F      |
+
+In bold, I have highlighted the only row where $a\land b$ is true. And you can see that, in this case, $a\lor b$ is true as well. Therefore the entailment holds. But, just like before when we were arguing using syntax, the entailment does not go both ways. There are rows where $a\lor b$ is true, but $a\land b$ is false.
+
+But what if the two formulae have different variables involved, or a different amount of them? For example, does $\lnot r$ entail $p\lor\lnot p$? Does $p$ entail $p\rightarrow(\lnot p\lor q)$ ? In order to work that out, we'd need to write one big truth table with all the variables involved on either side. But after that point, the idea is still the same: every time the premises are true, then the result should be true as well. Let's look at whether or not $\lnot r$ entails $p\lor\lnot p$:
+
+| $r$ | $p$ | $\lnot r$ | $p\lor\lnot p$ |
+|-----|-----|------------|-----------|
+| __T__   |  __T__  |     __T__      |    __T__      |
+| __T__   |  __F__  |     __T__      |    __T__      |
+| F   |  T  |     F      |    T      |
+| F   |  F  |     F      |    T      |
+
+Again, I have highlighted each row where $\lnot r$ is true. And, you can see that in each of those rows, $p\lor\lnot p$ is true as well. Thus, the entailment holds.
+
+Now you've seen two different ways of deriving conclusions from propositional formulae. There is a very nice relationship between the two: propositional logic is said to be _sound_ and _complete_. Soundness means that every time you prove something syntactically, the result will hold if you write out the truth tables. Completeness goes the other way around - if you can show that some entailment holds in a truth table, then there must exist a syntactical proof for that. Therefore, you are completely free to switch between working with syntax and semantics. In other words, everything that is provable is true, and everything that is true has a proof.
+
+If you are working with a lot of propositional atoms, it may be wise to use a syntactical approach, because for each additional variable, the number of lines in your truth table will double. However, if you can't find a syntactical proof, even after lots of effort, you can use the truth tables to make sure that such a proof even exists in the first place.
+
+## Summary of key ideas:
+- You can argue that one formula entails another one by looking at the truth of both formulae; by arguing about the _meaning_ of the connectives.
+- Everything that is provable syntactically is true, and everything that is true is provable syntactically.
+
+# Normal forms:
