@@ -26,7 +26,7 @@ params:
   
   socials:
     x: "https://www.x.com/Inferara_kk"
-    discord: "https://discord.gg/GTybPMG2"
+    discord: "https://discord.gg/NgWfmnmS5C"
     telegram: "https://t.me/inferara"
 
 assets:
@@ -77,7 +77,7 @@ languages:
         - name: "telegram"
           url: "https://t.me/inferara"
         - name: "discord"
-          url: "https://discord.gg/GTybPMG2"
+          url: "https://discord.gg/NgWfmnmS5C"
   jp:
     contentDir: content/jp
     disabled: false
@@ -107,4 +107,4 @@ languages:
         # - name: "line"
         #   url: "https://line.me/ti/p/~inferara"
         - name: "discord"
-          url: "https://discord.gg/GTybPMG2"
+          url: "https://discord.gg/NgWfmnmS5C"
