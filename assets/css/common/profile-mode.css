@@ -81,7 +81,11 @@
 }
 
 .address-container {
-    display:flex;
+    /* display:flex; */
+}
+
+.address-container .map {
+    flex: 1;
 }
 
 .address-container .address {
@@ -89,14 +93,27 @@
 }
 
 .address-container .address p {
-    text-align: right;
+    text-align: start;
     margin: 0;
 }
+
+.contact-form {
+    width: 700px;
+    height: 750px; 
+}
+
+@media screen and (max-width: 480px) {
+    .contact-form
+    {
+        height: 1000px;
+    }
+ }
 
 .horizontal-delimiter {
     margin-top: 2rem;
     margin-bottom: 2rem;
     width: 30%;
+    justify-self: center;
 }
 
 .buttons {
