@@ -80,6 +80,25 @@
     border-radius: 0;
 }
 
+.address-container {
+    display:flex;
+}
+
+.address-container .address {
+
+}
+
+.address-container .address p {
+    text-align: right;
+    margin: 0;
+}
+
+.horizontal-delimiter {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: 30%;
+}
+
 .buttons {
     flex-wrap: wrap;
     max-width: 400px;
