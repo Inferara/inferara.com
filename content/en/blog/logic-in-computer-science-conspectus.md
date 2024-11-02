@@ -1,6 +1,6 @@
 +++
 title = 'Logic in computer science conspectus'
-date = 2024-05-11T11:06:15+13:00
+date = 2024-11-02T11:06:15+08:00
 draft = true
 math = "katex"
 summary = "This blog outlines the basics of propositional logic, as explained by the book \"Logic in compuer science\"."
@@ -38,18 +38,22 @@ When we are conversing in real life, there is often context that we can use to i
 
 We usually make arguments by working with sentences that "declare" something to be true; sentences that say something about the world. For example, consider these two English sentences:
 > If it is raining and I don't have an umbrella, then I will get wet. It was raining and I did not get wet.
-
+{.note}
 and
 > If a matrix is square and its determinant is not zero, then it is invertible. The matrix is square, but not invertible.
+{.note}
 
 What can you infer from these sentences, and how would you justify it? Even though both of these sentences say something completely different about the world (one of them is common sense, and the other one is about linear algebra), their _structure_ is the same, and so is the structure of the arguments. For example, from the first sentence we can make this argument:
 > I did not get wet. Therefore, it can't be true that it was raining and I didn't have an umbrella. Since I know it was raining, it must mean that I had an umbrella.
+{.note}
 
 And likewise, from the second sentence we can _repeat the argument almost identially_, we just have to swap out a few words!
 > The matrix is not invertible. Therefore, it can't be true that it is square and its determinant is not zero. Since I know it is square, it must mean that the determinant is zero.
+{.note}
 
 Moreover, if we ignore what the sentences are actually saying and just pay attention to their structure (and do the same for the arguments we just made), you will see that they are identical:
 > If $x$ and not $y$, then $z$. Not $z$, and $x$. Therefore, $y$.
+{.tip}
 
 So now we know that we are interested not in what the sentences say, but rather their underlying logical structure, for that is what we can reason about. We can describe whatever we like using these declarative sentences, and then make well justified arguments using their structure.
 
@@ -59,14 +63,17 @@ So now we know that we are interested not in what the sentences say, but rather 
 3. In natural language, we use declarative sentences to describe the world, and we make arguments with their structure.
 
 # Propositional logic
-In the last chapter we saw that to describe the world, we can use declarative sentences, and to reason about these descriptions, we work with the structure of these sentences. But, we are still in the domain of natural language, and that means there are still some undesirable quirks. For instance, consider these three sentences:
-> I did not cook today, but there are leftovers in the fridge.
+To describe the world, we can use declarative sentences, and to reason about these descriptions, we work with the structure of these sentences. But, we are still in the domain of natural language, and that means there are still some undesirable quirks. For instance, consider these three sentences:
+1. I did not cook today, but there are leftovers in the fridge.
+2. There's leftovers in the fridge, and I didn't cook today.
+3. Since there are leftovers in the fridge, I didn't cook today.
 
-> There's leftovers in the fridge, and I didn't cook today.
+They all convey the same information. The only difference between these three sentences is the way that this information is presented to the reader. In a conversational context these subtle differences are very important, but for our purposes we don't care. For us, all this variation does is make the language more difficult to work with. Imagine how hard it would be to write a program or a parser that extracts this information, even for simple English sentences! Therefore, our language should have much more primitive grammar, and focus only on the structure of the information. Remember from the last section that we didn't actually need to know what exactly these "declarative sentences" were saying about the world.
 
-> Since there are leftovers in the fridge, I didn't cook today.
+>We will use single letters to denote statements which cannot be broken down further: propositional atoms.
+{.important}
 
-They all convey the same information. The only difference between these three sentences is the way that this information is presented to the reader. In a conversational context these subtle differences are very important, but for our purposes we don't care. For us, all this variation does is make the language more difficult to work with. Imagine how hard it would be to write a program or a parser that extracts this information, even for simple English sentences! Therefore, our language should have much more primitive grammar, and focus only on the structure of the information. Remember from the last section that we didn't actually need to know what exactly these "declarative sentences" were saying about the world. So we will use single letters to denote statements which cannot be broken down further: propositional atoms. They can be either true, or false. And then, we will use a small set of connectives to join up these propositional atoms into more interesting _formulae_. Here are the rules, with some examples:
+They can be either **true**, or **false**. And then, we will use a small set of connectives to join up these propositional atoms into more interesting _formulae_. Here are the rules, with some examples:
 
 Let $p$, our first propositional atom, mean "it is winter." And, let $q$, our second propositional atom, mean "it is cold." Then:
 
@@ -93,9 +100,11 @@ Now we have a way of taking simple statements (propositional atoms) and using lo
 
 Writing brackets all the time is annoying, so instead there is an "order of operations," just like with arithmetic. Negation comes first, followed by conjunctions and disjunctions. Finally, implications come last. Therefore, the correct way to interpret this statement:
 > $\lnot a \lor b \rightarrow c$
+{.tip}
 
 is 
 > $((\lnot a) \lor b) \rightarrow c$
+{.tip}
 
 ## Summary of key ideas:
 - Since we only care about logical structure instead of concrete meaning, we denote simple sentences that can't be broken down further (propositional atoms) using single letters.
@@ -111,7 +120,10 @@ We start with a set of very simple rules - some of them are so simple that it's 
 - We apply a rule to a formula - this gives us another formula which we know to be true.
 - We keep applying rules until we reach the desired result.
 
-The tricky part is knowing which rules to apply in which order - figuring that out can be quite an entertaining puzzle. Each rule is listed like this:
+>The tricky part is knowing which rules to apply in which order - figuring that out can be quite an entertaining puzzle.
+{.note}
+
+Each rule is listed like this:
 $$
 \frac{\text{What you have}}{\text{What you can infer}}(\text{Rule name})
 $$
@@ -141,7 +153,7 @@ $$
 $$
 The first rule states that, if $a$ is true, then $a$ or $b$ is true. The reason this works is because for disjunction to be true, only _one_ of the disjuncts has to be true. Therefore, if we know that $a$ is true, it doesn't matter if $b$ is true or not - the disjunction will still hold. The second, more intimidating rule is for eliminating a disjunction. Suppose we know that $a$ or $b$ is true - we don't know which one of them is true, so we can't just get rid of the other disjunct like we did with conjunction elimination. So we have to be able to show that, no matter which one of these is true, $a$ or $b$, we can always conclude that $c$ will be true. And to do that, we must provide two subproofs - one assuming $a$ and concluding $c$, and another one assuming $b$ and concluding $c$. That way, no matter which one of the two is true, we always have a way to get to $c$.
 
-With these rules, we can write our first (not very exciting) proofs. The first result we'd like to show is that, if $a$ and $b$ are true, then $a$ or $b$ is also true. That is, we would like to prove $$a\land b \vdash a\lor b$$. The $\vdash$ symbol means "entails." Here is the proof:
+With these rules, we can write our first (not very exciting) proofs. The first result we'd like to show is that, if $a$ and $b$ are true, then $a$ or $b$ is also true. That is, we would like to prove $$a\land b \vdash a\lor b$$ The $\vdash$ symbol means "entails." Here is the proof:
 1. $a\land b$ (Premise)
 2. $a$ $\quad\land_{e1} 1$
 3. $a\lor b$ $\quad\lor_e 2$
@@ -175,10 +187,12 @@ If you assume something and it leads to a contradiction, then whatever you assum
 $$
 \frac{[a\dots\bot]}{\lnot a}\medspace(\lnot_i)
 $$
-And finally, this rule states that if $a$ implies $b$ and $b$ is false, then $a$ must be false too. Otherwise, there would be a contradiction. This rule is actually a combination of some of the other rules, but it is useful so I will mention it. The name of the rule is "modus tollens."
-$$
-\frac{a\rightarrow b,\lnot b}{\lnot a}\medspace\text{M.T.}
-$$
+And finally, this rule states that if $a$ implies $b$ and $b$ is false, then $a$ must be false too. Otherwise, there would be a contradiction. This rule is actually a combination of some of the other rules, but it is useful so I will mention it.
+
+> The name of the rule is "modus tollens."
+>$$\frac{a\rightarrow b,\lnot b}{\lnot a}\medspace\text{M.T.}$$
+{.important}
+
 With all the rules in place, we can finally prove these statements which we made in the first section.
 > If it is raining, and I do not have an umbrella, then I will get wet. It was raining and I did not get wet.
 
@@ -200,12 +214,12 @@ $$
 \end{aligned}
 $$
 
-This proof is one by contradiction. In line 6 we assume that you _did not_ have an umbrella. If this is the case, then it means you were out in the rain without an umbrella, meaning you would have gotten wet - however in the second premise, it says that you did _not_ get wet. So we've reached a contradiction, meaning that our original assumption must be false. Therefore, you must have had an umbrella. 
+This proof is one by contradiction. In line 6 we assume that you _did not_ have an umbrella. If this is the case, then it means you were out in the rain without an umbrella, meaning you would have gotten wet — however in the second premise, it says that you did _not_ get wet. So we've reached a contradiction, meaning that our original assumption must be false. Therefore, you must have had an umbrella. 
 
 Recall the other example that we had from the first section:
 > If a matrix is square and its determinant is not zero, then it is invertible. The matrix is square, but not invertible.
 
-The logical proof for this would look the exact same as the one above - except maybe you would choose different letters to represent the propositional atoms.
+The logical proof for this would look the exact same as the one above — except maybe you would choose different letters to represent the propositional atoms.
 
 ## Summary of key ideas:
 - You can make logical arguments by examining the syntax (structure of the formula.)
