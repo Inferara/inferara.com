@@ -10,8 +10,7 @@
     </div>
     <div class="address">
         <p>810-0041<span>📮</span></p>
-        <p>Japan<span>🇯🇵</span></p>
-        <p>Fukuoka City<span>🍜</span></p>
+        <p>Japan<span>🇯🇵</span>&nbsp;Fukuoka City<span>🍜</span></p>
         <p>2 Chome-6-11 Daimyo, Chuo Ward<span>🏢</span></div>
     </div>
 </div>
