@@ -5,7 +5,9 @@
 <h2>Address</h2>
 
 <div class="address-container">
-    <div style="flex:1;"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d830.9066789556275!2d130.395001!3d33.58904!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3541910074821665%3A0xedd7a60c722e8a7b!2sInferara%20Corp.!5e0!3m2!1sen!2sjp!4v1730530923565!5m2!1sen!2sjp" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    <div>
+        <iframe style="width:100%" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d830.9066789556275!2d130.395001!3d33.58904!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3541910074821665%3A0xedd7a60c722e8a7b!2sInferara%20Corp.!5e0!3m2!1sen!2sjp!4v1730530923565!5m2!1sen!2sjp" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
     <div class="address">
         <p>810-0041<span>📮</span></p>
         <p>Japan<span>🇯🇵</span></p>
