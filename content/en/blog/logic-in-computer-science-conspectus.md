@@ -17,7 +17,7 @@ tags = ["Propositional logic", "Foundations", "Mathematics"]
 - [Normal forms](#normal-forms)
 
 # Introduction
-This blog post is my conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan. I will summarise the first five parts of chapter one. This conspectus is informal and breif, mostly written for my own learning. I have tried to make it approachable for people who haven't heard of the topics before.
+This blog post is a conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan. It will cover the first five parts of chapter one. This conspectus is written informaly for the sake of brevity. As such, a lot of theorems and proofs from the original text aren't mentioned.
 
 # Declarative sentences
 The main goal in program verification is simple: we have the code for a computer program, and we also have a description of how that program ought to behave. We would like to make sure that the program behaves in accordance with the specification. There are already lots of possible ways to do this:
@@ -36,7 +36,7 @@ This sentence has two possible interpretations:
 
 When we are conversing in real life, there is often context that we can use to infer the correct meaning, or ask the other person for clarification. But, when making mathematical arguments, there can be no room for ambiguity at all, so we need something else: a simpler language that unambiguously encodes what we want to say, one with well defined rules which can be reasoned about. If we want computers to automatically do this correctness checking for us, it should be rigid enough so that we can write programs to verify and manipulate statements in this language. Despite natural language being the wrong tool for the job, it is familiar. So let's start off by thinking about it anyway, and see if we can derive something simpler.
 
-We usually make arguments by working with sentences that "declare" something to be true; sentences that say something about the world. For example, consider these two English sentences:
+We usually make arguments by working with sentences that declare something to be true; sentences that say something about the world. For example, consider these two English sentences:
 > If it is raining and I don't have an umbrella, then I will get wet. It was raining and I did not get wet.
 
 and
@@ -261,3 +261,42 @@ If you are working with a lot of propositional atoms, it may be wise to use a sy
 - Everything that is provable syntactically is true, and everything that is true is provable syntactically.
 
 # Normal forms:
+
+There are two properties of a formula which are useful to know. They are _validity_ and _satisfiability_. A formula is valid if it is _always_ true, and a formula is satisfiable if there is at least one case (one assignment of true and false to each propositional atom) where it is true. In general, it is actually not that simple to check that a formula has these properties, especially if it contains a lot of variables. For each additional variable that we add to the formula, the truth table _doubles_ in size. Thus, simply checking each line in the truth table will take $2^n$ operations in the worst case, which quickly becomes an unreasonable amount of work. In practice, tools called SAT solvers are used, which employ some clever tricks to usually find the answer faster.
+
+But, there are classes of formulae which are much easier to test for validity or satisfiability. Among them are formulae in CNF (conjunctive normal form) and DNF (disjunctive normal form.) Let us first have a look at formulae in disjunctive normal form, and see how they can be easily checked for satisfiability.
+
+A formula is said to be in disjunctive normal form if it is a disjunction of clauses, where each clause is a conjunction of atoms (or their negations.) Here are a few examples:
+1. $p\lor\lnot p$
+2. $(a\land b\land \lnot c) \lor c \lor (a\land\lnot b)$
+3. $p$
+
+Since formulae in DNF are a _disjunction_ of several clauses, for the whole formula to be true, _only one clause_ has to be true. This means that all we have to do is find just one clause which is satisfiable. Furthermore, we know that each clause will simply be a conjunction of atoms or their negations. Thus, the only time a clause _isn't_ satisfiable is if it contains an atom and its negation. For example:
+1. $a\land b\land\lnot c$ is satisfiable
+2. $a\land b\land\lnot a$ is not, because it contains $a\land\lnot a$ - which can never be true.
+
+Therefore, you can check the satisfiability of a formula in DNF in linear time by going through each clause and making sure that you find at least one which doesn't contain an atom and it's negation.
+
+Next, let's look at conjunctive normal form. This is similar to DNF, except intead it is a _conjunction_ of clauses, where each clause is a _disjunction_ of atoms or their negations. Again, here are some examples of CNF:
+1. $(a\lor b\lor\lnot c)\land\lnot b\land (d\lor e)$
+2. $a\land\lnot b\land(c\lor e)$
+3. $p$
+
+In this form, it is easy to check for _validity_. The conjunction of clauses will only be false if there is one clause which can be made false. Here, we know that each clause is a _disjunction_ of atoms or their negations. The only time such a clause can be made false is if it _doesn't_ contain an atom or its negation. For example, consider the clause
+$$p\lor\lnot p\lor a$$
+
+This will _always_ be true: if $p$ is true then the first disjunct holds. If not, then the second disjunct holds. Either way, the clause is always true. Hence, we can check formulae in CNF for validity in linear time, since all we have to do is go through each clause, and see whether or not it contains an atom and its negation.
+
+These forms are easy to work with, but unfortunately the formulae we usually come across are not in these forms. Instead, we would have to convert them into an equivalent CNF or DNF formula. To do this, we first need to get rid of any implications by using the identity $$a\rightarrow b\equiv \lnot a\lor b$$. After this point, we will have a formula containing only negations, conjunctions, and disjunctions. However, they will most likely not be in the correct order. For instance, the formula
+$$ \lnot(a\land \lnot(b\lor c)) \lor \lnot a $$ contains only $\lnot, \lor, \land$, but it is neither in DNF nor CNF. To get the formula in the correct form after this, we need to use a few different logical equivalences:
+1. $\lnot(a\lor b)\equiv \lnot a\land\lnot b$
+2. $\lnot(a\land b)\equiv \lnot a\lor\lnot b$
+3. $a\land(b\lor c)\equiv (a\land b)\lor(a\land c)$
+4. $(a\lor b)\land c \equiv (a\land c)\lor(b\land c)$
+
+The complete algorithm is not covered here; if you are interested, it is discussed in greater depth in section 5 of chapter 1 of the original text. But, the main takeaway is that any formula can be converted into CNF or DNF. Unfortunately, doing this conversion will take a lot of computational effort, and in some cases may make the formulae very large. Hence, it is still not a particularly efficient way of solving validity or satisfiability problems. These problems often come up in other fields which are not in the scope of this conspectus.
+
+## Summary of key ideas:
+  - A formula is valid if it is always true, and satisfiable if there is a line in its truth table where it is true.
+  - There are special forms which make it easier to test for these properties. DNF makes it easy to check satisfiability and CNF makes it easy to check for validitiy.
+  - We still have to put in computational work to convert a formula into a normal form, which means checking validitiy or satisfiability is still not efficient. In practice, heuristic based SAT solvers are used.
