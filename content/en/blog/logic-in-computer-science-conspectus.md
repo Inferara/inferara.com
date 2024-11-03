@@ -1,6 +1,6 @@
 +++
 title = 'Logic in computer science conspectus'
-date = 2024-05-11T11:06:15+13:00
+date = 2024-11-03T19:00:15+13:00
 draft = true
 math = "katex"
 summary = "This blog outlines the basics of propositional logic, as explained by the book \"Logic in compuer science\"."
@@ -75,13 +75,13 @@ Let $p$, our first propositional atom, mean "it is winter." And, let $q$, our se
 - $\lnot$ is the only operator out of the lot which doesn't actually connect two things together - it just inverts a single formula, like the English "not." E.G. $\lnot p$ would mean "it's not winter." The operation is called negation, and it is true if the thing you are negating is false.
 - The final connective is $\rightarrow$, which is called "implication." It is like the English "If ... then ...", so the order matters! For example, $p\rightarrow q$ means "If it's winter, then it's cold," whereas $q\rightarrow p$ means "If it's cold, then it's winter." The formula to the left of the arrow is called the "antecedent", and the formula on the right of the arrow is called the "consequent." Implication is only false when the anticedent is true, and the consequent is false. 
 
-There are a few additional things I would like to mention about these connectives. The first one is related to disjunction: I said it was similar to how we use the word "or" in English, but there is a small difference. In English, when we say "$a$ or $b$," we usually mean one or the other, _but not both_. This is what's called an _exclusive_ or, because we are _excluding_ both options from being true. However, disjucntion is _inclusive_ - it's still true if both of the disjuncts are true. Next, I would like to emphasise that order really matters when working with logical implication. Consider the statement
+There are a few additional things worth mentioning about these connectives. The first one is related to disjunction: it was introduced as being similar to the word "or" in English, but there is a small difference. In English, when we say "$a$ or $b$," we usually mean one or the other, _but not both_. This is what's called an _exclusive_ or, because we are _excluding_ both options from being true. However, disjucntion is _inclusive_ - it's still true if both of the disjuncts are true. The next example is to emphasise that order really matters when working with logical implication. Consider the statement
 > If I am making bread, then I am baking.
 
 , which is correct. But if you swap the antecedent and the consequent around, you get this:
 > If I am baking, then I am making bread.
 
-Now this is clearly false; perhaps I could be baking a cake instead! Finally, I will also mention that when working with implications in logic, we are not concerned about causality. That is, there doesn't have to be any relationship between the anticedent and the consequent when we say that one thing implies another. For example, consider the sentence
+Now this is clearly false; perhaps you could be baking a cake instead! Finally, when working with implications in logic, we are not concerned about causality. That is, there doesn't have to be any relationship between the anticedent and the consequent when we say that one thing implies another. For example, consider the sentence
 > If the Egyptians built the pyramids, then carrots are orange.
 
 In English, this does not make sense, because the Egyptian pyramids have nothing to do with the color of carrots. But logically, we don't care about these relationships.
@@ -104,7 +104,7 @@ is
 - This lets us unambiguously encode statements about the world into a form that can be rigorously argued about.
 
 # Syntax
-Now that we can encode what we would like to say about the world into logical statements, there is still something big we are missing. That is, how do we make arguments using these logical statements? How can we show that one statement entails another, and how can we justify that? This is where we reach a fork in the road, as there are two ways of doing this. The first way involves arguing about the _semantics_, or _meaning of the connectives_. It's done using truth tables, and I will explain this in a later section. For now, I will explain the second method: arguing about the _syntax_, or _structure of the formula_.
+Now that we can encode what we would like to say about the world into logical statements, there is still something big we are missing. That is, how do we make arguments using these logical statements? How can we show that one statement entails another, and how can we justify that? This is where we reach a fork in the road, as there are two ways of doing this. The first way involves arguing about the _semantics_, or _meaning of the connectives_. It's done using truth tables, and will be explained later in its own section. For now, let us discuss the second method: arguing about the _syntax_, or _structure of the formula_.
 
 We start with a set of very simple rules - some of them are so simple that it's awkward to write more than a few sentences about them. Then, the "argument" or proof is structured like this:
 - We write down the formulae we are given; what we know to be true.
@@ -127,11 +127,11 @@ The first one reads as so: "If we know that $a$ and $b$ are both true, then it f
 $$
 \frac{a}{\lnot\lnot a}\medspace(\lnot\lnot_i)\thickspace\frac{\lnot\lnot a}{a}\medspace(\lnot\lnot_e)
 $$
-Think of it like this: if I tell you "It isn't not raining," that's just a weird way of saying "it's raining," and vice-versa. This is essentially what these two rules are saying. In order to understand the next few rules, we need to extend the proof system a little bit. At any point in the proof, you are free to assume that something is true - but the catch is that your final result cannot depend on this assumption. Let's look at the rules for implication:
+Think of it like this: if someone tells you "It isn't not raining," that's just a weird way of saying "it's raining," and vice-versa. This is what these two rules are saying. In order to understand the next few rules, we need to extend the proof system a little bit. At any point in the proof, you are free to assume that something is true - but the catch is that your final result cannot depend on this assumption. Let's look at the rules for implication:
 $$
 \frac{[a\dots b]}{a\rightarrow b}\medspace(\rightarrow_i)
 $$
-The $[a\dots b]$ means "a sub-proof assuming $a$ and concluding $b$." Essentially, what this rule is saying, is this: If we can show that $b$ is true assuming that $a$ is true, then it means $a$ implies $b$. If you find this confusing, we're allowed to do this because the implication holding doesn't actually say anything about the truth value of $a$. For instance, the statement "If I am tired, then I will go to bed" doesn't mention anything about me being tired or not. Here is the other rule for implications; this one is a lot simpler:
+The $[a\dots b]$ means "a sub-proof assuming $a$ and concluding $b$." Essentially, what this rule is saying, is this: If we can show that $b$ is true assuming that $a$ is true, then it means $a$ implies $b$. If you find this confusing, we're allowed to do this because the implication holding doesn't actually say anything about the truth value of $a$. For instance, the statement "If I am tired, then I will go to bed" doesn't mention anything about the speaker being tired or not. Here is the other rule for implications; this one is a lot simpler:
 $$
 \frac{a\rightarrow b,a}{b}\medspace(\rightarrow_e)
 $$
@@ -225,11 +225,11 @@ Whether this formula is true or not depends on whether $a$ or $b$ are true or no
 | F   |  T  |     T     |  F         |    T      |  T               | 
 | F   |  F  |     T     |  F         |    F      |  T               | 
 
-We can see that $\lnot$ just "flips" the truth value from T to F, or vice-versa. $\land$ is true only if both the conjuncts are true. $\lor$ is true if at least one of the disjuncts are true. Implication is a little bit more strange, but here is an explanation: Suppose I promised to my friend that if it is raining, then I will visit him. In logic, that would be $raining\rightarrow visit$. Now, in which of these cases do I keep my promise?
-- If it is raining, and I visit him, then I have kept my promise.
-- If it is raining, and I do not visit him, then I have broken my promise, and the implication is false.
-- If it is not raining, and I visit him, then I still have kept my promise, as my friend never said that I could _only_ visit him if it was raining.
-- If it is not raining, and I do not visit him, then I have not broken my promise either.
+We can see that $\lnot$ just "flips" the truth value from T to F, or vice-versa. $\land$ is true only if both the conjuncts are true. $\lor$ is true if at least one of the disjuncts are true. Implication is a little bit more strange, but here is a good example for why it is the way it is (taken from Wikipeida [[1]]): Suppose you promised to your friend that if it is raining, then you will visit him. In logic, that would be $raining\rightarrow visit$. Now, in which of these cases do you keep your promise?
+- If it is raining, and you visit him, then you have kept your promise.
+- If it is raining, and you do not visit him, then you have broken your promise, and the implication is false.
+- If it is not raining, and you visit him, then you still have kept your promise, as your friend never said that you could _only_ visit him if it was raining.
+- If it is not raining, and you do not visit him, then you have not broken your promise either.
 
 Now that we are able to work out the truth value of a formula given the truth value of all the variables involved, how can we actually show that one formula entails another? Well, if one formula entails another, then it means that whenever the former is true, the latter should be true as well, like logical implication. Therefore, if we write out the truth tables of both formulae side-by-side, we can compare them and see if this holds. For example, does $a\land b$ entail $a\lor b$? Here are the truth tables of both formulae:
 | $a$ | $b$ | $a\land b$ | $a\lor b$ |
@@ -239,7 +239,7 @@ Now that we are able to work out the truth value of a formula given the truth va
 | F   |  T  |     F      |    T      |
 | F   |  F  |     F      |    F      |
 
-In bold, I have highlighted the only row where $a\land b$ is true. And you can see that, in this case, $a\lor b$ is true as well. Therefore the entailment holds. But, just like before when we were arguing using syntax, the entailment does not go both ways. There are rows where $a\lor b$ is true, but $a\land b$ is false.
+Highlighted is the only row where $a\land b$ is true. And you can see that, in this case, $a\lor b$ is true as well. Therefore the entailment holds. But, just like before when we were arguing using syntax, the entailment does not go both ways. There are rows where $a\lor b$ is true, but $a\land b$ is false.
 
 But what if the two formulae have different variables involved, or a different amount of them? For example, does $\lnot r$ entail $p\lor\lnot p$? Does $p$ entail $p\rightarrow(\lnot p\lor q)$ ? In order to work that out, we'd need to write one big truth table with all the variables involved on either side. But after that point, the idea is still the same: every time the premises are true, then the result should be true as well. Let's look at whether or not $\lnot r$ entails $p\lor\lnot p$:
 
@@ -250,7 +250,7 @@ But what if the two formulae have different variables involved, or a different a
 | F   |  T  |     F      |    T      |
 | F   |  F  |     F      |    T      |
 
-Again, I have highlighted each row where $\lnot r$ is true. And, you can see that in each of those rows, $p\lor\lnot p$ is true as well. Thus, the entailment holds.
+Again, each row where $\lnot r$ is true is highlighted. And, you can see that in each of those rows, $p\lor\lnot p$ is true as well. Thus, the entailment holds.
 
 Now you've seen two different ways of deriving conclusions from propositional formulae. There is a very nice relationship between the two: propositional logic is said to be _sound_ and _complete_. Soundness means that every time you prove something syntactically, the result will hold if you write out the truth tables. Completeness goes the other way around - if you can show that some entailment holds in a truth table, then there must exist a syntactical proof for that. Therefore, you are completely free to switch between working with syntax and semantics. In other words, everything that is provable is true, and everything that is true has a proof.
 
@@ -300,3 +300,8 @@ The complete algorithm is not covered here; if you are interested, it is discuss
   - A formula is valid if it is always true, and satisfiable if there is a line in its truth table where it is true.
   - There are special forms which make it easier to test for these properties. DNF makes it easy to check satisfiability and CNF makes it easy to check for validitiy.
   - We still have to put in computational work to convert a formula into a normal form, which means checking validitiy or satisfiability is still not efficient. In practice, heuristic based SAT solvers are used.
+
+# References
+- [Logical implication example][1]
+
+[1]: https://simple.wikipedia.org/wiki/Implication_(logic)
