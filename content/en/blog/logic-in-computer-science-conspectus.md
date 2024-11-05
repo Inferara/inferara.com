@@ -1,7 +1,7 @@
 +++
-title = 'Logic in computer science conspectus'
+title = 'Introduction into Logic in computer science'
 date = 2024-11-03T19:00:15+13:00
-draft = true
+draft = false
 math = "katex"
 summary = "This blog outlines the basics of propositional logic, as explained by the book \"Logic in compuer science\"."
 tags = ["Propositional logic", "Foundations", "Mathematics"]
@@ -17,15 +17,18 @@ tags = ["Propositional logic", "Foundations", "Mathematics"]
 - [Normal forms](#normal-forms)
 
 # Introduction
-This blog post is a conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan. It will cover the first five parts of chapter one. This conspectus is written informaly for the sake of brevity. As such, a lot of theorems and proofs from the original text aren't mentioned.
+This blog post is a conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan [[1]]. It will cover the first five parts of chapter one. This conspectus is written informaly for the sake of brevity. As such, a lot of theorems and proofs from the original text aren't mentioned.
 
 # Declarative sentences
 The main goal in program verification is simple: we have the code for a computer program, and we also have a description of how that program ought to behave. We would like to make sure that the program behaves in accordance with the specification. There are already lots of possible ways to do this:
 - You could write a test suite to check that your program works in different cases and scenarios. 
-- You could write a fuzzer that repeatedly runs the program with random inputs and makes sure that it never fails.
+- You could write a fuzzer that repeatedly runs the program with [_pseudo_]random inputs and makes sure that it never fails.
 And so on.
 
-But the problem with these methods is that there is almost always still some uncertainty. How can you be sure that the program works with just a few unit tests? Perhaps there is a case that you didn't check which causes a bug. Herein lies a distinguising property of formal methods: they do not leave any room for error, and they can be used to check that the program _always_ behaves as it should.
+But the problem with these methods is that there is almost always still some uncertainty. How can you be sure that the program works with just a few unit tests? Perhaps there is a case that you didn't check which causes a bug.
+
+>Herein lies a distinguising property of formal methods: they do not leave any room for error, and they can be used to check that the program _always_ behaves as it should.
+{.important}
 
 The first thing we need to carry out these methods, however, is a very specific program specification. The reason they are called 'formal' methods is because they use mathematical techniques to verify correctness. Therefore, we need a program specification which we can rigorously make and defend arguments about. We may instinctively reach for natural language to write the specification. After all, describing things in natural language is intuitive to us: it's how you talk to a friend, or hold a debate with a colleague; we are used to expressing and reasoning about things in this way. But, natural language is not appropriate for writing a program specification - doing so would be akin to trying to thread a screw with the bristles of a paintbrush. The issue is that natural language is too complicated and too ambiguous. Consider the sentence
 > The man saw the woman with a telescope
@@ -50,6 +53,7 @@ And likewise, from the second sentence we can _repeat the argument almost identi
 
 Moreover, if we ignore what the sentences are actually saying and just pay attention to their structure (and do the same for the arguments we just made), you will see that they are identical:
 > If $x$ and not $y$, then $z$. Not $z$, and $x$. Therefore, $y$.
+{.note}
 
 So now we know that we are interested not in what the sentences say, but rather their underlying logical structure, for that is what we can reason about. We can describe whatever we like using these declarative sentences, and then make well justified arguments using their structure.
 
@@ -59,14 +63,19 @@ So now we know that we are interested not in what the sentences say, but rather 
 3. In natural language, we use declarative sentences to describe the world, and we make arguments with their structure.
 
 # Propositional logic
-In the last chapter we saw that to describe the world, we can use declarative sentences, and to reason about these descriptions, we work with the structure of these sentences. But, we are still in the domain of natural language, and that means there are still some undesirable quirks. For instance, consider these three sentences:
+As it was shown, we can use declarative sentences to describe the world, and to reason about these descriptions, we work with the structure of these sentences. But, we are still in the domain of natural language, and that means there are still some undesirable quirks. For instance, consider these three sentences:
 > I did not cook today, but there are leftovers in the fridge.
 
 > There's leftovers in the fridge, and I didn't cook today.
 
 > Since there are leftovers in the fridge, I didn't cook today.
 
-They all convey the same information. The only difference between these three sentences is the way that this information is presented to the reader. In a conversational context these subtle differences are very important, but for our purposes we don't care. For us, all this variation does is make the language more difficult to work with. Imagine how hard it would be to write a program or a parser that extracts this information, even for simple English sentences! Therefore, our language should have much more primitive grammar, and focus only on the structure of the information. Remember from the last section that we didn't actually need to know what exactly these "declarative sentences" were saying about the world. So we will use single letters to denote statements which cannot be broken down further: propositional atoms. They can be either true, or false. And then, we will use a small set of connectives to join up these propositional atoms into more interesting _formulae_. Here are the rules, with some examples:
+They all convey the same information. The only difference between these three sentences is the way that this information is presented to the reader. In a conversational context these subtle differences are very important, but for our purposes we don't care. For us, all this variation does is make the language more difficult to work with. Imagine how hard it would be to write a program or a parser that extracts this information, even for simple English sentences! Therefore, our language should have much more primitive grammar, and focus only on the structure of the information. Remember from the last section that we didn't actually need to know what exactly these "declarative sentences" were saying about the world.
+
+>So we will use single letters to denote statements which cannot be broken down further: propositional atoms.
+{.note}
+
+They can be either **true**, or **false**. And then, we will use a small set of connectives to join up these propositional atoms into more interesting _formulae_. Here are the rules, with some examples:
 
 Let $p$, our first propositional atom, mean "it is winter." And, let $q$, our second propositional atom, mean "it is cold." Then:
 
@@ -78,7 +87,7 @@ Let $p$, our first propositional atom, mean "it is winter." And, let $q$, our se
 There are a few additional things worth mentioning about these connectives. The first one is related to disjunction: it was introduced as being similar to the word "or" in English, but there is a small difference. In English, when we say "$a$ or $b$," we usually mean one or the other, _but not both_. This is what's called an _exclusive_ or, because we are _excluding_ both options from being true. However, disjucntion is _inclusive_ - it's still true if both of the disjuncts are true. The next example is to emphasise that order really matters when working with logical implication. Consider the statement
 > If I am making bread, then I am baking.
 
-, which is correct. But if you swap the antecedent and the consequent around, you get this:
+which is correct. But if you swap the antecedent and the consequent around, you get this:
 > If I am baking, then I am making bread.
 
 Now this is clearly false; perhaps you could be baking a cake instead! Finally, when working with implications in logic, we are not concerned about causality. That is, there doesn't have to be any relationship between the anticedent and the consequent when we say that one thing implies another. For example, consider the sentence
@@ -86,16 +95,18 @@ Now this is clearly false; perhaps you could be baking a cake instead! Finally, 
 
 In English, this does not make sense, because the Egyptian pyramids have nothing to do with the color of carrots. But logically, we don't care about these relationships.
 
-Now we have a way of taking simple statements (propositional atoms) and using logical connectives to compose them into formulae that say something more interesting about the world. Here are some examples, if we let the first atom $d$ mean "It is dark inside", the second atom $s$ mean "the sun has set" and $l$ mean "the lights are on:"
+Now we have a way of taking simple statements (_propositional atoms_) and using logical connectives to compose them into formulae that say something more interesting about the world. Here are some examples, if we let the first atom $d$ mean "It is dark inside", the second atom $s$ mean "the sun has set" and $l$ mean "the lights are on:"
 - $s\land l$: The sun has set and the lights are on
 - $(s\land(\lnot l))\rightarrow d$: If the sun has set and the lights aren't on, then it is dark inside.
 - $(\lnot d)\rightarrow ((\lnot s)\lor l)$: If it isn't dark inside, then either the sun hasn't set or the lights are on. (This is equivalent to the last statement.)
 
 Writing brackets all the time is annoying, so instead there is an "order of operations," just like with arithmetic. Negation comes first, followed by conjunctions and disjunctions. Finally, implications come last. Therefore, the correct way to interpret this statement:
 > $\lnot a \lor b \rightarrow c$
+{.note}
 
 is 
 > $((\lnot a) \lor b) \rightarrow c$
+{.note}
 
 ## Summary of key ideas:
 - Since we only care about logical structure instead of concrete meaning, we denote simple sentences that can't be broken down further (propositional atoms) using single letters.
@@ -141,7 +152,12 @@ $$
 $$
 The first rule states that, if $a$ is true, then $a$ or $b$ is true. The reason this works is because for disjunction to be true, only _one_ of the disjuncts has to be true. Therefore, if we know that $a$ is true, it doesn't matter if $b$ is true or not - the disjunction will still hold. The second, more intimidating rule is for eliminating a disjunction. Suppose we know that $a$ or $b$ is true - we don't know which one of them is true, so we can't just get rid of the other disjunct like we did with conjunction elimination. So we have to be able to show that, no matter which one of these is true, $a$ or $b$, we can always conclude that $c$ will be true. And to do that, we must provide two subproofs - one assuming $a$ and concluding $c$, and another one assuming $b$ and concluding $c$. That way, no matter which one of the two is true, we always have a way to get to $c$.
 
-With these rules, we can write our first (not very exciting) proofs. The first result we'd like to show is that, if $a$ and $b$ are true, then $a$ or $b$ is also true. That is, we would like to prove $$a\land b \vdash a\lor b$$. The $\vdash$ symbol means "entails." Here is the proof:
+With these rules, we can write our first (not very exciting) proofs. The first result we'd like to show is that, if $a$ and $b$ are true, then $a$ or $b$ is also true. That is, we would like to prove $$a\land b \vdash a\lor b$$
+
+>The $\vdash$ symbol means "entails".
+{.note}
+
+Here is the proof:
 1. $a\land b$ (Premise)
 2. $a$ $\quad\land_{e1} 1$
 3. $a\lor b$ $\quad\lor_e 2$
@@ -167,7 +183,8 @@ The final few rules deal with contradiction. A contradiction happens when someth
 $$
 \frac{a,\lnot a}{\bot}\medspace(\bot_i)
 $$
-An interesting property is that you can derive anything from contradiction:
+>It is possible to derive anything from contradiction:
+{.danger}
 $$
 \frac{\bot}{a}\medspace(\bot_e)
 $$
@@ -175,7 +192,11 @@ If you assume something and it leads to a contradiction, then whatever you assum
 $$
 \frac{[a\dots\bot]}{\lnot a}\medspace(\lnot_i)
 $$
-And finally, this rule states that if $a$ implies $b$ and $b$ is false, then $a$ must be false too. Otherwise, there would be a contradiction. This rule is actually a combination of some of the other rules, but it is useful so I will mention it. The name of the rule is "modus tollens."
+And finally, this rule states that if $a$ implies $b$ and $b$ is false, then $a$ must be false too. Otherwise, there would be a contradiction. This rule is actually a combination of some of the other rules, but it is useful so I will mention it.
+
+>The name of the rule is "modus tollens".
+{.important}
+
 $$
 \frac{a\rightarrow b,\lnot b}{\lnot a}\medspace\text{M.T.}
 $$
@@ -214,7 +235,8 @@ The logical proof for this would look the exact same as the one above - except m
 
 # Semantics
 An interesting observation about arguing syntactically is that it is purely symbolic. Imagine this: you could just write down the inference rules on a sheet of paper, and give them to someone else without telling them what the connectives actually represent. Then this person would be able to write a logic proof, even though they have no idea what the formulae even mean. But, there is an alternative way of making logical arguments: instead of working with the structure of the formula, you work with the meaning of the connectives. Consider the following formula:
-> $a \lor b$ 
+> $a \lor b$
+{.note}
 
 Whether this formula is true or not depends on whether $a$ or $b$ are true or not, and also the _meaning_ of the connective $\lor$. We can write down the "meaning" of each connective in what's called a _truth table_. In each row of this table, we assign each variable to be either true or false, and then write down the truth value of the whole formula. Here's the truth table for each connective:
 
@@ -225,7 +247,7 @@ Whether this formula is true or not depends on whether $a$ or $b$ are true or no
 | F   |  T  |     T     |  F         |    T      |  T               | 
 | F   |  F  |     T     |  F         |    F      |  T               | 
 
-We can see that $\lnot$ just "flips" the truth value from T to F, or vice-versa. $\land$ is true only if both the conjuncts are true. $\lor$ is true if at least one of the disjuncts are true. Implication is a little bit more strange, but here is a good example for why it is the way it is (taken from Wikipeida [[1]]): Suppose you promised to your friend that if it is raining, then you will visit him. In logic, that would be $raining\rightarrow visit$. Now, in which of these cases do you keep your promise?
+We can see that $\lnot$ just "flips" the truth value from T to F, or vice-versa. $\land$ is true only if both the conjuncts are true. $\lor$ is true if at least one of the disjuncts are true. Implication is a little bit more strange, but here is a good example for why it is the way it is (taken from Wikipeida [[2]]): Suppose you promised to your friend that if it is raining, then you will visit him. In logic, that would be $raining\rightarrow visit$. Now, in which of these cases do you keep your promise?
 - If it is raining, and you visit him, then you have kept your promise.
 - If it is raining, and you do not visit him, then you have broken your promise, and the implication is false.
 - If it is not raining, and you visit him, then you still have kept your promise, as your friend never said that you could _only_ visit him if it was raining.
@@ -252,7 +274,15 @@ But what if the two formulae have different variables involved, or a different a
 
 Again, each row where $\lnot r$ is true is highlighted. And, you can see that in each of those rows, $p\lor\lnot p$ is true as well. Thus, the entailment holds.
 
-Now you've seen two different ways of deriving conclusions from propositional formulae. There is a very nice relationship between the two: propositional logic is said to be _sound_ and _complete_. Soundness means that every time you prove something syntactically, the result will hold if you write out the truth tables. Completeness goes the other way around - if you can show that some entailment holds in a truth table, then there must exist a syntactical proof for that. Therefore, you are completely free to switch between working with syntax and semantics. In other words, everything that is provable is true, and everything that is true has a proof.
+Now you've seen two different ways of deriving conclusions from propositional formulae. There is a very nice relationship between the two: propositional logic is said to be _sound_ and _complete_.
+
+>Soundness means that every time you prove something syntactically, the result will hold if you write out the truth tables.
+{.important}
+
+>Completeness goes the other way around - if you can show that some entailment holds in a truth table, then there must exist a syntactical proof for that.
+{.important}
+
+Therefore, you are completely free to switch between working with syntax and semantics. In other words, **everything that is provable is true, and everything that is true has a proof**.
 
 If you are working with a lot of propositional atoms, it may be wise to use a syntactical approach, because for each additional variable, the number of lines in your truth table will double. However, if you can't find a syntactical proof, even after lots of effort, you can use the truth tables to make sure that such a proof even exists in the first place.
 
@@ -262,11 +292,19 @@ If you are working with a lot of propositional atoms, it may be wise to use a sy
 
 # Normal forms:
 
-There are two properties of a formula which are useful to know. They are _validity_ and _satisfiability_. A formula is valid if it is _always_ true, and a formula is satisfiable if there is at least one case (one assignment of true and false to each propositional atom) where it is true. In general, it is actually not that simple to check that a formula has these properties, especially if it contains a lot of variables. For each additional variable that we add to the formula, the truth table _doubles_ in size. Thus, simply checking each line in the truth table will take $2^n$ operations in the worst case, which quickly becomes an unreasonable amount of work. In practice, tools called SAT solvers are used, which employ some clever tricks to usually find the answer faster.
+There are two properties of a formula which are useful to know. They are _validity_ and _satisfiability_.
+
+>A formula is valid if it is _always_ true, and a formula is satisfiable if there is at least one case (one assignment of true and false to each propositional atom) where it is true.
+{.important}
+
+In general, it is actually not that simple to check that a formula has these properties, especially if it contains a lot of variables. For each additional variable that we add to the formula, the truth table _doubles_ in size. Thus, simply checking each line in the truth table will take $2^n$ operations in the worst case, which quickly becomes an unreasonable amount of work. In practice, tools called SAT solvers are used, which employ some clever tricks to usually find the answer faster.
 
 But, there are classes of formulae which are much easier to test for validity or satisfiability. Among them are formulae in CNF (conjunctive normal form) and DNF (disjunctive normal form.) Let us first have a look at formulae in disjunctive normal form, and see how they can be easily checked for satisfiability.
 
-A formula is said to be in disjunctive normal form if it is a disjunction of clauses, where each clause is a conjunction of atoms (or their negations.) Here are a few examples:
+>A formula is said to be in disjunctive normal form if it is a disjunction of clauses, where each clause is a conjunction of atoms (or their negations).
+{.important}
+
+Here are a few examples:
 1. $p\lor\lnot p$
 2. $(a\land b\land \lnot c) \lor c \lor (a\land\lnot b)$
 3. $p$
@@ -287,7 +325,7 @@ $$p\lor\lnot p\lor a$$
 
 This will _always_ be true: if $p$ is true then the first disjunct holds. If not, then the second disjunct holds. Either way, the clause is always true. Hence, we can check formulae in CNF for validity in linear time, since all we have to do is go through each clause, and see whether or not it contains an atom and its negation.
 
-These forms are easy to work with, but unfortunately the formulae we usually come across are not in these forms. Instead, we would have to convert them into an equivalent CNF or DNF formula. To do this, we first need to get rid of any implications by using the identity $$a\rightarrow b\equiv \lnot a\lor b$$. After this point, we will have a formula containing only negations, conjunctions, and disjunctions. However, they will most likely not be in the correct order. For instance, the formula
+These forms are easy to work with, but unfortunately the formulae we usually come across are not in these forms. Instead, we would have to convert them into an equivalent CNF or DNF formula. To do this, we first need to get rid of any implications by using the identity $$a\rightarrow b\equiv \lnot a\lor b$$ After this point, we will have a formula containing only negations, conjunctions, and disjunctions. However, they will most likely not be in the correct order. For instance, the formula
 $$ \lnot(a\land \lnot(b\lor c)) \lor \lnot a $$ contains only $\lnot, \lor, \land$, but it is neither in DNF nor CNF. To get the formula in the correct form after this, we need to use a few different logical equivalences:
 1. $\lnot(a\lor b)\equiv \lnot a\land\lnot b$
 2. $\lnot(a\land b)\equiv \lnot a\lor\lnot b$
@@ -302,6 +340,8 @@ The complete algorithm is not covered here; if you are interested, it is discuss
   - We still have to put in computational work to convert a formula into a normal form, which means checking validitiy or satisfiability is still not efficient. In practice, heuristic based SAT solvers are used.
 
 # References
-- [Logical implication example][1]
+- Michael Huth, Mark Ryan. Logic in Computer Science: Modelling and Reasoning about Systems, 2ed. Cambridge University Press, 2004 [Amazon][1]
+- Logical implication example [wiki][2]
 
-[1]: https://simple.wikipedia.org/wiki/Implication_(logic)
+[1]: https://www.amazon.com/Logic-Computer-Science-Modelling-Reasoning/dp/052154310X
+[2]: https://simple.wikipedia.org/wiki/Implication_(logic)
