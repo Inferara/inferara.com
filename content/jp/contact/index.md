@@ -12,7 +12,7 @@
     <div class="address">
         <p>〒810-0041<span>📮</span></p>
         <p>日本<span>🇯🇵</span>&nbsp;福岡県福岡市<span>🍜</span></p>
-        <p>市中央区大名2-6-11<span>🏢</span></div>
+        <p>中央区大名2-6-11<span>🏢</span></div>
     </div>
 </div>
 
