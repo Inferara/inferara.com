@@ -1,10 +1,11 @@
 +++
 title = 'Introduction into Logic in computer science'
-date = 2024-11-03T19:00:15+13:00
+date = 2024-11-09T12:00:00+7:00
 draft = false
 math = "katex"
 summary = "This blog outlines the basics of propositional logic, as explained by the book \"Logic in compuer science\"."
 tags = ["Propositional logic", "Foundations", "Mathematics"]
+aliases = ["/blog/introduction-into-logic-in-computer-science"]
 +++
 
 ## Table of contents
@@ -345,3 +346,5 @@ The complete algorithm is not covered here; if you are interested, it is discuss
 
 [1]: https://www.amazon.com/Logic-Computer-Science-Modelling-Reasoning/dp/052154310X
 [2]: https://simple.wikipedia.org/wiki/Implication_(logic)
+
+{{<post-socials page_content_type="blog" telegram_post_id="10" x_post_id="1774858291727978818">}}
