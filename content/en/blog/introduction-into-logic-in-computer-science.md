@@ -1,6 +1,6 @@
 +++
 title = 'Introduction into Logic in computer science'
-date = 2024-11-09T18:00:00+08:00
+date = 2024-11-09T18:00:00+06:00
 draft = false
 math = "katex"
 summary = "This blog outlines the basics of propositional logic, as explained by the book \"Logic in compuer science\"."
