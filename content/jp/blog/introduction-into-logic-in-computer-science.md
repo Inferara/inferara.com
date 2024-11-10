@@ -347,5 +347,5 @@ $$ \lnot(a\land \lnot(b\lor c)) \lor \lnot a $$ は$\lnot, \lor, \land$のみを
 [1]: https://www.amazon.com/Logic-Computer-Science-Modelling-Reasoning/dp/052154310X
 [2]: https://simple.wikipedia.org/wiki/Implication_(logic)
 
-{{<post-socials language="jp" page_content_type="blog" telegram_post_id="5" x_post_id="1774705080094335425">}}
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="21" x_post_id="1855443598827032645">}}
 {{<ai-translated>}}

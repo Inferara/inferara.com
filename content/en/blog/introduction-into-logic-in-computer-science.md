@@ -347,4 +347,4 @@ The complete algorithm is not covered here; if you are interested, it is discuss
 [1]: https://www.amazon.com/Logic-Computer-Science-Modelling-Reasoning/dp/052154310X
 [2]: https://simple.wikipedia.org/wiki/Implication_(logic)
 
-{{<post-socials page_content_type="blog" telegram_post_id="10" x_post_id="1774858291727978818">}}
+{{<post-socials page_content_type="blog" telegram_post_id="21" x_post_id="1855443598827032645">}}
