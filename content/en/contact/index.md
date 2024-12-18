@@ -20,7 +20,7 @@
 <h2>You can contact us via social media, or by using the form below:</h2>
 
 <div>
-    <iframe class="contact-form" src="https://docs.google.com/forms/d/e/1FAIpQLScR7HbsCfFbh8gOp3hCn2CuSbIGznXIWNxP6Ndt4DxBCI7Q1Q/viewform?embedded=true" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    <iframe class="contact-form" src="https://docs.google.com/forms/d/e/1FAIpQLScehXs03AH8LhlAXxIgHqyletfQ0Nnzh491jNNUsIo-d3Y1rg/viewform?embedded=true" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 </div>
 
 {{</rawhtml>}}
