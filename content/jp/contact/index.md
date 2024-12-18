@@ -21,7 +21,7 @@
 <h2>ソーシャルメディアや以下のフォームを使用してご連絡ください:</h2>
 
 <div>
-    <iframe class="contact-form" src="https://docs.google.com/forms/d/e/1FAIpQLSf_nsvgT8MPL5ApqnQghbK_Uo30l-y8huKZb0fvpw9wrdTg-w/viewform?embedded=true" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0">読み込み中…</iframe>
+    <iframe class="contact-form" src="https://docs.google.com/forms/d/e/1FAIpQLSfFBdhUFQYkW7MXC7zeiN74D5gssJWPARwhGLPJNguCAyY9qg/viewform?embedded=true" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0">読み込み中…</iframe>
 </div>
 
 {{</rawhtml>}}
