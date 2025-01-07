@@ -62,8 +62,8 @@ aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 
 これを行うために、次の非決定的な演算子を導入します。
 
-- $total_{\overline{pp}}$は、そのパラメータが任意の非決定的なプログラム$\overline{pp} \in \overline P$である演算子です。この演算子は終端的であり、つまり$R_{total} = \emptyset$です。任意の入力状態の集合$M_v \subseteq M$に対して、計算$total_{\overline{pp}}(M_v)$は、プログラム$\overline{pp}$と$M_v$の任意の有限部分集合に対して構築されたすべての計算木が有限である場合にのみ成功裏に完了します。そうでない場合、計算$total_{\overline{pp}}(M_v)$は終了しません。
-- $filter_{\overline{pp}}$は、そのパラメータが任意の非決定的なプログラム$\overline{pp} \in \overline P$である演算子です。この演算子は1つの結果しか持てず、$R_{filter} = \{\checkmark\}$です。任意の状態の部分集合$M_v \subseteq M$に対して、計算$filter_{\overline{pp}}(M_v)$は、各$m \in M$について、$m \in M_w$かつ$\overline{op}^w(m) = \blacktriangledown$となるノード$(w, M_w)$が$M_v$上の$\overline{pp}$の計算木に存在するかどうかを判断できる場合にのみ終了します。結果として得られる$filter_{\overline{pp}}(M_v) = \{(m, \checkmark)\}$は、終端と判断されたすべての$m$を出力に集めます。どの状態の終端性も判断できない場合、計算$filter_{\overline{pp}}(M_v)$は終了しません。
+- $forall_{\overline{pp}}$は、そのパラメータが任意の非決定的なプログラム$\overline{pp} \in \overline P$である演算子です。この演算子は終端的であり、つまり$R_{forall} = \emptyset$です。任意の入力状態の集合$M_v \subseteq M$に対して、計算$forall_{\overline{pp}}(M_v)$は、プログラム$\overline{pp}$と$M_v$の任意の有限部分集合に対して構築されたすべての計算木が有限である場合にのみ成功裏に完了します。そうでない場合、計算$forall_{\overline{pp}}(M_v)$は終了しません。
+- $assume_{\overline{pp}}$は、そのパラメータが任意の非決定的なプログラム$\overline{pp} \in \overline P$である演算子です。この演算子は1つの結果しか持てず、$R_{assume} = \{\checkmark\}$です。任意の状態の部分集合$M_v \subseteq M$に対して、計算$assume_{\overline{pp}}(M_v)$は、各$m \in M$について、$m \in M_w$かつ$\overline{op}^w(m) = \blacktriangledown$となるノード$(w, M_w)$が$M_v$上の$\overline{pp}$の計算木に存在するかどうかを判断できる場合にのみ終了します。結果として得られる$assume_{\overline{pp}}(M_v) = \{(m, \checkmark)\}$は、終端と判断されたすべての$m$を出力に集めます。どの状態の終端性も判断できない場合、計算$assume_{\overline{pp}}(M_v)$は終了しません。
 
 ここで、追加の演算子のセマンティクスを論理的な手段で定義していることが明らかになります。一般的に言えば、記述された計算を実行できる実際の装置を想像するのは困難です。我々は本質的に、抽象マシンのあらゆる可能な状態の空間を反復するアルゴリズムについて話しており、これは興味深い場合には明らかに可能性を超えています。
 
@@ -77,50 +77,49 @@ aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 type sf = fn(&mut [i32]);
 
 fn count_values(arr: &[i32], val: i32) -> usize {
-	arr.iter().filter(|&&x| x == val).count()
+  arr.iter().filter(|&&x| x == val).count()
 }
 
-total fn preserving_count(func : sf) {
-	let arr = Vec<i32>::undef();
-	let val = i32::undef();
+fn preserving_count(func : sf) forall {
+  let arr: Vec<i32> = @;
+  let val: i32 = @;
 
-	let before = count_values(&arr, val);
-	func(&mut arr);
-	let after = count_values(&arr, val);
-	
-	assert!(before == after);
+  let before = count_values(&arr, val);
+  func(&mut arr);
+  let after = count_values(&arr, val);
+  
+  assert!(before == after);
 }
 
-total fn procuring_sorted(func: sf) {
-	let arr = Vec<i32>::undef();
+fn procuring_sorted(func: sf) forall {
+  let arr: Vec<i32> = @;
 
-	func(&mut arr);
+  func(&mut arr);
 
-	let i = usize::undef();
-	let j = usize::undef();
+  let i: usize = @;
+  let j: usize = @;
 
-	filter {
-		assert!(i < j);
-		assert!(j < arr.len());
-	}
+  assume {
+    assert!(i < j);
+    assert!(j < arr.len());
+  }
 
-	assert!(arr[i] <= arr[j]);
+  assert!(arr[i] <= arr[j]);
 }
 
 fn proof() {
-	verify preserving_count(foobar);
-	verify procuring_sorted(foobar);
+  preserving_count(foobar);
+  procuring_sorted(foobar);
 
-	println!("foobar is a _______ function");
+  println!("foobar is a _______ function");
 }
 ```
 
-このコードでは、3つの新しいキーワード（`total`、`filter`、`verify`）と、プリミティブ型の未知のトレイトに関連するいくつかの`::undef()`関数の呼び出しが見られます。これらを順番に見ていきましょう。
+このコードでは、新しいキーワードである `forall` と `assume` が2つ導入されており、また、原始型の値を置き換えるように見える `@` が複数回使用されています。それらについて順を追って説明します。
 
-- キーワード`total`は、その後に続くブロック（またはこの場合、そのマークされた関数の本体）が、同名の演算子のセマンティクスで非決定的な計算を行うことを宣言します。`total`ブロックは、制御を得ると、許容される各計算が成功裏に完了する場合にのみ、成功裏に副作用なしに完了します。
-- キーワード`filter`も、対応する演算子の非決定的な計算を、その後に続くブロック上で行います。`filter`ブロックは、制御を得ると、成功裏に完了する計算のみを保持します。
-- キーワード`verify`は、与えられた決定的なコンテキストで非決定的なブロックの実行可能性を保証します。ここでは、例えば、`total`本体を持つ関数の呼び出しへの適用は、マシンが、パラメータ`func`が関数`foobar`を参照する場合、その計算が各入力状態で確実に成功裏に完了するかどうかをチェックしなければならないことを意味します。チェックが成功すると、マシンは状態を変更せずに次の命令に制御を移します。
-- 関数`undef`は、`trait Undefinable { fn undef() -> Self where Self: Sized; }`のようなワンライナーで定式化できるトレイトで定義されており、その振る舞いは、計算`T::undef()`は完了が保証され、型`T`の任意の代表を返すことができる、と仕様化できます。
+- キーワード`forall`は、その後に続くブロック（またはこの場合、そのマークされた関数の本体）が、同名の演算子のセマンティクスで非決定的な計算を行うことを宣言します。`forall`ブロックは、制御を得ると、許容される各計算が成功裏に完了する場合にのみ、成功裏に副作用なしに完了します。
+- キーワード`assume`も、対応する演算子の非決定的な計算を、その後に続くブロック上で行います。`assume`ブロックは、制御を得ると、成功裏に完了する計算のみを保持します。
+- 型 `T` のスロットに位置する右辺値 `@` は、非決定的分岐のポイントとして見ることができます。その振る舞いは次のように指定されます。すなわち、計算 `@` は必ず完了し、型 `T` の任意の代表値を返すことが保証されます。
 
 明らかに、そのように拡張されたRustの実際のコンパイラやインタープリタを想像するのは非常に困難です。記述されたセマンティクスを持つ非決定的なブロックを実行することは、本質的に停止問題に帰着するタスクを解くことを意味します。
 
@@ -132,19 +131,19 @@ fn proof() {
 
 ## 解決策
 
-まず、`verify preserving_count(foobar)`の分析から始めましょう。全域的なセマンティクスを持つブロックを検証する際、入力状態の集合は呼び出しが行われた決定的な計算の単一の要素から成ります。我々は、その中でパラメトリック変数`func`が`foobar`を参照していることしか知りません。以下を実行した後、
+まず、`preserving_count(foobar)` の解析から始めましょう。`forall` のセマンティクスを持つブロックに制御が入るとき、状態の入力集合は単一の要素、すなわち呼び出しが行われた決定的計算の現在の状態のみで構成されます。この状態に関して分かっているのは、パラメトリック変数 `func` がその中で `foobar` を参照しているという点だけです。その後、ブロックを実行すると、
 
 ```rust
-	let arr = Vec<i32>::undef();
-	let val = i32::undef();
+  let arr: Vec<i32> = @;
+  let val: i32 = @;
 ```
 
-`undef`の仕様に従って、ローカル変数`arr`は32ビット整数の任意のベクトル（その長さと内容は任意）を含むことができ、ローカル変数`val`は任意の32ビット整数であり得ます。したがって、非決定的ブロックのこの時点での到達可能な状態の集合は非自明になります。次に、以下の計算に進みます。
+`@`の仕様に従って、ローカル変数`arr`は32ビット整数の任意のベクトル（その長さと内容は任意）を含むことができ、ローカル変数`val`は任意の32ビット整数であり得ます。したがって、非決定的ブロックのこの時点での到達可能な状態の集合は非自明になります。次に、以下の計算に進みます。
 
 ```rust
-	let before = count_values(&arr, val);
-	func(&mut arr);
-	let after = count_values(&arr, val);
+  let before = count_values(&arr, val);
+  func(&mut arr);
+  let after = count_values(&arr, val);
 ```
 
 ここでは、古典的な決定的関数のみが呼び出されているため、各到達可能な状態での計算は独立して実行されます。考えられるすべての組み合わせについて、まず`arr`内の`val`の出現回数を数え、次に`func`を呼び出して`arr`の内容を何らかの方法で変更し、そして再度`val`を数えます。
@@ -156,39 +155,39 @@ fn proof() {
 最後に、非決定的な計算は以下のチェックで完了します。
 
 ```rust
-	assert!(before == after);
+  assert!(before == after);
 ```
 
 各到達可能な状態がこのチェックを独立して通過しなければならないため、`foobar`関数は、それが呼び出される配列の要素数を保持し、つまり要素を並べ替えるだけであるという正当な結論を下すことができます。
 
-この事実を覚えておいて、`verify procuring_sorted(foobar)`の分析に進みましょう。
+この事実を覚えておいて、`procuring_sorted(foobar)`の分析に進みましょう。
 
-呼び出された全域的な関数は再び以下から始まります。
+`forall` 本体を持つ呼び出された関数は、再び以下のように始まります。
 
 ```rust
-	let arr = Vec<i32>::undef();
+  let arr: Vec<i32> = @;
 
-	func(&mut arr);
+  func(&mut arr);
 ```
 
 つまり、ローカル変数に任意の配列を割り当て、その内容に`foobar`関数を適用します。次に、
 
 ```rust
-	let i = usize::undef();
-	let j = usize::undef();
+  let i: usize = @;
+  let j: usize = @;
 
-	filter {
-		assert!(i < j);
-		assert!(j < arr.len());
-	}
+  assume {
+    assert!(i < j);
+    assert!(j < arr.len());
+  }
 ```
 
-ここで`filter`キーワードの最初の使用が見られます。ここでは、未知の値を持つ2つのローカルインデックスを導入し、その後、フィルタリングブロックのセマンティクスに従って、少なくとも1つの`assert`に失敗する計算を成功裏に完了したものとして考えます。
+ここで初めて `assume` キーワードが使用されているのを確認できます。この部分では、最初に未知の値を持つ2つのローカルインデックスを導入します。その後、`assume` ブロックのセマンティクスに従い、少なくとも1つの `assert` が失敗するすべての計算を、正常に完了したものとして考慮します。
 
-計算の早期の成功終了は外部ブロックの全域性に影響を与えられないため、`i`と`j`が`arr`配列の異なる順序付きインデックスである状況のみをチェックする必要があります。最終的な計算
+計算が早期に正常終了したとしても、外側のブロックの実行に影響を与えることはできないため、`i` と `j` が `arr` 配列の異なる順序付きインデックスである場合のみを確認すれば十分です。最終的な計算では、
 
 ```rust
-	assert!(arr[i] <= arr[j]);
+  assert!(arr[i] <= arr[j]);
 ```
 
 は、任意の配列に`foobar`関数を適用した後、その中のすべての要素が昇順に並んでいることを示しています。
@@ -201,7 +200,7 @@ fn proof() {
 `proof`関数の診断メッセージの空欄に答えを埋めましょう。
 
 ```rust
-	println!("foobar is a sorting function");
+  println!("foobar is a sorting function");
 ```
 
 確かに、記述された非決定的なセマンティクスを持つ拡張Rustでコードを実行できるインタープリタがあれば、画面にこの行が表示されることは、`foobar`がソート関数であることを明確に示しています。
@@ -223,23 +222,23 @@ type sf = fn(&[u32], &mut [usize]) -> u32;
 
 // 入力の有効性をチェックします。
 fn valid_input(p: &[u32], n: usize) {
-	let nm = p.len();
+  let nm = p.len();
 
-	assert!(nm > 0); // pは空であってはならない
-	assert!(nm % n == 0); // pは長方形でなければならない
+  assert!(nm > 0); // pは空であってはならない
+  assert!(nm % n == 0); // pは長方形でなければならない
 
-	let m = nm / n;
+  let m = nm / n;
 
-	for j in 0..m {
-		let mut acc: u32 = 0;
+  for j in 0..m {
+    let mut acc: u32 = 0;
 
-		for i in 0..n {
-			let old = acc;
-			acc += p[i * m + j];
-			// p_{*,j}の合計がu32をオーバーフローしてはならない
-			assert!(acc >= old);
-		}
-	}
+    for i in 0..n {
+      let old = acc;
+      acc += p[i * m + j];
+      // p_{*,j}の合計がu32をオーバーフローしてはならない
+      assert!(acc >= old);
+    }
+  }
 }
 
 // 解候補のミニマックスを計算します。
@@ -249,7 +248,7 @@ fn calculate(p: &[u32], f: &[usize]) -> u32 {
     let mut res: Vec<u32> = vec![0; m];
 
     for (i, &fi) in f.iter().enumerate() {
-	    assert!(fi < m);
+      assert!(fi < m);
         res[fi] += p[i * m + fi];
     }
 
@@ -257,31 +256,31 @@ fn calculate(p: &[u32], f: &[usize]) -> u32 {
 }
 
 // グローバルに最適な解の仕様。
-total fn optimal(func: sf) {
-	let p = Vec<u32>::undef();
-	let mut f = Vec<usize>::undef();
-	let n = f.len();
+fn optimal(func: sf) forall {
+  let p: Vec<u32> = @;
+  let mut f: Vec<usize> = @;
+  let n = f.len();
 
-	// 入力をチェック
-	filter valid_input(&p, n);
+  // 入力をチェック
+  assume valid_input(&p, n);
 
-	// 指定された関数を実行
-	let r = func(&p, &mut f);
+  // 指定された関数を実行
+  let r = func(&p, &mut f);
 
-	// 戻り値が正しいことを保証
-	assert!(r == calculate(&p, &f));
+  // 戻り値が正しいことを保証
+  assert!(r == calculate(&p, &f));
 
-	// 他の可能な解をすべて生成
-	for i in 0..n { f[i] = usize::undef(); }
+  // 他の可能な解をすべて生成
+  for i in 0..n { f[i] = @; }
 
-	// 候補解が最良であることを保証
-	assert!(r <= filter calculate(&p, &f));
+  // 候補解が最良であることを保証
+  assert!(r <= assume calculate(&p, &f));
 }
 
 fn proof() {
-	verify optimal(foobar);
+  optimal(foobar);
 
-	println!("foobar is an unrelated-machines scheduler");
+  println!("foobar is an unrelated-machines scheduler");
 }
 ```
 
