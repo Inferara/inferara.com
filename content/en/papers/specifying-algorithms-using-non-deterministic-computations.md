@@ -62,8 +62,8 @@ However, it should be understood that building an instance of the computation tr
 
 To do this, we will introduce the following non-deterministic operations:
 
-- $total_{\overline{pp}}$ is an operation, whose parameter is an arbitrary non-deterministic program $\overline{pp} \in \overline P$. The operation is terminal, i.e., $R_{total} = \emptyset$. For any input set of states $M_v \subseteq M$, the computation $total_{\overline{pp}}(M_v)$ completes successfully if and only if every computation tree built for the program $\overline{pp}$ and any finite subset of $M_v$ is finite. Otherwise, the computation $total_{\overline{pp}}(M_v)$ does not terminate;
-- $filter_{\overline{pp}}$ is an operation, whose parameter is an arbitrary non-deterministic program $\overline{pp} \in \overline P$. The operation can only have one result $R_{filter} = \\{\checkmark\\}$. For any subset of states $M_v \subseteq M$, the computation $ filter_{\overline{pp}}(M_v)$ terminates if and only if for each $m \in M$, it can be determined whether there is a node $(w, M_w)$ in the computation tree $\overline{pp}$ over $M_v$ such that $m \in M_w$ and $\overline{op}^w(m) = \blacktriangledown$. The resulting $filter_{\overline{pp}}(M_v) = \\{(m, \checkmark)\\}$ collects at the output all $m$ determined as terminal. If it is impossible to determine the terminality of any state, the computation $filter_{\overline{pp}}(M_v)$ does not terminate.
+- $forall_{\overline{pp}}$ is an operation, whose parameter is an arbitrary non-deterministic program $\overline{pp} \in \overline P$. The operation is terminal, i.e., $R_{forall} = \emptyset$. For any input set of states $M_v \subseteq M$, the computation $forall_{\overline{pp}}(M_v)$ completes successfully if and only if every computation tree built for the program $\overline{pp}$ and any finite subset of $M_v$ is finite. Otherwise, the computation $forall_{\overline{pp}}(M_v)$ does not terminate;
+- $assume_{\overline{pp}}$ is an operation, whose parameter is an arbitrary non-deterministic program $\overline{pp} \in \overline P$. The operation can only have one result $R_{assume} = \\{\checkmark\\}$. For any subset of states $M_v \subseteq M$, the computation $ assume_{\overline{pp}}(M_v)$ terminates if and only if for each $m \in M$, it can be determined whether there is a node $(w, M_w)$ in the computation tree $\overline{pp}$ over $M_v$ such that $m \in M_w$ and $\overline{op}^w(m) = \blacktriangledown$. The resulting $assume_{\overline{pp}}(M_v) = \\{(m, \checkmark)\\}$ collects at the output all $m$ determined as terminal. If it is impossible to determine the terminality of any state, the computation $assume_{\overline{pp}}(M_v)$ does not terminate.
 
 Here it becomes obvious that we define the semantics of additional operations through logical means, and, generally speaking, it is difficult to imagine a real device capable of performing the described computations - we are essentially talking about algorithms that iterate over the spaces of all possible states of the abstract machine, which for any interesting cases is clearly beyond the possible.
 
@@ -80,9 +80,9 @@ fn count_values(arr: &[i32], val: i32) -> usize {
 	arr.iter().filter(|&&x| x == val).count()
 }
 
-total fn preserving_count(func : sf) {
-	let arr = Vec<i32>::undef();
-	let val = i32::undef();
+fn preserving_count(func : sf) forall {
+	let arr: Vec<i32> = @;
+	let val: i32 = @;
 
 	let before = count_values(&arr, val);
 	func(&mut arr);
@@ -91,15 +91,15 @@ total fn preserving_count(func : sf) {
 	assert!(before == after);
 }
 
-total fn procuring_sorted(func: sf) {
-	let arr = Vec<i32>::undef();
+fn procuring_sorted(func: sf) forall {
+	let arr: Vec<i32> = @;
 
 	func(&mut arr);
 
-	let i = usize::undef();
-	let j = usize::undef();
+	let i: usize = @;
+	let j: usize = @;
 
-	filter {
+	assume {
 		assert!(i < j);
 		assert!(j < arr.len());
 	}
@@ -108,19 +108,18 @@ total fn procuring_sorted(func: sf) {
 }
 
 fn proof() {
-	verify preserving_count(foobar);
-	verify procuring_sorted(foobar);
+	preserving_count(foobar);
+	procuring_sorted(foobar);
 
 	println!("foobar is a _______ function");
 }
 ```
 
-In this code, you can see three new keywords (`total`, `filter`, `verify`) and several calls to the function `::undef()`, associated with an unknown trait of primitive types. Let's go through them in order:
+In this code, you can see two new keywords (`forall`, `assume`) and several occurrences of the `@`, which seems to replace values of primitive types. Let's go through them in order:
 
-- The keyword `total` declares that the block following it (or, in this case, the body of the function marked by it) performs a non-deterministic computation in the semantics of the eponymous operation. A total block, upon gaining control, completes successfully and without any side effects only if each of its allowable computations completes successfully.
-- The keyword `filter` also performs a non-deterministic computation of the corresponding operation over the block following it. A filtering block, upon gaining control, retains only those computations that complete successfully.
-- The keyword `verify` ensures the executability of a non-deterministic block in a given deterministic context. Here, for example, its application to calls of functions with total bodies means that the machine must check whether their computation is guaranteed to complete successfully on each input state where the parameter `func` refers to the function `foobar`. If the check is successful, the machine transfers control to the next instruction without changing its state.
-- The function `undef` is defined in a trait that can be formulated as a one-liner `trait Undefinable { fn undef() -> Self where Self: Sized; }`, and its behavior can be specified as - the computation `T::undef()` is guaranteed to complete and can return any representative of type `T`.
+- The keyword `forall` declares that the block following it (or, in this case, the body of the function marked by it) performs a non-deterministic computation in the semantics of the eponymous operation. Such block, upon gaining control, completes successfully and without any side effects only if each of its allowable computations completes successfully.
+- The keyword `assume` also performs a non-deterministic computation of the corresponding operation over the block following it. A assuming block, upon gaining control, retains only those computations that complete successfully.
+- The rvalue `@`, when occupying slot of type `T`, can be seen as a point of non-deterministic branching, and its behavior can be specified as - the computation `@` is guaranteed to complete and can return any representative of type `T`.
 
 It is quite obvious that it is extremely difficult to imagine a real compiler or interpreter for such a modified Rust - executing non-deterministic blocks with the described semantics essentially implies solving tasks that reduce to the halting problem.
 
@@ -132,14 +131,14 @@ So that readers can try to solve this simple puzzle on their own, the text of th
 
 ## Solution
 
-Let's start with analyzing `verify preserving_count(foobar)`. When verifying a block with total semantics, the input set of states consists of a single element - the current state of the deterministic computation in which the call was made. We only know about it that the parametric variable `func` refers to `foobar` in it. After executing
+Let's start with analyzing `preserving_count(foobar)`. When control enters a block with forall semantics, the input set of states consists of a single element - the current state of the deterministic computation in which the call was made. We only know about it that the parametric variable `func` refers to `foobar` in it. After executing
 
 ```rust
-	let arr = Vec<i32>::undef();
-	let val = i32::undef();
+	let arr: Vec<i32> = @;
+	let val: i32 = @;
 ```
 
- according to the `undef` specification, the local variable `arr` can contain absolutely any vector of 32-bit integers (both its length and content are arbitrary), and the local variable `val` can be any 32-bit integer. Thus, the set of reachable states at this point of the non-deterministic block becomes non-degenerate. Next, we proceed to the computation
+ according to the `@` specification, the local variable `arr` can contain absolutely any vector of 32-bit integers (both its length and content are arbitrary), and the local variable `val` can be any 32-bit integer. Thus, the set of reachable states at this point of the non-deterministic block becomes non-degenerate. Next, we proceed to the computation
 
 ```rust
 	let before = count_values(&arr, val);
@@ -149,7 +148,7 @@ Let's start with analyzing `verify preserving_count(foobar)`. When verifying a b
 
 Since only classical deterministic functions are called here, the computation on each reachable state is performed independently. For all conceivable combinations, we first count how many times `val` occurs in `arr`, then call `func`, somehow changing the content of `arr`, and then recount `val` in it.
 
-If the call to `func(&mut arr)` does not terminate or is interrupted by an invalid operation on at least one input, then according to the semantics of the total block, the entire non-deterministic computation cannot be successful, and further reasoning loses its meaning.
+If the call to `func(&mut arr)` does not terminate or is interrupted by an invalid operation on at least one input, then according to the semantics of the forall block, the entire non-deterministic computation cannot be successful, and further reasoning loses its meaning.
 
 If this does not happen, the set of reachable states does not change quantitatively, but in each of its elements, new local variables `before` and `after` appear, containing the corresponding count results.
 
@@ -161,12 +160,12 @@ Finally, our non-deterministic computation completes with the check
 
 Since each reachable state must independently pass this check, we can make a justified conclusion that the `foobar` function must preserve the count of elements in the arrays on which it is called, i.e., it only permutes their elements.
 
-Let's remember this fact and move on to analyzing `verify procuring_sorted(foobar)`. 
+Let's remember this fact and move on to analyzing `procuring_sorted(foobar)`. 
 
-The called total function, again, starts with
+The called function with forall body, again, starts with
 
 ```rust
-	let arr = Vec<i32>::undef();
+	let arr: Vec<i32> = @;
 
 	func(&mut arr);
 ```
@@ -174,18 +173,18 @@ The called total function, again, starts with
 i.e., assigning the local variable an arbitrary array and applying the `foobar` function to its content. Then follows
 
 ```rust
-	let i = usize::undef();
-	let j = usize::undef();
+	let i: usize = @;
+	let j: usize = @;
 
-	filter {
+	assume {
 		assert!(i < j);
 		assert!(j < arr.len());
 	}
 ```
 
-where we see the first use of the `filter` keyword. Here, we first introduce two local indices with unknown values, and then, according to the semantics of the filtering block, we consider all computations that fail at least one of the asserts as successfully completed.
+where we see the first use of the `assume` keyword. Here, we first introduce two local indices with unknown values, and then, according to the semantics of the assuming block, we consider all computations that fail at least one of the asserts as successfully completed.
 
-Since premature successful termination of the computation cannot affect the totality of the outer block, we only need to check the situations where `i` and `j` are different and ordered indices of the `arr` array. The final computation
+Since premature successful termination of the computation cannot affect the execution of the outer block, we only need to check the situations where `i` and `j` are different and ordered indices of the `arr` array. The final computation
 
 ```rust
 	assert!(arr[i] <= arr[j]);
@@ -255,13 +254,13 @@ fn calculate(p: &[u32], f: &[usize]) -> u32 {
 }
 
 // Specification of globally optimal solution.
-total fn optimal(func: sf) {
-	let p = Vec<u32>::undef();
-	let mut f = Vec<usize>::undef();
+fn optimal(func: sf) forall {
+	let p: Vec<u32> = @;
+	let mut f: Vec<usize> = @;
 	let n = f.len();
 
 	// checking input
-	filter valid_input(&p, n);
+	assume valid_input(&p, n);
 
 	// running specified function
 	let r = func(&p, &mut f);
@@ -270,14 +269,14 @@ total fn optimal(func: sf) {
 	assert!(r == calculate(&p, &f));
 
 	// generating all other possible solutions
-	for i in 0..n { f[i] = usize::undef(); }
+	for i in 0..n { f[i] = @; }
 
 	// ensuring that the candidate solution is the best
-	assert!(r <= filter calculate(&p, &f));
+	assert!(r <= assume calculate(&p, &f));
 }
 
 fn proof() {
-	verify optimal(foobar);
+	optimal(foobar);
 
 	println!("foobar is an unrelated-machines scheduler");
 }
