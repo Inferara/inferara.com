@@ -12,10 +12,16 @@ aliases = ["/blog/introduction-into-logic-in-computer-science"]
 
 - [Introduction](#introduction)
 - [Declarative sentences](#declarative-sentences)
+  - [Summary of key ideas:](#summary-of-key-ideas)
 - [Propositional logic](#propositional-logic)
+  - [Summary of key ideas:](#summary-of-key-ideas-1)
 - [Syntax](#syntax)
+  - [Summary of key ideas:](#summary-of-key-ideas-2)
 - [Semantics](#semantics)
-- [Normal forms](#normal-forms)
+  - [Summary of key ideas:](#summary-of-key-ideas-3)
+- [Normal forms:](#normal-forms)
+  - [Summary of key ideas:](#summary-of-key-ideas-4)
+- [References](#references)
 
 # Introduction
 This blog post is a conspectus for the book _Logic in Computer Science_ by Micheal Huth and Mark Ryan [[1]]. It will cover the first five parts of chapter one. This conspectus is written informaly for the sake of brevity. As such, a lot of theorems and proofs from the original text aren't mentioned.

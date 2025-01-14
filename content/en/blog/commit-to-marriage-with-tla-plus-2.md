@@ -10,6 +10,7 @@ aliases = ["/blog/commit-to-marriage-with-tla-plus-2"]
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Transaction Commit](#transaction-commit)
 - [Two-Phase Commit](#two-phase-commit)

@@ -10,6 +10,7 @@ aliases = [ "/papers/program-verification-background-and-notation" ]
 
 ## 目次
 
+- [目次](#目次)
 - [はじめに](#はじめに)
 - [仕様と計算のギャップ](#仕様と計算のギャップ)
   - [例：グラフの彩色](#例グラフの彩色)

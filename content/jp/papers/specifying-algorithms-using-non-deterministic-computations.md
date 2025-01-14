@@ -10,6 +10,7 @@ aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 
 ## 目次
 
+- [目次](#目次)
 - [はじめに](#はじめに)
 - [非決定性と形式的仕様](#非決定性と形式的仕様)
 - [問題](#問題)

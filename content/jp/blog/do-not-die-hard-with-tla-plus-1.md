@@ -10,6 +10,7 @@ aliases = ["/blog/do-not-die-hard-with-tla-plus-1"]
 
 ## 目次
 
+- [目次](#目次)
 - [はじめに](#はじめに)
 - [$TLA^+$の紹介](#tlaの紹介)
 - [$TLA^+$における状態機械](#tlaにおける状態機械)

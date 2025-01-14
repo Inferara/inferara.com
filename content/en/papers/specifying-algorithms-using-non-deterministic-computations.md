@@ -10,6 +10,7 @@ aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Non-Determinism and Formal Specifications](#non-determinism-and-formal-specifications)
 - [Problem](#problem)

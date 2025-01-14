@@ -10,6 +10,7 @@ aliases = [ "/papers/deductive-verification-as-alternative-to-push-button-techno
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features and Similarities of Formal Verification Techniques](#features-and-similarities-of-formal-verification-techniques)
 - [Correctness Certificate and Its Role in the Verification Process](#correctness-certificate-and-its-role-in-the-verification-process)
