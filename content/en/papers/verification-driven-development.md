@@ -8,7 +8,7 @@ summary = "In this paper the 'reasonable machine' term is presented along with t
 aliases = ["verification-driven-development"]
 +++
 
-## Table of Contents
+**Table of Contents**
 
 - [Introduction](#introduction)
 - [Formal specifications 101](#formal-specifications-101)

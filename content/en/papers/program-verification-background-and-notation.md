@@ -8,7 +8,7 @@ summary = "This paper examines the field of program verification, emphasizing th
 aliases = [ "/papers/program-verification-background-and-notation" ]
 +++
 
-## Table of Contents
+**Table of Contents**
 
 - [Introduction](#introduction)
 - [Specification-vs-Computation Gap](#specification-vs-computation-gap)

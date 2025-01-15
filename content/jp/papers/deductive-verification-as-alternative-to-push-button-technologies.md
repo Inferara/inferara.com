@@ -8,7 +8,7 @@ summary = "本論文では、演繹的検証アプローチを他の形式的検
 aliases = [ "/papers/deductive-verification-as-alternative-to-push-button-technologies" ]
 +++
 
-## 目次
+**目次**
 
 - [はじめに](#はじめに)
 - [形式的検証技術の特徴と類似点](#形式的検証技術の特徴と類似点)

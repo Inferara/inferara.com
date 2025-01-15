@@ -8,7 +8,7 @@ tags = ["Temporal Logic", "TLA+", "Model checking", "Alrorithms"]
 aliases = ["/blog/commit-to-marriage-with-tla-plus-2"]
 +++
 
-## Table of Contents
+**Table of Contents**
 
 - [Introduction](#introduction)
 - [Transaction Commit](#transaction-commit)

@@ -8,7 +8,7 @@ summary = "本論文では、「合理的なマシン」という用語を提示
 aliases = ["verification-driven-development"]
 +++
 
-## 目次
+**目次**
 
 - [はじめに](#はじめに)
 - [形式的仕様入門](#形式的仕様入門)

@@ -8,7 +8,7 @@ summary = "In this article, we will discuss the use of the formalism of non-dete
 aliases = ["/papers/specifying-algorithms-using-non-deterministic-computations"]
 +++
 
-## Table of Contents
+**Table of Contents**
 
 - [Introduction](#introduction)
 - [Non-Determinism and Formal Specifications](#non-determinism-and-formal-specifications)
