@@ -1,16 +1,15 @@
 +++
 title = "Understanding the C Runtime: crt0, crt1, crti, and crtn"
-date = 2025-01-15T11:21:45+05:00
+date = 2025-01-15T11:21:45+09:00
 draft = false
 math = "katex"
-summary = ""
+summary = "The C runtime (CRT) is a collection of startup routines, initialization code, standard library support, and sometimes system call wrappers that form the environment in which a C program executes."
 tags = ["Clang", "Compilers", "Alrorithms"]
 aliases = ["/blog/c-runtime"]
 +++
 
-## Table of Contents
+**Table of Contents**
 
-- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [What is the C Runtime?](#what-is-the-c-runtime)
 - [The Role of `crt0.o` (or `crt1.o` in Modern Toolchains)](#the-role-of-crt0o-or-crt1o-in-modern-toolchains)
@@ -66,8 +65,6 @@ the compiler driver and linker *implicitly* include startup object files and lib
 4. Call your `main()` function.
 5. Handle the return from `main()` and pass the exit status to the operating system.
 
----
-
 ## The Role of `crt0.o` (or `crt1.o` in Modern Toolchains)
 
 Historically, **`crt0.o`** (C runtime zero) is a small object file containing the actual entry point routine, often named `_start`. Its responsibilities include:
@@ -94,8 +91,6 @@ Because `crt0.o` was often a large, monolithic file, many modern toolchains now 
 
 ### Linking Phase
 When you link your program, the linker automatically pulls in `crt0.o` (or `crt1.o`) from the C library implementation (e.g., glibc or musl) or from the compiler toolchain. This happens behind the scenes unless you explicitly disable it (e.g., with certain compiler flags like `-nostartfiles`).
-
----
 
 ## Additional Runtime Files: `crti.o`, `crtn.o`, and Friends
 
@@ -129,8 +124,6 @@ Conceptually, you can think of `crti.o` as the place where the runtime says, “
 
 When the program finishes, the destructors of global objects are called, ensuring resources are cleaned up before the program truly exits.
 
----
-
 ## Putting It All Together
 
 To visualize how these files fit into the program startup flow, here is a simplified diagram:
@@ -163,7 +156,7 @@ To visualize how these files fit into the program startup flow, here is a simpli
                    │
                    │ (4) exit syscall
                    │
-             ┌─────┴─────┐
+             ┌─────┴──────┐
              │   OS Exit  │
              └────────────┘
 ```
@@ -174,13 +167,11 @@ To visualize how these files fit into the program startup flow, here is a simpli
 3. When `main()` returns, the epilogue from `crtn.o` is executed, triggering finalizers and destructors.  
 4. A final exit syscall terminates the process with the return value from `main()`.  
 
----
-
 ## Example Assembly Snippets
 
 Below is a **simplified** Linux x86-64 assembly snippet illustrating a minimal `_start` routine (the actual code in `crt1.o` or `crt0.o` can be more complex). Note that in real implementations, there will be additional instructions to manage the environment, thread-local storage, etc.
 
-```assembly
+```asm
     .global _start
 _start:
     ; The stack pointer is already set by the OS.
@@ -204,7 +195,7 @@ _start:
 
 A *very* simplified `crti.o` might look like this (C++ style pseudocode/assembly):
 
-```assembly
+```asm
     .section .init
     _init:
         ; Here you'd initialize global constructors, or
@@ -215,7 +206,7 @@ A *very* simplified `crti.o` might look like this (C++ style pseudocode/assembly
 
 And `crtn.o` might have the counterpart:
 
-```assembly
+```asm
     .section .fini
     _fini:
         ; Cleanup routines and call global destructors.
@@ -224,8 +215,6 @@ And `crtn.o` might have the counterpart:
 ```
 
 In real toolchains, these sections (`.init` and `.fini`) are automatically run *before* and *after* `main()`, respectively, thanks to GNU linker scripts and the `.init_array` / `.fini_array` or `.ctors` / `.dtors` mechanisms.
-
----
 
 ## Practical Notes on Modern Usage
 

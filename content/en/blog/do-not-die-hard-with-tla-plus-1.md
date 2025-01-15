@@ -8,9 +8,8 @@ tags = ["Temporal Logic", "TLA+", "Model checking"]
 aliases = ["/blog/do-not-die-hard-with-tla-plus-1"]
 +++
 
-## Table of Contents
+**Table of Contents**
 
-- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Inroduction to $TLA^+$](#inroduction-to-tla)
 - [State Machines in $TLA^+$](#state-machines-in-tla)

@@ -8,7 +8,7 @@ tags = ["命題論理", "基礎", "数学"]
 aliases = ["/blog/introduction-into-logic-in-computer-science"]
 +++
 
-## 目次
+**目次**
 
 - [はじめに](#はじめに)
 - [宣言的文](#宣言的文)

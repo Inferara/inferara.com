@@ -8,7 +8,7 @@ tags = ["Propositional logic", "Foundations", "Mathematics"]
 aliases = ["/blog/introduction-into-logic-in-computer-science"]
 +++
 
-## Table of contents
+**Table of contents**
 
 - [Introduction](#introduction)
 - [Declarative sentences](#declarative-sentences)
