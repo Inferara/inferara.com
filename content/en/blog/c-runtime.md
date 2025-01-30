@@ -185,9 +185,6 @@ _start:
 
     call main                    ; Call main(argc, argv, envp implicitly)
 
-    ; Capture return code in eax
-    mov rax, rax
-
     ; Make an exit system call
     mov rax, 60                  ; sys_exit on Linux x86-64
     syscall
