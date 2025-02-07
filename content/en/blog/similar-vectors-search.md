@@ -22,12 +22,12 @@ aliases = ["blog/similar-vectors-search"]
   - [Locality-Sensitive Hashing (LSH)](#locality-sensitive-hashing-lsh)
   - [Product Quantization (PQ)](#product-quantization-pq)
     - [Pseudo-code for Product Quantization](#pseudo-code-for-product-quantization)
-    - [Lloyd's alogorithm aka Voronoi iteration](#lloyds-alogorithm-aka-voronoi-iteration)
+    - [Lloyd's algorithm aka Voronoi iteration](#lloyds-algorithm-aka-voronoi-iteration)
     - [Pseudo-code for Lloyd's algorithm](#pseudo-code-for-lloyds-algorithm)
   - [Hierarchical Navigable Small World (HNSW)](#hierarchical-navigable-small-world-hnsw)
     - [ASCII Diagram of HNSW](#ascii-diagram-of-hnsw)
     - [Example: Practical Image Retrieval](#example-practical-image-retrieval)
-  - [Performance impovement](#performance-impovement)
+  - [Performance improvement](#performance-improvement)
     - [Delaunay triangulation](#delaunay-triangulation)
 - [The Importance of Similarity Search in Modern AI Systems](#the-importance-of-similarity-search-in-modern-ai-systems)
     - [Pseudo-code for Delaunay Triangulation (2D)](#pseudo-code-for-delaunay-triangulation-2d)
@@ -40,7 +40,7 @@ Similarity vector search is a core technology behind many modern AI systems. It 
 
 ## Similarity Search Database Algorithms
 
-Vector databases typically offer several search options that use vector similarity seach algorithms, such as L2 distance, L2 distance, Inner product, Cosine distance, etc. In this section, we review common distance metrics and similarity measures along with their mathematical formulations and practical applications.
+Vector databases typically offer several search options that use vector similarity search algorithms, such as L2 distance, L2 distance, Inner product, Cosine distance, etc. In this section, we review common distance metrics and similarity measures along with their mathematical formulations and practical applications.
 
 ### L1 Distance
 
@@ -56,7 +56,7 @@ $$
 
 ### L2 Distance
 
-**L2 distance** (Euclidean distance) computes the “straight-line” distance between two points(or vectors) in Euclidean space. It works well when the magnitude of the vector is important for similatiry. It gives higher penalty to large differences and is sensitive to outliers.
+**L2 distance** (Euclidean distance) computes the “straight-line” distance between two points(or vectors) in Euclidean space. It works well when the magnitude of the vector is important for similarity. It gives a higher penalty to large differences and is sensitive to outliers.
 *Example:* In image processing, where pixel intensity differences matter, the L2 distance is often used to compare image embeddings.  
 Mathematically:
 
@@ -68,7 +68,7 @@ where $x$ and $y$ are vectors.
 
 ### Inner product
 
-The **inner product** measures how aligned two vectors are. It is maximized when the vectors point in the same direction. It is often normalized when used in search by Cosine Disance.
+The **inner product** measures how aligned two vectors are. It is maximized when the vectors point in the same direction. It is often normalized when used in a search by Cosine Distance.
 *Example:* When comparing document embeddings, the inner product can indicate whether two documents share common themes or topics.
 Mathematically:
 
@@ -78,7 +78,7 @@ $$
 
 ### Cosine distance
 
-**Cosine distance** measures the cosine of the angle between 2 vectors which gives an indication of their orientation regarless of their magnitude. It is widely used in text or document search where the direction of the vectors (relative distribution of words) is more important than the vectors magnitude. Unline **L2**, it ignores vector magnitude and focuses purely on direction.
+**Cosine distance** measures the cosine of the angle between 2 vectors which gives an indication of their orientation regardless of their magnitude. It is widely used in text or document searches where the direction of the vectors (relative distribution of words) is more important than the vectors magnitude. Unline **L2**, it ignores vector magnitude and focuses purely on the direction.
 *Example:* In natural language processing (NLP), two sentences with different lengths but similar word distributions can have a high cosine similarity.  
 Mathematically:
 
@@ -91,7 +91,7 @@ $$
 
 ### Hamming distance
 
-**Hamming distance** counts the differences between two vectors comparing each position value. If positions equal, the distance is `0`, otherwise `1`. In machine learning it is used to measure the dissimilarity between binary feature vectirs in models or clustering algorithms.
+**Hamming distance** counts the differences between two vectors comparing each position value. If positions equal, the distance is `0`, otherwise `1`. In machine learning, it is used to measure the dissimilarity between binary feature vectirs in models or clustering algorithms.
 *Example:* In clustering binary feature representations (such as hashed image features), the Hamming distance quickly identifies differences in bit patterns.  
 Mathematically:
 
@@ -114,14 +114,14 @@ Traditional exact search can be prohibitively slow when dealing with millions of
 
 ### Locality-Sensitive Hashing (LSH)
 
-**Locality-Sensitive Hashing (LSH)** is a fuzzy hashing technique also known as similarity hashing for fectching data that is similar but not exactly the same. It hashes input it takes into the same "buckets" with using **probability**.
+**Locality-Sensitive Hashing (LSH)** is a fuzzy hashing technique also known as similarity hashing for fetching data that is similar but not exactly the same. It hashes input it takes into the same "buckets" with using **probability**.
 *Example:* In a large music recommendation system, LSH can quickly group songs with similar audio features, so a query song finds similar tracks without comparing against every song in the catalog.
 **How it works:**
 A finite family $F$ of functions $h: M \rightarrow S$ is defined to be an LSH family for
 - $M-(M,d)$ 0 a metric space (a set with a function to measure the distance between elements of this set)
   - $M$ - a metric
   - $d$ - a distance function
-- $r>0$ - a treshold
+- $r>0$ - a threshold
 - $c>0$ - an approximation factor
 - $p_1 > p_2$ - probabilities
   - if $d(a,b) \leq r \Rightarrow h(a)=h(b)$ e.g. $a$ and $b$ collide with probability **at least** $p_1$
@@ -137,11 +137,11 @@ This method is especially effective when dealing with very high-dimensional bina
 
 ### Product Quantization (PQ)
 
-The idea of **PQ** is to split a high-dimentional vector into a lower dimentional subspace with dimention of the subnspace corresponding to multiple dimentions in the original vector.
+The idea of **PQ** is to split a high-dimensional vector into a lower-dimensional subspace with a dimension of the subspace corresponding to multiple dimensions in the original vector.
 
 $V^M \rightarrow \{SS\}^{M/n}$, where $n$ is a number of subspaces.
 
-In another words, **Product Quantization (PQ)** compresses high-dimensional vectors into smaller, lower-dimensional sub-vectors. Each sub-vector is quantized independently by assigning it to the nearest centroid obtained via clustering (commonly k-means).
+In other words, **Product Quantization (PQ)** compresses high-dimensional vectors into smaller, lower-dimensional sub-vectors. Each sub-vector is quantized independently by assigning it to the nearest centroid obtained via clustering (commonly k-means).
 *Example:* In image search, where each image is represented by a high-dimensional vector from a CNN, PQ dramatically reduces memory usage by storing only the indices of centroids.  
 **Steps Involved:**
 1. Divide the vector into $m$ sub-vectors.
@@ -160,7 +160,7 @@ Input: High-dimensional vector V, number of subspaces m, number of centroids per
 3. Store the centroid indices for each sub-vector.
 ```
 
-#### Lloyd's alogorithm aka Voronoi iteration
+#### Lloyd's algorithm aka Voronoi iteration
 
 Lloyd’s algorithm (also known as Voronoi iteration) is the foundation of k-means clustering. It iteratively refines centroids by assigning points to the nearest centroid and then updating the centroids to the mean of the assigned points.
 
@@ -172,14 +172,14 @@ Lloyd’s algorithm (also known as Voronoi iteration) is the foundation of k-mea
     - each cell of the Voronoi diagram is integrated and the centroid is computed
     - each site is then moved to the centroid of its Voronoi cell.
 
-For 2D cell with $n$ triangular simplices and an accumulated area $A_c=\sum_{i=0}^{n}a_i$, $a_i$ is the area of a triangle simplex.
+For a 2D cell with $n$ triangular simplices and an accumulated area $A_c=\sum_{i=0}^{n}a_i$, $a_i$ is the area of a triangle simplex.
 $C = \frac{1}{A_c}\sum_{i=0}^{n}C_ia_i$ - a new cell centroid.
 
-The overall algorithms is:
-1. a high-dimentional vector is divided into several smaller lower-dimentional sub-vectors
-2. each sub-vector is quntized independenly using $k$-means clustering into one of several centroids
+The overall algorithm is:
+1. a high-dimensional vector is divided into several smaller lower-dimensional sub-vectors
+2. each sub-vector is quantized independently using $k$-means clustering into one of several centroids
 3. instead of storing the full original vector, **PQ** stores the index of the closest centroid for each sub-vector
-4. during search, only the centroids are used to approximate the distances between vectors, making it faster.
+4. during the search, only the centroids are used to approximate the distances between vectors, making it faster.
 
 #### Pseudo-code for Lloyd's algorithm
 
@@ -237,9 +237,9 @@ When vector fields are indexed for exhaustive $KNN$ the query executes against "
 
 #### Example: Practical Image Retrieval
 
-Imagine an e-commerce site where a user uploads a photo of a shoe. The system computes its vector embedding and, using HNSW, rapidly navigates through layers of the graph to retrieve similar shoe images. This reduces the number of comparisons from thousands to only a few hundred, ensuring fast and accurate recommendations.
+Imagine an e-commerce site where a user uploads a photo of a shoe. The system computes its vector embedding and, using HNSW rapidly navigates through layers of the graph to retrieve similar shoe images. This reduces the number of comparisons from thousands to only a few hundred, ensuring fast and accurate recommendations.
 
-### Performance impovement
+### Performance improvement
 
 #### Delaunay triangulation
 
@@ -256,16 +256,16 @@ The complexity of the division is $O(\log N)$, and the merging is $O(N)$. For ea
 
 <iframe src="https://www.desmos.com/calculator/a9dcxauxuu?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 
-The unique property of Delanay graphs is the definition of neighboring points that are connected by an edge. For example, in an $\Epsilon$-graph, two points are adjacent if they are at most $\Epsilon$ distance apart.
-In a kNN graph, a point is connected to all points that are closer thhasn $k$-th smallest distance of that point to any other.
-In contrast, in a Delanay graph a point is adjacent to any point that is its spatial neighbor.
+The unique property of Delaunay graphs is the definition of neighboring points that are connected by an edge. For example, in an $\Epsilon$-graph, two points are adjacent if they are at most $\Epsilon$ distance apart.
+In a kNN graph, a point is connected to all points that are closer than $k$-th smallest distance of that point to any other.
+In contrast, in a Delaunay graph a point is adjacent to any point that is its spatial neighbor.
 
 ## The Importance of Similarity Search in Modern AI Systems
 
 Similarity vector search is a fundamental enabler for various AI applications:
 
 1. **Large Language Models (LLMs) and RAG:**  
-   LLMs retrieve semantically similar documents to enrich their context. For instance, in a RAG system, a user’s query is transformed into a vector and similar documents are retrieved in real time, significantly improving the relevance of the generated responses .
+   LLMs retrieve semantically similar documents to enrich their context. For instance, in a RAG system, a user’s query is transformed into a vector and similar documents are retrieved in real time, significantly improving the relevance of the generated responses.
 2. **Agentic Systems:**  
    Autonomous agents use similarity search to quickly retrieve past experiences or relevant data, allowing for smarter decision-making in dynamic environments.
 3. **Image Retrieval and Recommender Systems:**  
@@ -302,3 +302,5 @@ Consider a scenario where a user uploads an image of a sneaker to find similar p
 In this article, we examined key similarity search algorithms that power modern vector databases. We explored common distance metrics—including L1, L2, inner product, cosine, Hamming, and Jaccard distances—and delved into advanced ANN techniques such as Locality-Sensitive Hashing, Product Quantization, and Hierarchical Navigable Small World graphs. We also discussed performance enhancements via Delaunay triangulation and provided practical examples—like image retrieval and geographic neighbor search—to illustrate these concepts.
 
 By combining theoretical foundations with real-world applications, similarity vector search emerges as a critical technology for efficient information retrieval and data analysis in AI systems. As datasets continue to grow and AI applications become more context-aware, advanced vector search techniques will play an increasingly vital role in delivering fast, accurate, and scalable solutions.
+
+{{<post-socials page_content_type="blog" telegram_post_id="11" x_post_id="1774985590670573849">}}
