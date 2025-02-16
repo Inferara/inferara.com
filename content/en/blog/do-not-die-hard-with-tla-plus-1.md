@@ -32,7 +32,7 @@ $TLA^+$ is a language for **high-level** (design level, above the code) systems 
 
 - TLC — the model checker;
 - TLAPS — the $TLA^+$ proof system;
-- $TLA^+$ Toolbix — the IDE.
+- $TLA^+$ Toolbox — the IDE.
 
 $TLA^+$ system is used to model **critical parts** of digital systems, abstracting away less-critical parts and lower-level implementation details. $TLA^+$ was designed for designing concurrent and **distributed systems** in order to help find and correct **design errors** that are hard to find by testing and **before** writing any single line of code.
 
