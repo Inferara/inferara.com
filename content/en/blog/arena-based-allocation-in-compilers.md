@@ -3,7 +3,7 @@ title = "Arena-Based Allocation in Compilers"
 date = 2025-02-24T11:20:45+09:00
 draft = false
 math = "katex"
-summary = "Arena-based allocation is a memory management strategy in which a large block of memory is pre-allocated, and then many small objects are quickly carved out from that block. This approach is popular in compilers for its speed, simplicity, and improved cache performance."
+summary = "Arena-based allocation is a memory management strategy in which a large block of memory is pre-allocated, and then many small objects are quickly carved out from that block."
 tags = ["Compilers", "Alrorithms"]
 aliases = ["/blog/arena-based-allocation-in-compilers"]
 +++
