@@ -63,7 +63,7 @@
 <div class="profile-first-block">
     <p>We know that automatic theorem provers<sup><a href="https://rocq-prover.org/" target="_blank" rel="noopener noreferrer">1</a>,<a href="https://lean-lang.org/" target="_blank" rel="noopener noreferrer">2</a></sup> are the most powerful tools to find errors in code. But except inside universities, almost no one uses it.</p>
     <br/>
-    <span>So we aim to</span>
+    <span>So we aim to:</span>
     <ul style="padding-inline-start: 40px;">
         <li>
             Make automatic theorem provers accessible to developers
@@ -76,7 +76,7 @@
         </li>
     </ul>
     <br/>
-    <p>We do it in open source, so we need your support</p>
+    <p>We do it in open source, so we need your support 💌.</p>
     <br/>
     <p><a class="github-button" href="https://github.com/sponsors/inferara" data-icon="octicon-heart" data-size="large" aria-label="Sponsor @inferara on GitHub">Support Inferara</a></p>
 </div>
@@ -93,7 +93,6 @@
             WAT --> WASM
             WASM --> V;
     </pre>
-    <script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';</script>
     <p>
         Inference compilation process consists of the following steps:
         <ul>
@@ -102,7 +101,30 @@
             <li>Translate WASM to V (proof assistant code)</li>
         </ul>
     </p>
+    <pre class="mermaid">
+        graph TD
+            A[Program]
+            PA[Proof]
+            A -->|Inductive program simulation| PA
+            PA --> B
+            PA --> C
+            
+            subgraph OC[Operation context]
+                B[Final machine state]
+            end
 
+            subgraph LC[Logic context]
+                C[List of theorems that must be proven]
+            end
+
+            C -.-> |Prove the state is reachable: no traps, out of gas, etc.| B
+            C --> H[Hummer]
+            C --> S[Inferara tactics]
+            S -.-> H
+            H -.-> S
+            S --> D([✅ correctness certificate])
+            H --> D;
+    </pre>
     <p>Inference is a formal specification programming language based on Inferara's research into non-deterministic abstract machine execution. For more details, read our <a href="/en/papers/specifying-algorithms-using-non-deterministic-computations" style="text-decoration-style: dotted; text-decoration:revert;">papers</a>.</p>
     <p><a class="github-button" href="https://github.com/Inferara/inference-language-spec" data-size="large" data-show-count="true" aria-label="Watch buttons/github-buttons on GitHub">Inference documentation</a></p>
 </div>

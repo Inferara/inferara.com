@@ -63,7 +63,7 @@ languages:
       profileMode:
         enabled: true
         title: "Independent research group specializing in Programming Languages and Formal Methods"
-        subtitle: "Our goal is to make formal verification accessible for Web3 developers"
+        subtitle: "Our goal is to make formal verification accessible for Web3 developers."
         buttons:
           - name: Read Our Papers
             url: "/en/papers"
