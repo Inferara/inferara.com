@@ -1,8 +1,8 @@
 main:
-  - identifier: research
-    name: "研究"
-    url: "/research/"
-    weight: 1
+  # - identifier: research
+  #   name: "研究"
+  #   url: "/research/"
+  #   weight: 1
   - identifier: papers
     name: "論文"
     url: "/papers/"

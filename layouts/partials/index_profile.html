@@ -60,100 +60,11 @@
 </div>
 
 {{ if eq $.Site.Language.LanguageName "English" }}
-<div class="profile-first-block">
-    <p>We know that automatic theorem provers<sup><a href="https://rocq-prover.org/" target="_blank" rel="noopener noreferrer">1</a>,<a href="https://lean-lang.org/" target="_blank" rel="noopener noreferrer">2</a></sup> are the most powerful tools to find errors in code. But except inside universities, almost no one uses it.</p>
-    <br/>
-    <span>So we aim to:</span>
-    <ul style="padding-inline-start: 40px;">
-        <li>
-            Make automatic theorem provers accessible to developers
-        </li>
-        <li>
-            Make smart contracts more secure
-        </li>
-        <li>
-            Prevent the next multi-million dollar hack
-        </li>
-    </ul>
-    <br/>
-    <p>We keep our work open-sourced, so we need your support 💌.</p>
-    <br/>
-    <p><a class="github-button" href="https://github.com/sponsors/inferara" data-icon="octicon-heart" data-size="large" aria-label="Sponsor @inferara on GitHub">Support Inferara</a></p>
-</div>
-<hr class="horizontal-delimiter"/>
-<div class="inference-block">
-    <div class="centered-image-container"><img style="width: 80%;" src="/img/inference-logo.svg" /></div>
-    <p class="inference-block-subtitle">The first developer-friendly formal specification language designed for Web3.</p>
-    <p>Inference lets specify and formally prove smart contracts properties without needing a PhD in math.</p>
-
-    <span class="profile-subtitle">How it works</span>
-    <pre class="mermaid">
-        flowchart LR
-            Inference --> WAT
-            WAT --> WASM
-            WASM --> V;
-    </pre>
-    <p>
-        Inference compilation process consists of the following steps:
-        <ul>
-            <li>Transpile Inference code to WebAssembly Text (WAT)</li>
-            <li>Compile WAT to WebAssembly (WASM)</li>
-            <li>Translate WASM to V (proof assistant code)</li>
-        </ul>
-    </p>
-    <pre class="mermaid">
-        graph TD
-            A[Program]
-            PA[Proof]
-            A -->|Inductive program simulation| PA
-            PA --> B
-            PA --> C
-            
-            subgraph OC[Operation context]
-                B[Final machine state]
-            end
-
-            subgraph LC[Logic context]
-                C[List of theorems that must be proven]
-            end
-
-            C -.-> |Prove the state is reachable: no traps, out of gas, etc.| B
-            C --> H[Hummer]
-            C --> S[Inferara tactics]
-            S -.-> H
-            H -.-> S
-            S --> D([✅ correctness certificate])
-            H --> D;
-    </pre>
-    <p>Inference is a formal specification programming language based on Inferara's research into non-deterministic abstract machine execution. For more details, read our <a href="/en/papers/specifying-algorithms-using-non-deterministic-computations" style="text-decoration-style: dotted; text-decoration:revert;">papers</a>.</p>
-    <p><a class="github-button" href="https://github.com/Inferara/inference-language-spec" data-size="large" data-show-count="true" aria-label="Watch buttons/github-buttons on GitHub">Inference documentation</a></p>
-</div>
+{{ partial "index_en.html" . }}
 {{ end }}
 
 {{ if eq $.Site.Language.LanguageName "日本語" }}
-<div class="profile-first-block">
-    <p>Inferaraたちは毎日コードを書いている実践的なエンジニアであるため、エンジニアや開発者が直面する課題をよく理解しています。</p>
-    <br/>
-    <span>専門分野</span>
-    <ul style="padding-inline-start: 40px;">
-        <li>
-            自動化定理証明
-        </li>
-        <li>
-            プログラミング言語およびコンパイラ開発
-        </li>
-    </ul>
-    <br/>
-    <p>Inferaraたちのプロジェクトは<a href="https://github.com/Inferara" style="text-decoration-style: dotted; text-decoration:revert;">オープンソース</a>として公開しており、公共財に貢献することを大切にしています。ご意見やご質問などございましたら、どうぞお気軽に<a href="/jp/contact" style="text-decoration-style: dotted; text-decoration:revert;">お問い合わせ</a>ください。</p>
-</div>
-<hr class="horizontal-delimiter"/>
-<div class="inference-block">
-    <div class="centered-image-container"><img style="width: 80%;" src="/img/inference-logo.svg" /></div>
-    <p class="inference-block-subtitle">Web3 向けに設計された、開発者に優しい初の形式仕様言語。</p>
-    <p>Inference は、Inferara の非決定論的抽象マシン実行の研究に基づいた形式仕様プログラミング言語です。</p>
-    <p>非決定論的計算モデルの詳細については、当社の<a href="/jp/papers/specifying-algorithms-using-non-deterministic-computations" style="border-bottom-style: dotted;">論文</a>をご覧ください。</p>
-    <p style="margin-top: 1rem; font-style: italic;">もうすぐリリースされる予定ですので、お楽しみに。</p>
-</div>
+{{ partial "index_jp.html" }}
 {{ end }}
 
 <hr class="horizontal-delimiter"/>
