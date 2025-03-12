@@ -10,8 +10,8 @@ aliases = ["/blog/new-approach-to-formal-verification-smart-contracts"]
 
 **Table of Contents**
 - [Introduction](#introduction)
-- [A New Perspective on the Problem](#a-new-perspective-on-the-problem)
-- [A New Approach to the Problem](#a-new-approach-to-the-problem)
+- [A different method of vulnerability prevention](#a-different-method-of-vulnerability-prevention)
+- [Specification-Driven Approach](#specification-driven-approach)
 - [Conclusion](#conclusion)
 
 
@@ -25,7 +25,7 @@ Proponents of more classical solutions (Tsankov et al. (2018): “Securify: Prac
 
 Finally, in this context one cannot fail to mention the solution (Sergey et al. (2019): “Scilla: a Smart Contract Intermediate-Level Language.” ACM PLDI 2019[^5]), which involves incorporating into the blockchain infrastructure a domain-specific language for the intermediate representation of contracts, designed to be friendly to the logical formalization tools used in interactive theorem proving. The current state of the art in this field can be more fully assessed by meta-surveys (Tolmach et al. (2021): “A Survey of Smart Contract Formal Specification and Verification.” arXiv e-print 2008.02712[^6]), which, alas, still depict a picture of methodological diversity that is rarely applied in industrial practice.
 
-## A New Perspective on the Problem
+## A different method of vulnerability prevention
 
 Within our research, we wish to offer a perspective on the problem of combating smart contract vulnerabilities from a slightly different angle—one that generalizes the issue to the challenges noted long ago by Leslie Lamport in his analysis of the inevitable abundance of errors in any complex software system. Building on his philosophy of rigorous design, we maintain that the primary cause of the most insidious critical errors in the classical approach to software development (by which both traditional software and smart contracts are currently created) is the absence of a formal specification phase for the algorithm to be implemented—a phase that should precede the actual implementation.
 
@@ -36,7 +36,7 @@ The conventional methodology replaces specification with an informal documentati
 3. Tools for static code analysis targeting typical vulnerabilities, while undeniably practically useful, cannot replace full formal specification — primarily because their application is possible only on already written code. Moreover, they cannot help prevent genuinely new logical errors that do not reduce to already known patterns.
 4. Given the current state of the software development industry, it is difficult to imagine the widespread adoption of paradigms that force programmers to use high-entry-threshold tools for code specification (such as Rocq (Coq), Lean, Agda, etc.). This appears to be the most challenging practical obstacle to the implementation of the described methodology — until formal descriptions of program properties no longer require a high level of expertise in specialized areas of mathematical logic, only very few will be able to begin development with a proper specification.
 
-## A New Approach to the Problem
+## Specification-Driven Approach
 
 Considering the above, it must be noted that a transition to a specification-driven development paradigm requires a radical overhaul of the methods used to describe algorithmic properties. As a result of such a transformation, the toolkit of an ordinary programmer must be adapted to meet the following requirements:
 
