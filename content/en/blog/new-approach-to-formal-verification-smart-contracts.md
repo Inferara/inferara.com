@@ -1,6 +1,6 @@
 +++
 title = "New Approach to Formal Verification Methods for Combating Vulnerabilities in Smart Contracts"
-date = 2025-03-10T11:20:45+09:00
+date = 2025-03-12T18:43:45+09:00
 draft = false
 math = "katex"
 summary = "Embedding formal specification constructs directly into programming languages could revolutionize smart contract development and eradicate vulnerabilities in smart contracts."
