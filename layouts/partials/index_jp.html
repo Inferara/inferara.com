@@ -41,11 +41,16 @@
     </p>
     <pre class="mermaid">
         graph TD
-            A[プログラム]
+            SC -.->|コンパイル＆インクルード| A
             PA[証明]
             A -->|帰納的プログラムシミュレーション| PA
             PA --> B
             PA --> C
+
+            subgraph UC[ユーザーコンテキスト]
+                A[Inference仕様]
+                SC[スマートコントラクト]
+            end
             
             subgraph OC[動作コンテキスト]
                 B[最終マシン状態]

@@ -41,12 +41,17 @@
     </p>
     <pre class="mermaid">
         graph TD
-            A[Program]
+            SC -.->|compile & include| A
             PA[Proof]
             A -->|Inductive program simulation| PA
             PA --> B
             PA --> C
             
+            subgraph UC[User context]
+                A[Inference spec]
+                SC[Smart contract]
+            end
+
             subgraph OC[Operation context]
                 B[Final machine state]
             end
