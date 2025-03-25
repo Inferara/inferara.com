@@ -33,8 +33,6 @@ Continuation-Passing Style is a programming paradigm where control is passed exp
 - Improving optimization opportunities: By making control flow explicit, the compiler can often perform more aggressive optimizations.
 - Handling error propagation and branching: CPS naturally integrates error handling by passing error continuations.
 
-Rust’s strict lifetime and ownership system add extra complexity to CPS. However, with careful design, such as using local memory pointers and abstract arrow operations, it’s possible to write expressive CPS code while keeping memory management safe and efficient.
-
 ## Memory Management and Lifetime Considerations in Rust
 
 One of the most common challenges in Rust is managing lifetimes, particularly in complex abstractions. When using CPS:
