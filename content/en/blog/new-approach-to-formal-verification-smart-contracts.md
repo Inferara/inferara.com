@@ -3,6 +3,7 @@ title = "New Approach to Formal Verification Methods for Combating Vulnerabiliti
 date = 2025-03-12T18:43:45+09:00
 draft = false
 math = "katex"
+pinned = true
 summary = "Embedding formal specification constructs directly into programming languages could revolutionize smart contract development and eradicate vulnerabilities in smart contracts."
 tags = ["Program Verification", "Formal Verification", "Formal Specification"]
 aliases = ["/blog/new-approach-to-formal-verification-smart-contracts"]

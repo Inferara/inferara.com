@@ -3,6 +3,7 @@ title = "スマートコントラクトの脆弱性対策に向けた形式検�
 date = 2025-03-12T18:43:45+09:00
 draft = false
 math = "katex"
+pinned = true
 summary = "プログラミング言語に形式仕様の構造を直接組み込むことで、スマートコントラクトの開発に革命をもたらし、その脆弱性を根絶できる可能性がある。"
 tags = ["プログラム検証", "形式検証", "形式仕様"]
 aliases = ["/blog/new-approach-to-formal-verification-smart-contracts"]
