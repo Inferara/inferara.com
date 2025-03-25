@@ -68,5 +68,5 @@ aliases = ["/blog/arena-based-allocation-in-compilers"]
 [2]: https://stackoverflow.com/questions/12825148/what-is-the-meaning-of-the-term-arena-in-relation-to-memory
 [3]: https://en.wikipedia.org/wiki/Region-based_memory_management
 
-{{<post-socials language="jp" page_content_type="blog" telegram_post_id="24">}}
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="24" x_post_id="1894240166140620960">}}
 {{<ai-translated>}}

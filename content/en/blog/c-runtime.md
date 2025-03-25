@@ -245,4 +245,4 @@ Whether you’re developing compilers, working on embedded systems, or just curi
 [3]: https://gcc.gnu.org/onlinedocs/
 [4]: http://pubs.opengroup.org/onlinepubs/9699919799/
 
-{{<post-socials page_content_type="blog" telegram_post_id="23">}}
+{{<post-socials page_content_type="blog" telegram_post_id="23" x_post_id="1879448114354123247">}}

@@ -69,4 +69,4 @@ As an initial testing ground for these new ideas, we propose the use of the WebA
 [^8]: https://rocq-prover.org
 [^9]: https://github.com/WasmCert/WasmCert-Coq
 
-{{<post-socials page_content_type="blog" telegram_post_id="29">}}
+{{<post-socials page_content_type="blog" telegram_post_id="29" x_post_id="1899760615893434710">}}
