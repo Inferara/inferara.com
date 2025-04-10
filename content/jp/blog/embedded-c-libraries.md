@@ -203,5 +203,5 @@ C標準ライブラリは不可欠なものですが、特に多様な組込み�
 [3]: https://www.fefe.de/dietlibc/
 [4]: https://en.wikipedia.org/wiki/Comparison_of_C_standard_libraries
 
-{{<post-socials language="jp" page_content_type="blog" telegram_post_id="31" x_post_id="1855443598827032645">}}
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="31" x_post_id="1910145157221269796">}}
 {{<ai-translated>}}

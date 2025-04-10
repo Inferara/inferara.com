@@ -202,4 +202,4 @@ The C standard library is indispensable, but one size doesn't fit all, especiall
 [3]: https://www.fefe.de/dietlibc/
 [4]: https://en.wikipedia.org/wiki/Comparison_of_C_standard_libraries
 
-{{<post-socials page_content_type="blog" telegram_post_id="31" x_post_id="1879448114354123247">}}
+{{<post-socials page_content_type="blog" telegram_post_id="31" x_post_id="1910145157221269796">}}
