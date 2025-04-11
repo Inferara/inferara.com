@@ -90,8 +90,8 @@ languages:
       FooterSubtitle: "「最初から設計を正しく行わないと、書くコードのすべてが継ぎ接ぎだらけになります。そして、初日から混乱した状態でスタートすることになります。」 - レスリー・ランポート"
       profileMode:
         enabled: true
-        title: "プログラミング言語および形式手法を専門とする独立研究グループ"
-        subtitle: "Inferaraの目標は、Web3開発者向けに形式検証をより利用しやすいものにすることです。"
+        title: "プログラミング言語と形式手法に特化した研究開発会社"
+        subtitle: "Inferaraの目標は、エンジニアが形式検証をより利用しやすくすることです。"
         buttons:
           - name: 論文を読む
             url: "/jp/papers"

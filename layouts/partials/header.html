@@ -147,12 +147,14 @@
                 </a>
             </li>
             {{- end }}
+            {{- if eq .Lang "en" }}
             <li class="github-button-menu-item" style="display: flex; align-items: center;">
                 <a class="github-button" href="https://github.com/orgs/inferara/discussions" data-size="large" data-show-count="true" aria-label="Discuss Inferara work on GitHub">Discussions</a>
             </li>
             <li class="github-button-menu-item" style="display: flex; align-items: center;">
                 <a class="github-button" href="https://github.com/inferara" data-size="large" data-show-count="true" aria-label="Follow @inferara on GitHub">Follow Inferara</a>
             </li>
+            {{- end }}
         </ul>
     </nav>
 </header>

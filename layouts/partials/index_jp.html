@@ -1,29 +1,33 @@
 <div class="profile-first-block">
-    <p>私たちは、自動定理証明器<sup><a href="https://rocq-prover.org/" target="_blank" rel="noopener noreferrer">1</a>,<a href="https://lean-lang.org/" target="_blank" rel="noopener noreferrer">2</a></sup>がコードのエラーを発見するための最も強力なツールであることを知っています。しかし、大学以外では、ほとんど誰もそれを使用していません。</p>
-    <br/>
+    <p>私たちは、自動定理証明器<sup><a href="https://rocq-prover.org/" target="_blank" rel="noopener noreferrer">1</a>,<a
+                href="https://lean-lang.org/" target="_blank"
+                rel="noopener noreferrer">2</a></sup>がコードのエラーを発見するための最も強力なツールであることを知っています。しかし、大学以外では、ほとんど誰もそれを使用していません。
+    </p>
+    <br />
     <span>そこで、私たちは以下を目指します：</span>
     <ul style="padding-inline-start: 40px;">
         <li>
-            自動定理証明器を開発者が利用しやすいものにする
+            自動定理証明器をエンジニアが利用できるようにする
         </li>
         <li>
-            スマートコントラクトの安全性を向上させる
+            ミッションクリティカルなソフトウェアの安定性とセキュリティの向上
         </li>
         <li>
-            次の数百万ドル規模のハッキングを未然に防ぐ
+            ソフトウェア障害、評判、物理的損害、金銭的損害の防止
         </li>
     </ul>
-    <br/>
-    <p>私たちは、成果をオープンソースとして公開しているため、皆様のご支援を必要としています💌</p>
-    <br/>
-    <p><a class="github-button" href="https://github.com/sponsors/inferara" data-icon="octicon-heart" data-size="large" aria-label="Sponsor @inferara on GitHub">Support Inferara</a></p>
+    <br />
 </div>
-<hr class="horizontal-delimiter"/>
+<hr class="horizontal-delimiter" />
 <div class="inference-block">
     <div class="centered-image-container"><img style="width: 80%;" src="/img/inference-logo.svg" /></div>
-    <p class="inference-block-subtitle">Web3向けに設計された初の開発者に優しい形式仕様言語。</p>
-    <p>Inferenceを使えば、数学の博士号がなくても、スマートコントラクトの性質を指定し、形式的に証明することができます。</p>
-
+    <p class="inference-block-subtitle">Inferaraが設計・開発した、エンジニアフレンドリーな最初の形式仕様言語。</p>
+    <p>Inferenceを使えば、数学の博士号を必要とせずにソフトウェア プログラムのプロパティを指定して正式に証明できます。</p>
+    <p></p>
+    <a href="/assets/Inference.pdf" download class="inference-block-subtitle" rel="noopener" style="text-decoration: underline; width: 3rem;">
+        Inferenceプログラミング言語に関する 1 ページのパンフレットをダウンロードしてください。
+    </a>
+    </p>
     <span class="profile-subtitle">仕組み</span>
     <pre class="mermaid">
         flowchart LR
@@ -33,11 +37,11 @@
     </pre>
     <p>
         Inferenceのコンパイルプロセスは、以下のステップから構成されています：
-        <ul>
-            <li>InferenceコードをWebAssembly Text (WAT)にトランスパイルする</li>
-            <li>WATをWebAssembly (WASM)にコンパイルする</li>
-            <li>WASMをV（証明支援コード）に変換する</li>
-        </ul>
+    <ul>
+        <li>InferenceコードをWebAssembly Text (WAT)にトランスパイルする</li>
+        <li>WATをWebAssembly (WASM)にコンパイルする</li>
+        <li>WASMをV（証明支援コード）に変換する</li>
+    </ul>
     </p>
     <pre class="mermaid">
         graph TD
@@ -68,6 +72,9 @@
             S --> D([✅ 正しさの証明書])
             H --> D;
     </pre>
-    <p>Inferenceは、Inferaraの非決定的抽象機械実行に関する研究に基づいた形式仕様プログラミング言語です。詳細については、<a href="/jp/papers/specifying-algorithms-using-non-deterministic-computations" style="border-bottom-style: dotted;">論文</a>をご覧ください。</p>
-    <p><a class="github-button" href="https://github.com/Inferara/inference-language-spec" data-size="large" data-show-count="true" aria-label="Watch buttons/github-buttons on GitHub">Inferenceドキュメント（英語版）</a></p>
+    <p>Inferenceは、Inferaraの非決定的抽象機械実行に関する研究に基づいた形式仕様プログラミング言語です。詳細については、<a
+            href="/jp/papers/specifying-algorithms-using-non-deterministic-computations"
+            style="border-bottom-style: dotted;">論文</a>をご覧ください。</p>
+    <p><a class="github-button" href="https://github.com/Inferara/inference-language-spec" data-size="large"
+            data-show-count="true" aria-label="Watch buttons/github-buttons on GitHub">Inferenceドキュメント（英語版）</a></p>
 </div>
