@@ -78,7 +78,7 @@ $$
 
 ### Cosine distance
 
-**Cosine distance** measures the cosine of the angle between 2 vectors which gives an indication of their orientation regardless of their magnitude. It is widely used in text or document searches where the direction of the vectors (relative distribution of words) is more important than the vectors magnitude. Unline **L2**, it ignores vector magnitude and focuses purely on the direction.
+**Cosine distance** measures the cosine of the angle between 2 vectors which gives an indication of their orientation regardless of their magnitude. It is widely used in text or document searches where the direction of the vectors (relative distribution of words) is more important than the vectors magnitude. Unlike **L2**, it ignores vector magnitude and focuses purely on the direction.
 *Example:* In natural language processing (NLP), two sentences with different lengths but similar word distributions can have a high cosine similarity.  
 Mathematically:
 
