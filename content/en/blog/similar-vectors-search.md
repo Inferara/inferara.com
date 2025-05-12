@@ -73,7 +73,7 @@ The **inner product** measures how aligned two vectors are. It is maximized when
 Mathematically:
 
 $$
-\sum_{n}^{i=1} x_i \cdot y_i
+\sum_{i=1}^{n} x_i \cdot y_i
 $$
 
 ### Cosine distance
