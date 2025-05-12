@@ -51,7 +51,7 @@ L1 distance is often used when you want to measure the absolute changes between 
 Mathematically:
 
 $$
-\sum_{n}^{i=1}\left | x_i - y_i \right |
+\sum_{i=1}^{n}\left | x_i - y_i \right |
 $$
 
 ### L2 Distance
