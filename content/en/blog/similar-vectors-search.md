@@ -61,7 +61,7 @@ $$
 Mathematically:
 
 $$
-\sqrt{\sum_{n}^{i=1}\left ( x_i - y_i \right )^2}
+\sqrt{\sum_{i=1}^{n}\left ( x_i - y_i \right )^2}
 $$
 
 where $x$ and $y$ are vectors.
