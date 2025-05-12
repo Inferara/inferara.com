@@ -118,7 +118,7 @@ Traditional exact search can be prohibitively slow when dealing with millions of
 *Example:* In a large music recommendation system, LSH can quickly group songs with similar audio features, so a query song finds similar tracks without comparing against every song in the catalog.
 **How it works:**
 A finite family $F$ of functions $h: M \rightarrow S$ is defined to be an LSH family for
-- $M-(M,d)$ 0 a metric space (a set with a function to measure the distance between elements of this set)
+- $(M, d)$: a metric space (a set with a function to measure the distance between elements of this set)
   - $M$ - a metric
   - $d$ - a distance function
 - $r>0$ - a threshold
