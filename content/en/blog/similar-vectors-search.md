@@ -131,7 +131,7 @@ Such family $F$ is called $(r,cr,p_1,p_2)$-sensitive.
 
 Methods:
 - bit-sampling for Hamming distance
-- LSH scheme Jacccard index $Pr[h(a) = h(B)]= \frac{|A \cap B|}{|A \cup B|}$
+- LSH scheme Jaccard index $Pr[h(a) = h(B)]= \frac{|A \cap B|}{|A \cup B|}$
 
 This method is especially effective when dealing with very high-dimensional binary or sparse data.
 
