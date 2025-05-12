@@ -91,7 +91,7 @@ $$
 
 ### Hamming distance
 
-**Hamming distance** counts the differences between two vectors comparing each position value. If positions equal, the distance is `0`, otherwise `1`. In machine learning, it is used to measure the dissimilarity between binary feature vectirs in models or clustering algorithms.
+**Hamming distance** counts the differences between two vectors comparing each position value. If positions equal, the distance is `0`, otherwise `1`. In machine learning, it is used to measure the dissimilarity between binary feature vectors in models or clustering algorithms.
 *Example:* In clustering binary feature representations (such as hashed image features), the Hamming distance quickly identifies differences in bit patterns.  
 Mathematically:
 
