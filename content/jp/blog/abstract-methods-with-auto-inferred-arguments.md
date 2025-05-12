@@ -48,7 +48,6 @@ trait Method {
     /// 唯一の抽象メソッド
     fn method<A: Atts>(self, args: Self::Args<A>) -> Self::Output<A>;
 }
-````
 
 * `CurArgs`／`OutputCur` でカーソルと Rust 型の変換方法を定義
 * `Hint<A>` がゼロサイズのマーカーとして `A` と具象引数を結びつける
