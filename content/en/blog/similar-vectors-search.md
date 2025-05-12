@@ -83,7 +83,7 @@ $$
 Mathematically:
 
 $$
-\text{Cosine Similarity}(x,y)=\frac{\sum_{i=1}^{n}x_i \cdot y_i}{\sqrt{\sum_{i=1}^{n}x_i^2 \cdot \sqrt{\sum_{i=1}^{n}y_i^2}}}
+\text{Cosine Similarity}(x,y)=\frac{\sum_{i=1}^{n}x_i \cdot y_i}{\sqrt{\sum_{i=1}^{n}x_i^2} \cdot \sqrt{\sum_{i=1}^{n}y_i^2}}
 $$
 $$
 \text{Cosine Distance}(x,y)=1-\text{similarity}
