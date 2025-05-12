@@ -40,7 +40,7 @@ Similarity vector search is a core technology behind many modern AI systems. It 
 
 ## Similarity Search Database Algorithms
 
-Vector databases typically offer several search options that use vector similarity search algorithms, such as L2 distance, L2 distance, Inner product, Cosine distance, etc. In this section, we review common distance metrics and similarity measures along with their mathematical formulations and practical applications.
+Vector databases typically offer several search options that use vector similarity search algorithms, such as L2 distance, Inner product, Cosine distance, etc. In this section, we review common distance metrics and similarity measures along with their mathematical formulations and practical applications.
 
 ### L1 Distance
 
