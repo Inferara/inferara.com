@@ -96,7 +96,7 @@ $$
 Mathematically:
 
 $$
-d(x,y) = \sum_{i=1}^{1} 1 (x_i \neq y_i)
+d(x,y) = \sum_{i=1}^{n} 1 (x_i \neq y_i)
 $$
 
 ### Jaccard distance
