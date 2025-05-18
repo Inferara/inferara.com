@@ -1,6 +1,6 @@
 +++
 title = "Rust における自動推論可能な抽象メソッド"
-date = 2025-05-12T10:00:00+09:00
+date = 2025-05-18T14:30:00+09:00
 draft = false
 math = "katex"
 summary = "PhantomData ベースのヒント技法を用いてジェネリクスを自動推論し、カーソルベースの抽象 `Method` トレイトを定義する方法を解説します。"
@@ -12,7 +12,6 @@ aliases = ["/blog/abstract-methods-with-auto-inferred-arguments"]
 
 - [はじめに](#はじめに)
 - [`Method`トレイトの定義](#methodトレイトの定義)
-- [`CallOwn`での `FnOnce` 実装](#callownでの-fnonce-実装)
 - [汎用的なメソッド実装の記述](#汎用的なメソッド実装の記述)
 - [`hint`技法による型引数の推論](#hint技法による型引数の推論)
 - [まとめ：完全な例とテスト](#まとめ完全な例とテスト)
@@ -154,5 +153,5 @@ fn testprog() {
 
 この投稿が気に入った方は、[Rust における継続渡しスタイル (CPS) の簡略化]({{< ref "/blog/simplifying-continuation-passing-style-in-rust" >}}) もぜひご覧ください。
 
-{{<post-socials language="jp" page_content_type="blog" telegram_post_id="24" x_post_id="1894240166140620960">}}
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="33" x_post_id="">}}
 {{<ai-translated>}}

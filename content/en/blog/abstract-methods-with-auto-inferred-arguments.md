@@ -1,6 +1,6 @@
 +++
 title = "Abstract Methods with Auto-Inferred Arguments in Rust"
-date = 2025-05-12T10:00:00+09:00
+date = 2025-05-18T14:30:00+09:00
 draft = false
 math = "katex"
 summary = "Demonstrating how to define a single-argument abstract Method trait in Rust, and use a PhantomData-based hint technique to automatically infer generic types."
@@ -171,4 +171,4 @@ This pattern combines the power of Rust’s type system with ergonomic call synt
 If you like this blog you may find [Simplifying Continuation-Passing Style (CPS) in Rust]({{< ref "/blog/simplifying-continuation-passing-style-in-rust" >}}) interesting as well.
 
 
-{{<post-socials page_content_type="blog" telegram_post_id="31">}}
+{{<post-socials page_content_type="blog" telegram_post_id="33" x_post_id="">}}
