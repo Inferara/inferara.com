@@ -4,7 +4,7 @@ date = 2025-03-25T09:55:45+09:00
 draft = false
 math = "katex"
 summary = "In this post, we explore an advanced CPS (Continuation-Passing Style) implementation that leverages local memory pointers alongside arrow statements to declare an abstract program."
-tags = ["Rust", "Functional Programming"]
+tags = ["Rust", "Functional Programming", "Type-Level Programming", "Generic Programming"]
 aliases = ["/blog/simplifying-continuation-passing-style-in-rust"]
 +++
 
