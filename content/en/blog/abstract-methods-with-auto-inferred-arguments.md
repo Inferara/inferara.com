@@ -171,4 +171,4 @@ This pattern combines the power of Rust’s type system with ergonomic call synt
 If you like this blog you may find [Simplifying Continuation-Passing Style (CPS) in Rust]({{< ref "/blog/simplifying-continuation-passing-style-in-rust" >}}) interesting as well.
 
 
-{{<post-socials page_content_type="blog" telegram_post_id="33" x_post_id="">}}
+{{<post-socials page_content_type="blog" telegram_post_id="33" x_post_id="1923983939150152060">}}

@@ -153,5 +153,5 @@ fn testprog() {
 
 この投稿が気に入った方は、[Rust における継続渡しスタイル (CPS) の簡略化]({{< ref "/blog/simplifying-continuation-passing-style-in-rust" >}}) もぜひご覧ください。
 
-{{<post-socials language="jp" page_content_type="blog" telegram_post_id="33" x_post_id="">}}
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="33" x_post_id="1923983939150152060">}}
 {{<ai-translated>}}
