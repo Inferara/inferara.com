@@ -164,7 +164,6 @@ In an industry where millions of dollars are on the line and adversaries are con
 [^12]: [Cetus Protocol Hack](https://www.coindesk.com/markets/2025/05/22/sui-networks-cetus-protocol-hit-in-apparent-hack-sending-token-prices-down-90#:~:text=The%20Cetus%20team%20has%20paused,price%20curves%20and%20reserve%20calculations)
 [^13]: [Economic Game Theory in Blockchain](https://www.rapidinnovation.io/post/importance-of-economic-game-theory-audits-in-smart-contracts#:~:text=Economic%20Game%20Theory%20plays%20a,in%20the%20network%27s%20best%20interest)
 
-
 [1]: https://www.rapidinnovation.io/post/importance-of-economic-game-theory-audits-in-smart-contracts#:~:text=Economic%20Game%20Theory%20is%20the,behavior%20and%20ensure%20network%20integrity
 [2]: https://www.rapidinnovation.io/post/importance-of-economic-game-theory-audits-in-smart-contracts#:~:text=A%20Nash%20Equilibrium%20occurs%20when,that%20reward%20participation%20and%20punish
 [3]: https://www.rapidinnovation.io/post/importance-of-economic-game-theory-audits-in-smart-contracts#:~:text=1,proposals%2C%20or%20following%20protocol%20rules
@@ -179,4 +178,4 @@ In an industry where millions of dollars are on the line and adversaries are con
 [12]: https://www.coindesk.com/markets/2025/05/22/sui-networks-cetus-protocol-hit-in-apparent-hack-sending-token-prices-down-90#:~:text=The%20Cetus%20team%20has%20paused,price%20curves%20and%20reserve%20calculations
 [13]: https://www.rapidinnovation.io/post/importance-of-economic-game-theory-audits-in-smart-contracts#:~:text=Economic%20Game%20Theory%20plays%20a,in%20the%20network%27s%20best%20interest
 
-{{<post-socials page_content_type="blog" telegram_post_id="31" x_post_id="1910145157221269796">}}
+{{<post-socials page_content_type="blog" telegram_post_id="38" x_post_id="1925884808338481495">}}
