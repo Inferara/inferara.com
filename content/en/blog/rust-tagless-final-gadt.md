@@ -1,6 +1,6 @@
 +++
 title = "Tagless Final in Rust: From Initial Encoding with GADT to Optimizations"
-date = 2025-05-12T11:00:00+09:00
+date = 2025-06-03T10:00:00+09:00
 draft = false
 math = "katex"
 summary = "Demonstrating Tagless Final in Rust with GADT-based initial encoding, never-type zero-cost abstractions, and full inlining optimizations."
@@ -28,7 +28,7 @@ aliases = ["/blog/rust-tagless-final-gadt"]
 
 Haskell's Tagless Final is a powerful approach for embedding DSLs both in their initial and final encodings. In this post, we:
 
-1. Reproduce an **initial encoding** in Rust using GADT-like enums and never types (`!`).
+1. Reproduce an **initial encoding** in Rust using GADT-like enums and [never](https://doc.rust-lang.org/std/primitive.never.html) types (`!`).
 2. Achieve zero-cost abstraction by wiring constructors with never types, avoiding `Box` and runtime tags.
 3. Show how `#[inline(always)]` can fully inline the GADT interpreter, yielding streamlined assembly.
 

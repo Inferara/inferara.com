@@ -1,6 +1,6 @@
 +++
 title = "Rust で試す Tagless Final ― GADT による初期エンコーディングから最適化まで"
-date = 2025-05-12T11:00:00+09:00
+date = 2025-06-03T10:00:00+09:00
 draft = false
 math = "none"
 summary = "GADT ベースの初期エンコーディングから never 型を活用したゼロコスト抽象化、完全インライン化による最適化まで解説します。"
@@ -22,7 +22,7 @@ aliases = ["/blog/rust-tagless-final-gadt"]
 
 ### はじめに
 
-Haskell の Tagless Final は、DSL を初期・最終エンコーディングの両面で型安全に扱える手法です。本記事ではまず Rust で GADT 相当の enum と never 型を使い、初期エンコーディングを再現します。その後、never 型でタグを排除してゼロコストを実現し、さらに `#[inline(always)]` で完全にインライン化し、生成アセンブリを可視化します。
+Haskell の Tagless Final は、DSL を初期・最終エンコーディングの両面で型安全に扱える手法です。本記事ではまず Rust で GADT 相当の enum と [never](https://doc.rust-lang.org/std/primitive.never.html) 型を使い、初期エンコーディングを再現します。その後、never 型でタグを排除してゼロコストを実現し、さらに `#[inline(always)]` で完全にインライン化し、生成アセンブリを可視化します。
 
 ### Tagless Final と初期エンコーディング
 
