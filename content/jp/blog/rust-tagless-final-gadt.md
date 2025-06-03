@@ -242,9 +242,8 @@ Rust の型システム、特に `never` 型（`!`）を活用することで、
 
 この手法は、Rust で高レベルかつ表現力のある DSL を構築しつつ、システム言語としての性能要件を満たすための強力な設計パターンを示しています。ぜひ以下のリンクから実際のコードを試してみてください。
 
-* [Rust Playground](https://play.rust-lang.org/?version=nightly&mode=release&edition=2021&gist=00fa7263e7bce9dcdaf130224ee9a153)
-* [Gist with full source](https://gist.github.com/00fa7263e7bce9dcdaf130224ee9a153)
-
+* [Rust Playground](https://play.rust-lang.org/?version=nightly&mode=release&edition=2021&gist=a49830a2f791787d72b772144047174f)
+* [Gist with full source](https://gist.github.com/rust-play/a49830a2f791787d72b772144047174f)
 
 {{<post-socials language="jp" page_content_type="blog" telegram_post_id="34" x_post_id="1929746607433830602">}}
 {{<ai-translated>}}
