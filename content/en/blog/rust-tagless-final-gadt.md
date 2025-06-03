@@ -247,4 +247,4 @@ You can experiment with the full code yourself:
 * [Rust Playground](https://play.rust-lang.org/?version=nightly&mode=release&edition=2021&gist=00fa7263e7bce9dcdaf130224ee9a153)
 * [Gist with full source](https://gist.github.com/00fa7263e7bce9dcdaf130224ee9a153)
 
-{{<post-socials page_content_type="blog" telegram_post_id="35" x_post_id="">}}
+{{<post-socials page_content_type="blog" telegram_post_id="35" x_post_id="1929746607433830602">}}

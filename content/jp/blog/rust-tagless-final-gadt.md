@@ -246,5 +246,5 @@ Rust の型システム、特に `never` 型（`!`）を活用することで、
 * [Gist with full source](https://gist.github.com/00fa7263e7bce9dcdaf130224ee9a153)
 
 
-{{<post-socials language="jp" page_content_type="blog" telegram_post_id="34" x_post_id="">}}
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="34" x_post_id="1929746607433830602">}}
 {{<ai-translated>}}
