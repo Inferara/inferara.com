@@ -9,14 +9,14 @@ aliases = ["/blog/rust-tagless-final-gadt"]
 
 **Table of Contents**
 
-  - [Introduction: The Allure of Tagless Final](https://www.google.com/search?q=%23introduction-the-allure-of-tagless-final)
-  - [The Goal: "Tagless Initial" Encoding](https://www.google.com/search?q=%23the-goal-tagless-initial-encoding)
-  - [A First Look: The Rust Expression and Its Assembly](https://www.google.com/search?q=%23a-first-look-the-rust-expression-and-its-assembly)
-  - [The Interpreter: A Simple `eval` Implementation](https://www.google.com/search?q=%23the-interpreter-a-simple-eval-implementation)
-  - [The Magic Behind the Curtain: GADT-like Enums](https://www.google.com/search?q=%23the-magic-behind-the-curtain-gadt-like-enums)
-  - [Core Components: `Cursor` and `Attic`](https://www.google.com/search?q=%23core-components-cursor-and-attic)
-  - [The Zero-Cost Proof: An Experiment with the `never` Type](https://www.google.com/search?q=%23the-zero-cost-proof-an-experiment-with-the-never-type)
-  - [Conclusion](https://www.google.com/search?q=%23conclusion)
+- [Introduction: The Allure of Tagless Final](#introduction-the-allure-of-tagless-final)
+- [The Goal: "Tagless Initial" Encoding](#the-goal-tagless-initial-encoding)
+- [A First Look: The Rust Expression and Its Assembly](#a-first-look-the-rust-expression-and-its-assembly)
+- [The Interpreter: A Simple `eval` Implementation](#the-interpreter-a-simple-eval-implementation)
+- [The Magic Behind the Curtain: GADT-like Enums](#the-magic-behind-the-curtain-gadt-like-enums)
+- [Core Components: `Cursor` and `Attic`](#core-components-cursor-and-attic)
+- [The Zero-Cost Proof: An Experiment with the `never` Type](#the-zero-cost-proof-an-experiment-with-the-never-type)
+- [Conclusion](#conclusion)
 
 ## Introduction: The Allure of Tagless Final
 
