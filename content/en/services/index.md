@@ -4,7 +4,7 @@
 
 
 ---
-title: "Inferara Protocol Design Analysis"
+title: "Inferara Protocol Analysis"
 description: ""
 draft: false
 ---
@@ -12,7 +12,7 @@ draft: false
 
 ## Go beyond bug finding. We analyze your project's core Design.
 
-We provide a strategic, third-party analysis of your protocol's foundational architecture, uncovering flawed economic incentives and game theoretic weaknesses that audits will miss.
+We provide a strategic, unbiased analysis of your protocol's foundational architecture, uncovering flawed economic incentives and game theoretic weaknesses that that conventional methods cannot find.
 
 
 
@@ -22,10 +22,10 @@ We provide a strategic, third-party analysis of your protocol's foundational arc
 
 Catastrophic exploits often stem not from simple coding errors, but from deep, systemic vulnerabilities in a protocol's design. These design level flaws in economic models, governance structures, or cross-chain interactions are invisible to traditional audits.
 
-Just take a look of the most recent exploits within just the last few weeks...
+Just take a look of the most recent exploits within just the first part of 2025
 ### Recent Protocol Exploit Examples:
 
-
+![alt text](image.png)
 
 * **The $11M Cork Protocol Hack:** On the 28th of May 2025 
 a critical lesson in Uniswap v4 hook security was learned. A subtle flaw in a callback mechanism, not a simple bug, led to a complete drain of funds. This highlights the dangers of complex interactions between protocol components.
@@ -39,13 +39,13 @@ a critical lesson in Uniswap v4 hook security was learned. A subtle flaw in a ca
 
 ---
 
-## Our Solution: Personalized Protocol Design Analysis
+## Our Solution: Personalized Protocol Analysis
 
 We move beyond code level bug hunting to provide a holistic analysis of your protocol's conceptual and architectural soundness. Our methodology is built on three pillars to ensure fundamental resilience.
 
 * **Formal Methods:** We use rigorous mathematical techniques to model protocol behavior and prove critical properties, providing mathematical guarantees of system correctness before implementation.
 
-* **Algorithmic Languages:** We apply specialized, high-precision languages for the unambiguous specification of complex logic, ensuring your design intent is perfectly captured and analyzed.
+* **Precise Tooling** We apply specialized in house tools paired with custom AI observations to perform a thorough investigation. 
 
 * **Game Theory:** We analyze economic incentives and adversarial strategies to identify and mitigate potential exploits or undesirable outcomes, securing your protocol's economic layer.
 
@@ -57,13 +57,13 @@ We move beyond code level bug hunting to provide a holistic analysis of your pro
 
 Our process is transparent, collaborative, and designed for clarity.
 
-1.  **Secure Access:** You grant us temporary, read-only access to your private GitHub repository. Your intellectual property remains secure and confidential at all times.
+1.  **Secure Access:** You grant us temporary, read-only access to your GitHub repository. Your intellectual property remains secure and confidential at all times.
 
 2.  **Deep Analysis:** Our team analyzes your architecture, specifications, and codebase using our advanced tooling and core principles from formal methods and game theory.
 
-3.  **Report Delivery:** We deliver a comprehensive PDF report detailing our findings, risk assessments, and actionable recommendations for design improvements.
+3.  **Report Delivery:** We deliver a comprehensive .MD report detailing our findings, risk assessments, and actionable recommendations for design improvements.
 
-4.  **Access Revoked:** Upon project completion, our access to your repository is immediately and permanently revoked, ensuring your code remains private.
+4.  **Access Revoked:** Upon project completion, our access to your repository is immediately and permanently revoked, ensuring your code remains untampered.
 
 ---
 
@@ -77,9 +77,9 @@ The cost of a hidden design flaw can be catastrophic. Our analysis is an investm
 
 ## Our Expert Team
 
-Our deep expertise is what truly differentiates Inferara. We bring together a rare blend of academic rigor and practical Web3 experience to provide unparalleled protocol design analysis.
+Our deep expertise is what truly differentiates Inferara. We bring together a rare blend of academic rigor and practical Web3 experience to provide unparalleled protocol analysis.
 
-One of our key team members, Dr.Maxim exemplifies this commitment to excellence and foundational understanding:
+One of our key team members, Dr. Maxim exemplifies this commitment to excellence and foundational understanding:
 
 * **PhD in Influence of Additional Information Asymmetry on the Solutions of Non-Antagonistic Games** from  [St. Petersburg University](https://english.spbu.ru/). This specialized research directly informs our game-theoretic analysis of protocol incentives and adversarial behaviors.
 
@@ -100,15 +100,17 @@ Choose the analysis that fits your protocol's current stage. All tiers are part 
 | Service Tier      | Price       | Key Features                                                                                                                                                                                                                                                             | Turnaround Time    |
 | :---------------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
 | **Quick Scan** | $1,000      | - Automated tooling run<br>- Automatically generated report<br>- Brief expert review                                                                                                                                                                                   | 1 business day     |
-| **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>- Direct communication & iterations                                                                                                                                  | 5 business days    |
-| **Deep Analysis** | Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Full formal modeling & verification<br>- Strategic advisory & continuous assurance                                                                                       | Custom timeline    |
+| **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>                                                                                                                                  | Custom timeline    |
+| **Deep Analysis** | Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory & continuous assurance<br>-Direct communication & iterations                                                                                       | Custom timeline    |
 ---
+Payment accepted through standard methods.
 
+Since we strive to support new techonlogies and payment methods, we also accept payment in cryptocurrencies e.g., BTC, ETH.
 ## Ready to Fortify Your Protocol?
 
-Take the first step towards building a secure protocol. Contact us to start your Protocol Design Analysis and gain true confidence in your system's foundation.
+Take the first step towards building a secure protocol. Contact us to start your Protocol Analysis and gain true confidence in your system's foundation.
 
-[Email Us: contact@inferara.com](mailto:contact@inferara.com)
+[Email Us: contact@inferara.com](mailto:info@inferara.com)
 
 ---
 
