@@ -15,7 +15,6 @@ draft: false
 We provide a strategic, unbiased analysis of your protocol's foundational architecture, uncovering flawed economic incentives and game theoretic weaknesses that that conventional methods cannot find.
 
 
-
 ---
 
 ## Are Hidden Flaws Putting Your Protocol at Risk?
@@ -25,7 +24,6 @@ Catastrophic exploits often stem not from simple coding errors, but from deep, s
 Just take a look of the most recent exploits within just the first part of 2025
 ### Recent Protocol Exploit Examples:
 
-![alt text](image.png)
 
 * **The $11M Cork Protocol Hack:** On the 28th of May 2025 
 a critical lesson in Uniswap v4 hook security was learned. A subtle flaw in a callback mechanism, not a simple bug, led to a complete drain of funds. This highlights the dangers of complex interactions between protocol components.
