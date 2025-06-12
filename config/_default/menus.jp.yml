@@ -19,3 +19,7 @@ main:
     name: "お問い合わせ"
     url: "/contact/"
     weight: 5
+  - identifier: services
+    name: "サービス"
+    url: "/services/"
+    weight: 6

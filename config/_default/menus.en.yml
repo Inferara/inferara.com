@@ -11,6 +11,7 @@ main:
     name: "Blog"
     url: "/blog/"
     weight: 3
+
   # - identifier: about
   #   name: "About"
   #   url: "/about/"
@@ -19,3 +20,7 @@ main:
   #   name: "Contact Us"
   #   url: "/contact/"
   #   weight: 5
+  - identifier: services
+    name: "Services"
+    url: "/services/"
+    weight: 6

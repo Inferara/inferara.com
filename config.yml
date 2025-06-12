@@ -7,6 +7,8 @@ favicon: "favicon.ico"
 defaultContentLanguage: en
 defaultContentLanguageInSubdir: true
 
+
+
 params:
 
   disableThemeToggle: true
