@@ -14,7 +14,24 @@ draft: false
 
 We provide a strategic, unbiased analysis of your protocol's foundational architecture, uncovering flawed economic incentives and game theoretic weaknesses that that conventional methods cannot find.
 
+## Pricing Tiers
 
+Choose the analysis that fits your protocol's current stage. All tiers are part of our Limited Time Beta Program.
+
+| Service Tier      | Price       | Key Features                                                                                                                                                                                                                                                             | Turnaround Time    |
+| :---------------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
+| **Quick Scan** | $1,000      | - Automated tooling run<br>- Automatically generated report<br>- Brief expert review                                                                                                                                                                                   | 1 business day     |
+| **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>                                                                                                                                  | Custom timeline    |
+| **Deep Analysis** | Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory & continuous assurance<br>-Direct communication & iterations                                                                                       | Custom timeline    |
+---
+Payment accepted through standard methods.
+
+Since we strive to support new techonlogies and payment methods, we also accept payment in cryptocurrencies e.g., BTC, ETH.
+## Ready to Fortify Your Protocol?
+
+Take the first step towards building a secure protocol. Contact us to start your Protocol Analysis and gain true confidence in your system's foundation.
+
+------->[Email Us](mailto:info@inferara.com)
 ---
 
 ## Are Hidden Flaws Putting Your Protocol at Risk?
@@ -71,7 +88,7 @@ The cost of a hidden design flaw can be catastrophic. Our analysis is an investm
 
 ---
 
-## [Start Your Analysis](#contact)
+
 
 ## Our Expert Team
 
@@ -90,25 +107,6 @@ One of our key team members, Dr. Maxim exemplifies this commitment to excellence
 This unique combination of a strong theoretical foundation in formal methods and game theory, coupled with hands-on contributions to cutting edge Web3 infrastructure, ensures that our analysis is not only academically sound but also directly relevant to real-world protocol challenges and emergent vulnerabilities.
 
 ---
-
-## Pricing Tiers
-
-Choose the analysis that fits your protocol's current stage. All tiers are part of our Limited Time Beta Program.
-
-| Service Tier      | Price       | Key Features                                                                                                                                                                                                                                                             | Turnaround Time    |
-| :---------------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
-| **Quick Scan** | $1,000      | - Automated tooling run<br>- Automatically generated report<br>- Brief expert review                                                                                                                                                                                   | 1 business day     |
-| **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>                                                                                                                                  | Custom timeline    |
-| **Deep Analysis** | Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory & continuous assurance<br>-Direct communication & iterations                                                                                       | Custom timeline    |
----
-Payment accepted through standard methods.
-
-Since we strive to support new techonlogies and payment methods, we also accept payment in cryptocurrencies e.g., BTC, ETH.
-## Ready to Fortify Your Protocol?
-
-Take the first step towards building a secure protocol. Contact us to start your Protocol Analysis and gain true confidence in your system's foundation.
-
-[Email Us: contact@inferara.com](mailto:info@inferara.com)
-
+## [Start Your Analysis](mailto:info@inferara.com)
 ---
 
