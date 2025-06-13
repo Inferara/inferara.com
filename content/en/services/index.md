@@ -1,6 +1,6 @@
-## Go beyond bug finding. We analyze your project's core Design.
+# Inferara Protocol Design Analysis
 
-We provide a strategic, unbiased analysis of your protocol's foundational architecture, uncovering flawed economic incentives and game theoretic weaknesses that that conventional methods cannot find.
+Is your protocol's architecture sound? Are your economic incentives exploitable? We go beyond standard audits to analyze the fundamental design of your system, de-risking your project before you write a single line of code for a security audit.
 
 ## Pricing Tiers
 
@@ -10,7 +10,7 @@ Choose the analysis that fits your protocol's current stage. All tiers are part 
 | :---------------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
 | **Quick Scan** | $1,000      | - Automated tooling run<br>- Automatically generated report<br>- Brief expert review                                                                                                                                                                                   | 1 business day     |
 | **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>                                                                                                                                  | 3 business days    |
-| **Deep Analysis** | Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory<br>-Direct communication & iterations                                                                                       | Custom timeline    |
+| **Deep Analysis** | (From $30,000) Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory<br>-Direct communication & iterations                                                                                       | Custom timeline    |
 ---
 Payment accepted through standard methods.
 
