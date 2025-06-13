@@ -47,7 +47,7 @@ We move beyond code level bug hunting to provide a holistic analysis of your pro
 
 * **Formal Methods:** We use rigorous mathematical techniques to model protocol behavior and prove critical properties, providing mathematical guarantees of system correctness before implementation.
 
-* **Precise Tooling** We apply specialized in house tools paired with custom AI observations to perform a thorough investigation. 
+* **Precise Tooling:** We apply specialized in house tools paired with custom AI observations to perform a thorough investigation. 
 
 * **Game Theory:** We analyze economic incentives and adversarial strategies to identify and mitigate potential exploits or undesirable outcomes, securing your protocol's economic layer.
 
