@@ -15,11 +15,11 @@ main:
     name: "私たちについて"
     url: "/about/"
     weight: 4
-  - identifier: contact
-    name: "お問い合わせ"
-    url: "/contact/"
-    weight: 5
   - identifier: services
     name: "サービス"
     url: "/services/"
     weight: 6
+  - identifier: contact
+    name: "お問い合わせ"
+    url: "/contact/"
+    weight: 10
