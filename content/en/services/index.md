@@ -11,7 +11,7 @@ Choose the analysis that fits your protocol's current stage. All tiers are part 
 | **Quick Scan** | $1,000      | - Automated tooling run<br>- Automatically generated report<br>- Brief expert review                                                                                                                                                                                   | 1 business day     |
 | **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>                                                                                                                                  | 3 business days    |
 | **Deep Analysis** | (From $30,000) Contact Us  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory<br>-Direct communication & iterations                                                                                       | Custom timeline    |
----
+
 Payment accepted through standard methods.
 
 Since we develop Web3 space, payments in crypto are welcome.
