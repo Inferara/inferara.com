@@ -2,6 +2,9 @@
 
 Is your protocol's architecture sound? Are your economic incentives exploitable? We go beyond standard audits to analyze the fundamental design of your system, de-risking your project before you write a single line of code for a security audit.
 
+{{< carousel id="myAwesomeCarousel" interval="1000" controls="true" indicators="true" fade="true" class="my-custom-carousel" style="border: 2px solid lightblue;" />}}
+
+
 ## Pricing Tiers
 
 Choose the analysis that fits your protocol's current stage. All tiers are part of our Limited Time Beta Program.
