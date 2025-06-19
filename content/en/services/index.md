@@ -1,9 +1,49 @@
 # Inferara Protocol Design Analysis
+### We do not hunt for individual bugs; we identify patterns of systemic risk.
 
-Is your protocol's architecture sound? Are your economic incentives exploitable? We go beyond standard audits to analyze the fundamental design of your system, de-risking your project before you write a single line of code for a security audit.
+>"If you don’t do this design right from the beginning, then every piece of the code you write is a patch. And you start out from day 1 with a mess." – Leslie Lamport
 
-{{< carousel id="myAwesomeCarousel" interval="1000" controls="true" indicators="true" fade="true" class="my-custom-carousel" style="border: 2px solid lightblue;" />}}
+Is your protocol's architecture sound? Are your economic incentives exploitable? 
 
+We go beyond standard audits to analyze the fundamental design of your system,      
+ de-risking your project before you write a single line of code.
+
+ Throughout history castles have been built to protect assets, whether financial or people such as the heirs to a kingdom. Castles are only as secure as their design and supporting infrastructure.
+
+Hiroshima castle was actually built before the surrounding city was established. This was an intentional design choice.
+
+For a moment, consider your protocol as a castle.
+
+As protocols 🏯 and their infrastructure 🏙 become more complex in their interactions, so does the complexity of security. 
+
+
+<!--- {{< carousel id="myAwesomeCarousel" interval="3000" controls="true" indicators="true" fade="true" class="my-custom-carousel" style="border: 2px solid lightblue;" />}} --->
+
+| Hiroshima Castle (1644)| Hiroshima Castle (1899) | Hiroshima Castle (2025) |
+| :--------------: | :--------------: | :--------------: |
+| ![Image alt](hiroshima_1644.jpg) | ![Image alt](hiroshima_1899.png) | ![Image alt](hiroshima_2025.png) |
+
+
+## Our Methodology: The 2-Layer Analysis 
+###  Layer 1 (The Foundation): Static code and system analysis
+* We use static analysis tools acting similarly to compilers-frontend with rich AST-based models (linking resolutions, type inference, etc.)
+* Taint and flow analysis (data and control) is usual for Web2 security tools; we bring it to Web3 tools
+* We use the Inference mathematical model that we developed ourselves, and we as the Inference formal specification programming language that enables us to reason about the code using theorem provers effectively
+* We are Specializing in WASM
+* We use AI to solve traditional static analysis complex problems, such as matching original high-level code with byte code, complex graph analysis, filter false-positives.
+
+### Layer 2 (The Insight): Strategic Design Analysis   (Architectural, Economic & Game-Theoretic Diagnosis)
+* Our team has an academic background. Expertise in game theory, formal logic, algorithms, and programming languages
+* We consider protocols as
+    - A structure with many participants acting within the realm of the protocol
+    - As a unit that acts as a participant in the global Web3 landscape
+* We provide a strategic-level analysis that identifies
+    - How well a protocol is designed technically (using results from the Layer 1)
+    - How well a protocol is designed mathematically
+    - What can happen if protocol participants act in a certain manner, or what if 3rd parties act against or for the protocol
+
+By applying our insights you can ensure your protocol is ready to be visited by people around the world, just like a beautiful castle. 
+Secure but welcoming.
 
 ## Pricing Tiers
 
@@ -17,32 +57,18 @@ Choose the analysis that fits your protocol's current stage. All tiers are part 
 
 Payment accepted through standard methods.
 
-Since we develop Web3 space, payments in crypto are welcome.
+Since we are building in the Web3 space, payments in crypto are also welcome.
 
 ## Ready to Fortify Your Protocol?
 
 Take the first step towards building a secure protocol. Contact us to start your Protocol Analysis and gain true confidence in your system's foundation.
 
-------->[Email Us](mailto:info@inferara.com)
+[Contact us Directly](mailto:info@inferara.com)
 ---
 
 ## Are Hidden Flaws Putting Your Protocol at Risk?
 
 Catastrophic exploits often stem not from simple coding errors, but from deep, systemic vulnerabilities in a protocol's design. These design level flaws in economic models, governance structures, or cross-chain interactions are invisible to traditional audits.
-
-Just take a look of the most recent exploits within just the first part of 2025
-### Recent Protocol Exploit Examples:
-
-
-* **The $11M Cork Protocol Hack:** On the 28th of May 2025 
-a critical lesson in Uniswap v4 hook security was learned. A subtle flaw in a callback mechanism, not a simple bug, led to a complete drain of funds. This highlights the dangers of complex interactions between protocol components.
-    [Learn More →](https://dedaub.com/blog/the-11m-cork-protocol-hack-a-critical-lesson-in-uniswap-v4-hook-security/)
-
-* **The $22.3M Cetus Hack:** On May 22, 2025 a shared library bug triggered a massive exploit, demonstrating how dependencies can introduce unforeseen attack vectors. True resilience requires analyzing the entire system, not just your direct codebase.
-    [Learn More →](https://www.merklescience.com/blog/hack-track-how-a-shared-library-bug-triggered-the-223m-cetus-hack)
-
-* **The Alex Protocol Exploit:** On June 6 of 2025 this incident exposed vulnerabilities in how protocols manage permissions and private keys, proving that technical security and operational security are deeply intertwined in the design phase.
-    [Learn More →](https://www.onesafe.io/blog/alex-protocol-exploit-lessons-in-defi-security)
 
 ## Our Solution: Personalized Protocol Analysis
 
@@ -61,9 +87,9 @@ Our process is transparent, collaborative, and designed for clarity.
 
 ```mermaid
 graph TD
-    A[Secure Access:<br/>Grant read-only access to GitHub] --> B[Deep Analysis:<br/>Analyze architecture, specs, and codebase];
-    B --> C[Report Delivery:<br/>Deliver .MD report with findings and recommendations];
-    C --> D[Access Revoked:<br/>Access to repository is revoked];
+    A[**Secure Access:**<br/>Grant read-only access to GitHub] --> B[**Deep Analysis:**<br/>Analyze architecture, specs, and codebase];
+    B --> C[**Report Delivery:**<br/>Deliver .MD report with findings and recommendations];
+    C --> D[**Access Revoked:**<br/>Access to repository is revoked];
 ```
 
 1.  **Secure Access:** You grant us temporary, read-only access to your GitHub repository. Your intellectual property remains secure and confidential at all times.

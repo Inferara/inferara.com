@@ -4,7 +4,7 @@ date = 2024-05-01T11:21:45+05:00
 draft = false
 math = "katex"
 summary = "The second part of the conspect of the \"Intoduction to TLA+\" course by Leslie Lamport."
-tags = ["Temporal Logic", "TLA+", "Model checking", "Alrorithms"]
+tags = ["Temporal Logic", "TLA+", "Model checking", "Algorithms"]
 aliases = ["/blog/commit-to-marriage-with-tla-plus-2"]
 +++
 
