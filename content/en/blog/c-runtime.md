@@ -4,7 +4,7 @@ date = 2025-01-15T11:21:45+09:00
 draft = false
 math = "katex"
 summary = "The C runtime (CRT) is a collection of startup routines, initialization code, standard library support, and sometimes system call wrappers that form the environment in which a C program executes."
-tags = ["Clang", "Compilers", "Alrorithms"]
+tags = ["Clang", "Compilers", "Algorithms"]
 aliases = ["/blog/c-runtime"]
 +++
 
