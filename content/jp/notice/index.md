@@ -24,7 +24,6 @@
     <th>メールアドレス</th>
     <td><a href="mailto:info@inferara.com">info@inferara.com</a></td>
 </tr>
-</tr>
 <tr>
     <th>支払方法</th>
     <td>
