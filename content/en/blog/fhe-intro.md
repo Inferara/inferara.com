@@ -1,5 +1,5 @@
 +++
-title = "Fully Homomorphic Introduction"
+title = "Introduction to Fully Homomorphic Encryption"
 date = 2025-10-24T10:10:15+09:00
 draft = false
 math = "katex"
@@ -12,11 +12,11 @@ aliases = ["/blog/fully-homomorphic-introduction"]
 
 - [Introduction](#introduction)
 - [What is Fully Homomorphic Encryption (FHE)](#what-is-fully-homomorphic-encryption-fhe)
-- [Base mathematical Concepts Behind FHE](#base-mathematical-concepts-behind-fhe)
+- [Mathematical Concepts Behind FHE](#mathematical-concepts-behind-fhe)
 - [Computer Science Concepts Behind FHE](#computer-science-concepts-behind-fhe)
 - [Mathematical Foundations](#mathematical-foundations)
-- [Execution trace example of CKKS](#execution-trace-example-of-ckks)
-- [Rust example](#rust-example)
+- [Execution Trace Example of CKKS](#execution-trace-example-of-ckks)
+- [Rust Example](#rust-example)
 - [Conclusion](#conclusion)
 - [References](#references)
 
@@ -29,39 +29,45 @@ Imagine being able to send your sensitive financial data to a cloud service for 
 
 This comprehensive introduction explores the mathematical foundations, practical implementations, and real-world applications of Fully Homomorphic Encryption. We'll journey from the basic concepts to advanced cryptographic schemes like BFV, BGV, CKKS, and TFHE, examining how each addresses different computational needs while maintaining absolute data privacy.
 
-Whether you're a cryptography researcher, a software developer interested in privacy-preserving technologies, or simply curious about the future of secure computation, this article will provide you with both theoretical understanding and practical insights into one of cryptography's most promising frontiers.
+Whether you're a cryptography researcher, a software developer interested in privacy-preserving technologies, or simply curious about the future of secure computation, this structured approach will provide you with both theoretical understanding and practical insights into one of cryptography's most promising frontiers.
 
 ## What is Fully Homomorphic Encryption (FHE)
 
-In simple words: It’s a special kind of encryption that lets someone perform calculations on encrypted data without ever seeing the original data.
+To understand the revolutionary nature of FHE, let's begin with its fundamental premise. In simple terms, FHE is a special kind of encryption that enables someone to perform calculations on encrypted data without ever seeing the original data.
 
-Normally, when you encrypt data, you must decrypt it first to do anything useful (like add, multiply, or analyze).
-But with FHE, you can:
+Normally, when you encrypt data, you must decrypt it first to perform any useful operations (such as addition, multiplication, or analysis). However, with FHE, you can:
+
 - Encrypt the data
-- Give it to someone else (like a cloud server)
+- Give it to someone else (such as a cloud server)
 - They can run computations directly on the encrypted data
-- And when you decrypt the final result, it’s the same as if they had done the computation on the original data
+- When you decrypt the final result, it's identical to what would have been produced if they had performed the computation on the original data
 
-So, the data stays private the whole time, even while being processed.
+Thus, the data remains private throughout the entire process, even while being processed.
 
-For example, let’s say we want to encrypt `5` and `3`. We send the encrypted numbers to a cloud service, which adds them together without decrypting and we get back an encrypted result. When we decrypt it, it says `8`. In this example, the cloud never knew the numbers were `5` or `3` — yet it still managed to calculate `5 + 3`.
+For example, suppose we want to encrypt `5` and `3`. We send the encrypted numbers to a cloud service, which adds them together without decrypting, and we receive back an encrypted result. When we decrypt it, we get `8`. In this example, the cloud service never knew the numbers were `5` or `3`—yet it successfully calculated `5 + 3`.
+
+This seemingly impossible capability opens the door to transformative applications across multiple industries. Let's explore the most compelling use cases where FHE is making a real difference today.
 
 **Practical Use Cases**
 
-1. Privacy-Preserving Cloud Computing: A user can store and process sensitive data (like medical records or financial data) in the cloud without revealing the actual content to the cloud provider.
-2. Secure Machine Learning (Encrypted AI): AI models can be trained or make predictions on encrypted data. For example, a hospital could let an AI analyze patient data for disease risk without revealing any personal details.
-3. Finance & Banking: Banks can perform risk analysis or fraud detection on encrypted customer data without ever seeing the actual balances or transactions.
-4. Government & Defense: Agencies can share or analyze classified information securely with external parties.
-5. Data Sharing Between Companies: Two companies can collaborate (e.g., on customer behavior data) without actually exposing the raw data to each other.
+1. **Privacy-Preserving Cloud Computing**: Users can store and process sensitive data (such as medical records or financial information) in the cloud without revealing the actual content to the cloud provider.
+
+2. **Secure Machine Learning (Encrypted AI)**: AI models can be trained or make predictions on encrypted data. For example, a hospital could allow an AI system to analyze patient data for disease risk assessment without revealing any personal details.
+
+3. **Finance & Banking**: Banks can perform risk analysis or fraud detection on encrypted customer data without ever seeing the actual balances or transactions.
+
+4. **Government & Defense**: Agencies can share or analyze classified information securely with external parties.
+
+5. **Data Sharing Between Companies**: Two companies can collaborate (for example, on customer behavior analysis) without exposing their raw data to each other.
 
 >[!note]
-FHE is mathematically complex and computationally heavy, meaning it’s slow compared to normal operations. However, in recent years, improvements (like Microsoft SEAL [[1]], IBM HElib [[2]], Google’s FHE libraries [[3]][[4]], and Zama Concrete[[5]]) are making it more practical, especially for limited computations or small datasets.
+>FHE is mathematically complex and computationally intensive, making it significantly slower than normal operations. However, recent improvements in libraries such as Microsoft SEAL [[1]], IBM HElib [[2]], Google's FHE libraries [[3]][[4]], and Zama Concrete [[5]] are making FHE increasingly practical, especially for limited computations or small datasets.
 
-Now, consider some practical examples with a bit more details:
+To better illustrate FHE's transformative potential, let's examine two detailed scenarios that demonstrate how this technology is already solving real-world privacy challenges:
 
 **Healthcare — Secure Medical Analysis**
 
-The problem: Hospitals and clinics often want to analyze patient data (like MRI results or genetic information) to find disease patterns or improve treatments. But this data is highly sensitive and cannot legally be shared openly (due to privacy laws like HIPAA or GDPR).
+Consider the challenge facing modern healthcare: Hospitals and clinics often want to analyze patient data (like MRI results or genetic information) to find disease patterns or improve treatments. However, this data is highly sensitive and cannot legally be shared openly due to privacy laws like HIPAA or GDPR.
 
 How FHE helps:
 
@@ -73,11 +79,11 @@ How FHE helps:
 
 The hospitals then decrypt the final results, getting useful statistics or trained AI models without revealing any individual’s personal medical information.
 
-Benefit: Sensitive medical records never leave the hospital in readable form — yet global research collaboration becomes possible.
+The breakthrough benefit: Sensitive medical records never leave the hospital in readable form—yet global research collaboration becomes possible, accelerating medical discoveries while preserving patient privacy.
 
 **Banking — Privacy-Preserving Credit Scoring**
 
-The problem: Banks want to calculate credit scores using income, spending habits, and debts — but customers don’t want to expose all their private data to external scoring services or cloud platforms.
+Similarly, the financial sector faces a parallel dilemma: Banks want to calculate credit scores using comprehensive data including income, spending habits, and debts. However, customers are increasingly reluctant to expose all their private financial information to external scoring services or cloud platforms.
 
 How FHE helps:
 
@@ -86,23 +92,24 @@ How FHE helps:
 3. The result (credit score) is encrypted and returned to the bank.
 4. The bank decrypts it locally — getting the credit score without the scoring company ever seeing any real numbers.
 
-Benefit: The scoring system remains accurate, but no sensitive financial data is revealed — not even to the service provider.
+The result: The scoring system remains accurate, but no sensitive financial data is revealed—not even to the service provider, creating a win-win scenario for all parties involved.
 
-Other emerging examples:
+These examples represent just the beginning. Emerging applications span across numerous domains:
 
-* IoT devices: Smart sensors can send encrypted readings (like from home energy meters) for analysis without revealing exact behavior patterns.
-* Cloud storage providers: They can offer “search” or “filter” functions on encrypted databases.
-* Elections: Encrypted vote counting ensures results can be tallied without exposing individual votes.
+* **IoT devices**: Smart sensors can send encrypted readings (like from home energy meters) for analysis without revealing exact behavior patterns
+* **Cloud storage providers**: They can offer "search" or "filter" functions on encrypted databases
+* **Elections**: Encrypted vote counting ensures results can be tallied without exposing individual votes
 
-## Base mathematical Concepts Behind FHE
+Having explored the practical applications, we now turn to the fundamental question: How does FHE actually work? To answer this, we must delve into the mathematical principles that make this seemingly magical capability possible.
 
-The Core Idea of FHE is that when the data encryption, you turn it into ciphertext — a jumble of random-looking numbers.
-In normal encryption (like AES), this ciphertext is useless until you decrypt it.
-But with FHE, the ciphertext is structured in a special way so that math operations done on it still “make sense” after decryption.
+## Mathematical Concepts Behind FHE
+
+At its heart, FHE relies on a clever mathematical insight. When you encrypt data using traditional methods, you transform it into ciphertext—a jumble of random-looking numbers. In normal encryption schemes (such as AES), this ciphertext is completely useless until you decrypt it.
+However, with FHE, the ciphertext is structured in a special way so that mathematical operations performed on it still "make sense" after decryption.
 
 In other words:
 
-Encrypted operations = Real operations on hidden data.
+**Encrypted operations = Real operations on hidden data**
 
 So if:
 
@@ -114,17 +121,22 @@ Then:
 * $E(5)+E(3)=E(8)$
 * $E(5) \times E(3)=E(15)$
 
-When the decryption takes place, the correct results are obtained — even though initial information stayed encrypted during the process.
+When decryption takes place, the correct results are obtained—even though the initial information remained encrypted throughout the entire process.
 
-Conceptually, in FHE scheme 3 steps are involved:
-1. Each number is turned into a polynomial (a kind of mathematical formula) with a secret key. It’s scrambled so that nobody can guess the real number from it.
-2. Compute on Encrypted Data. Operations like addition or multiplication are translated into operations on the polynomials. These work in a way that, after decryption, the result corresponds to the correct output.
-3. Decrypt the Result. A secret key is used to "unscramble" the final ciphertext and reveal the actual computed answer.
+This remarkable property emerges from the careful mathematical structure of FHE schemes. Conceptually, every FHE scheme involves three fundamental steps:
+
+1. **Encryption**: Each number is transformed into a polynomial (a mathematical formula) using a secret key. It's scrambled so that no one can guess the real number from it.
+
+2. **Computation on Encrypted Data**: Operations such as addition or multiplication are translated into operations on the polynomials. These operations work in such a way that, after decryption, the result corresponds to the correct output.
+
+3. **Decryption**: A secret key is used to "unscramble" the final ciphertext and reveal the actual computed result.
+
+The term "homomorphic" captures the essential mathematical property that makes this possible.
 
 >[!note]
-> So, why it is called homomorphic? The word *homomorphic* means “same structure”.
-
-In this context, it means the operations on ciphertexts (like $+$ or $\times$) behave the same way as operations on plaintexts.
+>Why is it called "homomorphic"? The word *homomorphic* means "same structure."
+>
+>In this context, it means that operations on ciphertexts (such as $+$ or $\times$) behave the same way as operations on plaintexts.
 
 | Operation Type               | What It Means                                     | Example                                               |
 | ---------------------------- | --------------------------------------------------| ----------------------------------------------------- |
@@ -132,26 +144,27 @@ In this context, it means the operations on ciphertexts (like $+$ or $\times$) b
 | Multiplicatively homomorphic | Multiply encrypted data                           | $E(2) \times E(4) = E(8)$                             |
 | **Fully** homomorphic        | *Both* addition and multiplication are possible   | $\rightarrow$ Can compute **any function** on encrypted data! |
 
-For decades, encryption schemes could only do one type of operation (addition or multiplication), not both. It wasn’t until 2009 that Craig Gentry [[6]] (IBM researcher) created the first fully homomorphic encryption system.
+This distinction is crucial because it represents decades of cryptographic research. For many years, encryption schemes could only support one type of operation (either addition or multiplication), not both. This limitation severely restricted their practical applications. The breakthrough came in 2009 when Craig Gentry [[6]], in his Stanford PhD dissertation, created the first fully homomorphic encryption system.
 
-The big challenge was that:
+The major challenge was that:
 
-* Every operation adds a bit of "noise" to the ciphertext
-* Too much noise $\rightarrow$ data becomes unreadable
-* Gentry’s insight was to "refresh" ciphertexts occasionally to reduce noise (a process called bootstrapping).
+* Every operation adds some "noise" to the ciphertext
+* Too much noise makes the data unreadable
+* Gentry's key insight was to "refresh" ciphertexts periodically to reduce noise (a process called bootstrapping)
 
-That idea made FHE theoretically possible.
+This breakthrough made FHE theoretically possible, opening the door to practical privacy-preserving computation.
 
-Modern FHE libraries (mentioned above) make Gentry scheme usable for real-world tasks — though still slower than normal computation.
+Building on Gentry's foundational work, modern FHE libraries have transformed his theoretical insights into usable systems. While these implementations remain significantly slower than normal computation, they incorporate sophisticated optimizations:
 
-These libraries implement clever tricks like:
-* Using lattice-based cryptography (explained below)
+* Using lattice-based cryptography (which we'll explore next)
 * Approximating real numbers for faster operations
-* Parallelizing computations for better performance
+* Parallelizing computations for improved performance
+
+These advances bridge the gap between theory and practice, but to truly understand FHE's capabilities and limitations, we need to examine the computational science principles that govern its operation.
 
 ## Computer Science Concepts Behind FHE
 
-In Formal Terms, FHE can be defined as follows:
+Having established the mathematical intuition, we can now formalize FHE's definition and explore the computational challenges it addresses. In formal terms, FHE can be defined as follows:
 
 FHE is an encryption scheme $(KeyGen, Enc, Dec, Eval)$ such that: $Dec(sk, Eval(pk, f, Enc(pk, x))) = f(x)$ for any efficiently computable function $f$.
 
@@ -164,36 +177,32 @@ So, FHE provides a homomorphism between:
 
 Most practical FHE schemes are based on **Learning With Errors (LWE)** [[7]] or its ring variant **Ring-LWE** [[8]].
 
-Key idea:
+The key idea:
 
-A ciphertext is represented as noisy linear or polynomial equations: $c = (a, b = a \cdot s + m + e) \mod q$ where:
+A ciphertext is represented as noisy linear or polynomial equations: $c = (a, b = \langle a, s \rangle + m + e) \bmod q$ where:
 * $s$: secret key (vector or polynomial)
 * $m$: plaintext (embedded in a small modulus $t$)
 * $e$: noise term (small random error)
 * $q$: ciphertext modulus
 
-Decrypting means: $m \approx b - a \cdot s \mod q$, as long as $e$ stays small, $m$ can be recovered.
-But as homomorphic operations are performed, noise grows — hence **bootstrapping** (noise refreshing) is needed.
+Decryption means: $m \approx b - \langle a, s \rangle \bmod q$. As long as $e$ remains small, $m$ can be recovered. However, as homomorphic operations are performed, noise grows—hence **bootstrapping** (noise refreshing) is needed.
 
 Ciphertexts support two primitive operations:
-1. Addition
-   Add ciphertexts component-wise: $(a_1,b_1) + (a_2,b_2) = (a_1+a_2, b_1+b_2)$ $\rightarrow$ corresponds to plaintext addition, noise increases slightly.
-2. Multiplication:
-   Multiply ciphertexts polynomially.
-   Noise grows much faster (roughly multiplicatively), hence the need for:
-   * **Modulus switching:** reduce modulus $q$ to shrink noise.
-   * **Re-linearization:** project the result back to a fixed ciphertext dimension.
+1. **Addition**: Add ciphertexts component-wise: $(a_1,b_1) + (a_2,b_2) = (a_1+a_2, b_1+b_2)$. This corresponds to plaintext addition; noise increases slightly.
+
+2. **Multiplication**: Multiply ciphertexts polynomially. Noise grows much faster (roughly multiplicatively), hence the need for:
+   * **Modulus switching**: Reduce modulus $q$ to shrink noise
+   * **Re-linearization**: Project the result back to a fixed ciphertext dimension
 
 >[!important]
->Noise management is the central engineering challenge in FHE
+>Noise management is the central engineering challenge in FHE.
 
-Bootstrapping (Gentry’s Insight) = homomorphically evaluating the decryption circuit itself.
-* The secret key is encrypted under itself.
-* When noise gets large, the ciphertext is refreshed by running $Eval$ on the decryption function using the encrypted key.
-* This produces a new ciphertext with lower noise, but same plaintext.
+**Bootstrapping (Gentry's Insight)** involves homomorphically evaluating the decryption circuit itself.
+* The secret key is encrypted under itself
+* When noise becomes large, the ciphertext is refreshed by running $Eval$ on the decryption function using the encrypted key
+* This produces a new ciphertext with lower noise but the same plaintext
 
-Bootstrapping is expensive (orders of magnitude slower than native ops) but crucial for "full" homomorphism.
-A big part of modern FHE research involves **compilers and intermediate representations** for encrypted computation.
+Bootstrapping is expensive (orders of magnitude slower than native operations) but crucial for "full" homomorphism. A significant part of modern FHE research involves **compilers and intermediate representations** for encrypted computation.
 
 Conceptually:
 
@@ -222,26 +231,26 @@ Different FHE Schemes
 | **CKKS** [[11]] | Approximate arithmetic (reals/floats) | Scaled encoding    | ML inference     |
 | **TFHE** [[12]] | Bit-level Boolean logic               | Bootstrapping fast | Logic circuits   |
 
-For a compiler development point of view, FHE is essentially about **mapping high-level code to algebraic circuits** under the following constraints:
+From a compiler development perspective, FHE is essentially about **mapping high-level code to algebraic circuits** under the following constraints:
 
-* **Add/multiply only** (no branches or arbitrary memory access)
-* **Noise tracking** akin to precision analysis
-* **Circuit depth minimization** like optimizing floating-point pipelines
-* **Vectorized packing (SIMD in ciphertexts)** — batching multiple plaintext slots using polynomial CRT representations
+* **Add/multiply only**: No branches or arbitrary memory access
+* **Noise tracking**: Similar to precision analysis
+* **Circuit depth minimization**: Like optimizing floating-point pipelines
+* **Vectorized packing (SIMD in ciphertexts)**: Batching multiple plaintext slots using polynomial CRT representations
 
 In many ways, FHE compilers resemble:
 
-* **Hardware synthesis tools (Verilog $\rightarrow$ gates)**
-* or **secure MPC compilers**, but with algebraic noise models.
+* **Hardware synthesis tools** (Verilog → gates)
+* **Secure MPC compilers**, but with algebraic noise models
 
-Current implementations performance characteristics:
+Current implementation performance characteristics:
 * Basic arithmetic: milliseconds
 * Bootstrapping: ~10–100 ms (improving rapidly)
-* Still $10^4 \sim 10^6 \times$ slower than plaintext computation, but improving.
+* Still $10^4$ to $10^6$ times slower than plaintext computation, but improving
 
-**Comparison of FHE concepts to traditional compiler concepts:**
+This parallel with traditional compilation reveals why FHE development requires expertise from both cryptography and systems engineering:
 
-| Aspect                 | Analogy                     | FHE Equivalent                     |
+| Aspect                 | Traditional Systems         | FHE Equivalent                     |
 | ---------------------- | --------------------------- | ---------------------------------- |
 | **Data type**          | Encrypted integers or reals | Ciphertexts in modular rings       |
 | **Operation**          | ALU ops ($+$, $\times$)     | Homomorphic Eval                   |
@@ -250,19 +259,22 @@ Current implementations performance characteristics:
 | **Memory layout**      | Vectorization               | Ciphertext batching                |
 | **IR / backend**       | LLVM, MLIR                  | FHE DSLs / frameworks              |
 
+While these computational frameworks provide the practical tools for FHE development, they rest upon deep mathematical foundations. To truly understand how FHE achieves its security guarantees and computational capabilities, we must examine the underlying mathematical structures that make it all possible.
+
 ## Mathematical Foundations
 
-Lattice definition: a **lattice** $\mathcal{L} \subset \mathbb{R}^n$ is the set of all integer linear combinations of basis vectors:
-$\mathcal{L} = { a_1b_1 + a_2b_2 + \dots + a_kb_k \mid a_i \in \mathbb{Z} }$, which resembles a discrete grid in high-dimensional space.
+The security of modern FHE schemes relies on problems from lattice cryptography—a branch of mathematics dealing with geometric structures in high-dimensional spaces. Let's begin with the fundamental building blocks.
 
-The **LWE problem** underpins most FHE security:
+**Lattice definition**: A **lattice** $\mathcal{L} \subset \mathbb{R}^n$ is the set of all integer linear combinations of basis vectors:
+$\mathcal{L} = \{ a_1\mathbf{v_1} + a_2\mathbf{v_2} + \dots + a_k\mathbf{v_k} \mid a_i \in \mathbb{Z} \}$, where $\mathbf{v_1}, \ldots, \mathbf{v_k}$ are the basis vectors. This resembles a discrete grid in high-dimensional space.
 
-Given many samples of the form $(a_i, b_i = a_i \cdot s + e_i \mod q)$ where $a_i$ are random, $e_i$ are small "errors", and $s$ is secret,
-it’s computationally hard (quantum-resistant) to recover $s$.
+Building upon this geometric foundation, the **Learning With Errors (LWE) problem** provides the security backbone for most FHE schemes:
 
-That hardness ensures that ciphertexts leak no useful information about the plaintext.
+Given many samples of the form $(a_i, b_i = \langle a_i, s \rangle + e_i \bmod q)$ where $a_i \in \mathbb{Z}_q^n$ are random, $e_i$ are small "errors", and $s \in \mathbb{Z}_q^n$ is the secret vector, it is computationally hard (quantum-resistant) to recover $s$.
 
-To make FHE efficient, we generalize LWE to polynomial rings.
+This computational hardness assumption ensures that ciphertexts leak no useful information about the plaintext, even to quantum adversaries.
+
+However, pure LWE-based schemes would be prohibitively slow for practical use. To achieve the efficiency needed for real applications, we generalize LWE to operate within polynomial rings.
 
 Let: $R_q = \mathbb{Z}_q[x]/(x^N + 1)$.
 
@@ -272,44 +284,49 @@ Operations are done coefficient-wise mod $(q)$, with degree reduction by $(x^N +
 * $N$: ring dimension (power of 2, e.g. $2^{14} = 16384$)
 * $q$: ciphertext modulus (a large prime or composite integer)
 
-**Security** comes from the **Ring-LWE** assumption — the polynomial analogue of LWE.
+The **security** of this approach comes from the **Ring-LWE** assumption—the polynomial analogue of LWE that maintains the same hardness properties while enabling much more efficient operations.
+
+With these mathematical structures in place, we can now describe how encryption and decryption actually work in practice.
 
 **Encryption**
 
-Let $s \in R_q$ be the secret key (a small polynomial).
-To encrypt plaintext $m \in R_t$, where $t \ll q$: $c = (c_0, c_1) = (b, a) = (a \cdot s + m + e, -a)$
+Let $s \in R_q$ be the secret key (a small polynomial). To encrypt plaintext $m \in R_t$, where $t \ll q$: 
+
+$$c = (c_0, c_1) = (b, a) = (a \cdot s + m + e, -a)$$
 
 Where:
 
-* $a \leftarrow R_q$ random,
-* $e \leftarrow \text{small noise}$,
-* $m$ is scaled up to fit modulus $q$.
+* $a \leftarrow R_q$ is random
+* $e \leftarrow \text{small noise}$
+* $m$ is scaled up to fit modulus $q$
 
 **Decryption**
 
-$m' = (c_0 + c_1 \cdot s) \mod q$ If noise $e$ is small, rounding recovers $m \mod t$.
+$$m' = (c_0 + c_1 \cdot s) \bmod q$$
+
+If noise $e$ is small, rounding recovers $m \bmod t$.
 
 **Homomorphic Operations**
 
-Addition: $(c_0, c_1) + (c_0', c_1') = (c_0 + c_0', c_1 + c_1')$. Plaintext result = $(m + m')$, noise increases linearly.
+**Addition**: $(c_0, c_1) + (c_0', c_1') = (c_0 + c_0', c_1 + c_1')$. Plaintext result = $(m + m')$; noise increases linearly.
 
-Multiplication:
+**Multiplication**: 
+$$(c_0, c_1) \cdot (c_0', c_1') = (c_0 c_0', c_0 c_1' + c_1 c_0', c_1 c_1')$$
 
-$(c_0, c_1) \cdot (c_0', c_1') = (c_0 c_0', c_0 c_1' + c_1 c_0', c_1 c_1')$
-This produces a **3-term ciphertext** $degree 2 in ( s )$.
+This produces a **3-term ciphertext** of degree 2 in $s$.
 
-To restore it to 2 components, a **relinearization** is performed using precomputed *key-switching* keys.
+To restore it to 2 components, **relinearization** is performed using precomputed *key-switching* keys.
 
-Modulus and Scaling
+**Modulus and Scaling**
 
-FHE works modulo a large modulus $q$ (like $2^{200}$–$2^{600}$).
-Each operation increases the noise term $e$, which must stay small relative to $q$.
+FHE operates modulo a large modulus $q$ (such as $2^{200}$ to $2^{600}$). Each operation increases the noise term $e$, which must remain small relative to $q$.
 
 To control growth:
 
-* **Modulus switching:** reduce $q$ to a smaller modulus after some ops.
-* **Rescaling (CKKS):** divide ciphertext by a scaling factor to maintain numeric precision for approximate arithmetic.
-CKKS: Approximate Arithmetic (for Real Numbers)
+* **Modulus switching**: Reduce $q$ to a smaller modulus after some operations
+* **Rescaling (CKKS)**: Divide ciphertext by a scaling factor to maintain numeric precision for approximate arithmetic
+
+**CKKS: Approximate Arithmetic for Real Numbers**
 
 For ML and signal processing, exact integers aren’t enough.
 
@@ -325,8 +342,7 @@ Decryption gives a real approximation of the true value, with precision loss bou
 When noise nears $q/2$, ciphertexts become undecryptable.
 Bootstrapping resets the noise by **homomorphically evaluating the decryption function**.
 
-Mathematically: $c' = Eval(E(sk), Dec(c))$.
-An encrypted secret key ($E(sk)$) is taken, and used to re-encrypt ($c$) freshly.
+Mathematically, bootstrapping homomorphically evaluates the decryption circuit. The encrypted secret key is used along with the noisy ciphertext to produce a fresh encryption of the same plaintext with reduced noise.
 This involves evaluating modular reduction and rounding polynomials homomorphically — the hardest part computationally.
 
 Parameters must balance:
@@ -342,7 +358,7 @@ A typical CKKS setup:
 | --------- | ---------------------- | ------------------ |
 | $N$       | $2^{14} = 16384$       | Polynomial degree  |
 | $q$       | $~2^{400}$             | Ciphertext modulus |
-| $t$       | $2^{40}$               | Plaintext modulus  |
+| $\Delta$  | $2^{40}$               | Scaling factor     |
 | Security  | 128 bits               | Standard           |
 | Encoding  | Complex packing (SIMD) | Pack ~8192 slots   |
 
@@ -352,30 +368,32 @@ Operations on ciphertexts then act *component-wise* across all slots — essenti
 Mathematically: $R_t / (x^N+1) \cong \prod_{i=1}^{N/2} \mathbb{C}$.
 Each complex slot can store one value $\rightarrow$ huge parallelism gain.
 
-**Summary of FHE Layers**
+These mathematical foundations work together in a carefully orchestrated hierarchy:
 
 | Layer                   | Concept                           | Formal Structure          |
 | ----------------------- | --------------------------------- | ------------------------- |
 | **Security base**       | Hard lattice problems             | (Ring-)LWE                |
-| **Algebraic structure** | Polynomial rings $mod ( q, x^N+1 )$ | $R_q$                   |
+| **Algebraic structure** | Polynomial rings $\bmod ( q, x^N+1 )$ | $R_q$                   |
 | **Encryption**          | Noisy linear map                  | $b = a \cdot s + m + e$       |
 | **Homomorphism**        | Ring operations                   | Add/Mul in $R_q$        |
 | **Noise control**       | Modulus switching, bootstrapping  | Keep $e \ll q/2$        |
 | **Encoding**            | Integer / floating-point packing  | CRT + scaling             |
 | **Evaluation**          | Arithmetic circuits               | Add, Mul, Rotate, Rescale |
 
-## Execution trace example of CKKS
+Now that we understand the theoretical foundations, let's see how these abstract concepts translate into concrete computations. We'll trace through a complete CKKS computation to observe how all these pieces work together in practice.
 
-As an example we will use $(x+1)^2$.
+## Execution Trace Example of CKKS
 
-Parameters (illustrative but realistic)
+To bridge the gap between theory and practice, let's walk through a detailed example of CKKS in action. We'll compute $(x+1)^2$—a simple expression that demonstrates the key concepts of homomorphic evaluation.
 
-* Ring: $R_q=\mathbb{Z}_q[x]/(x^N+1)$, (N=2^{14}=16384)
-* Modulus chain (top → bottom): $\mathcal{Q}=[q_0,q_1,q_2]=[\approx 2^{40},; \approx 2^{40},; \approx 2^{40}]$
-* Initial scale ($\Delta = 2^{40}$) (so after a mul and rescale we come back near ($2^{40}$))
-* Target security: ~128-bit (with these ($N,q_i$) magnitudes)
+**Parameters (illustrative but realistic)**
+
+* Ring: $R_q=\mathbb{Z}_q[x]/(x^N+1)$, where $N=2^{14}=16384$
+* Modulus chain (top → bottom): $\mathcal{Q}=[q_0,q_1,q_2]=[\approx 2^{40}, \approx 2^{40}, \approx 2^{40}]$
+* Initial scale: $\Delta = 2^{40}$ (so after multiplication and rescaling we return near $2^{40}$)
+* Target security: ~128-bit (with these $N,q_i$ magnitudes)
 * Encoding: CKKS complex slots; here we use **one real** slot
-* Example value: ($x=1.2345$) → ground-truth (($x+1)^2 = 4.99299025$)
+* Example value: $x=1.2345$ → ground-truth $(x+1)^2 = 4.99299025$
 
 > [!note]
 >Note 1: Level ($L$) indexes how many primes remain in the chain. We start at ($L=2$) (using ($q_0q_1q_2$)).
@@ -383,7 +401,7 @@ Parameters (illustrative but realistic)
 >[!note]
 >Note 2: "Noise budget" is the common "bits until failure" indicator; exact numbers depend on implementation—values below are illustrative.
 
-Step-by-step trace
+**Step-by-step trace**
 
 | Step | Operation      | Ciphertexts in / out         | Value (ideal)                | Scale                           | Level                  | What happens to noise                                                                                        |
 | ---- | -------------- | ---------------------------- | ---------------------------- | ------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
@@ -396,23 +414,25 @@ Step-by-step trace
 | 5    | **Decrypt**    | ($c_r \to p_r$)                | (($x+1)^2 + \text{err}$)       | ($\Delta$)                        | L1                     | Correct if total error (< $\Delta/2$).                                                                         |
 | 6    | **Decode**     | ($p_r \to \hat{y}$)            | ($\hat{y} \approx 4.99299025$) | —                               | —                      | Final rounding to a real value; error dominated by encoding + CKKS approximation + op noise.                 |
 
-Typical **noise budget** evolution (illustrative): start ~110–120 bits at L2 → after add ~108 bits → after mul+relin ~60–70 bits → after rescale ~50–60 bits remaining (plenty for a few more ops).
+Typical **noise budget** evolution (illustrative): start ~110–120 bits at L2 → after add ~108 bits → after multiply + relinearization ~60–70 bits → after rescale ~50–60 bits remaining (plenty for a few more operations).
 
-What the numbers look like (approx.)
+**What the numbers look like (approximately)**
 
-* After **Add**: value $ \approx (2.2345)$, scale $2^{40}$
-* After **Square** (pre-rescale): value $ \approx (4.99299025)$, scale $2^{80}$
-* After **Rescale** by (q_2\approx 2^{40}): value $ \approx (4.99299025)$, scale back to $2^{40}$, level drops to L1
-* **Decrypt/Decode** returns something like: $(4.99299025 \pm 10^{-9})$ (the tolerance depends on $(\Delta)$, $(N)$, and parameter choices)
+* After **Add**: value $\approx 2.2345$, scale $2^{40}$
+* After **Square** (pre-rescale): value $\approx 4.99299025$, scale $2^{80}$
+* After **Rescale** by $q_2 \approx 2^{40}$: value $\approx 4.99299025$, scale back to $2^{40}$, level drops to L1
+* **Decrypt/Decode** returns something like: $4.99299025 \pm 10^{-9}$ (the tolerance depends on $\Delta$, $N$, and parameter choices)
 
-Ground truth: $((1.2345+1)^2 = 4.99299025)$.
+Ground truth: $(1.2345+1)^2 = 4.99299025$.
 
-* **Scale discipline (CKKS)**: keep operands at compatible scales; after a mul, **rescale** to restore the working scale and drop one prime from the chain.
-* **Depth management**: this circuit has multiplicative depth 1 (just one square), so a single rescale suffices; **no bootstrapping** required.
-* **Relinearization**: required after mul to project back to a fixed ciphertext size (performance + noise reasons).
-* **Parameter selection**: choose $\Delta$ close to a 40-bit prime so that $(\Delta^2/q \approx \Delta)$ post-rescale; choose chain length for your worst-case depth.
+**Key observations:**
 
-Minimal IR for $(x+1)^2$ (CKKS-style)
+* **Scale discipline (CKKS)**: Keep operands at compatible scales; after multiplication, **rescale** to restore the working scale and drop one prime from the chain
+* **Depth management**: This circuit has multiplicative depth 1 (just one square), so a single rescale suffices; **no bootstrapping** required
+* **Relinearization**: Required after multiplication to project back to a fixed ciphertext size (for performance and noise reasons)
+* **Parameter selection**: Choose $\Delta$ close to a 40-bit prime so that $\Delta^2/q \approx \Delta$ post-rescale; choose chain length for your worst-case depth
+
+**Minimal IR for $(x+1)^2$ (CKKS-style)**
 
 ```
 c_x   = Enc(x, scale=2^40, level=L2)
@@ -427,13 +447,15 @@ y_hat = Dec( c_r )                      // ≈ (x+1)^2
 ```
 
 >[!note]
->> If another multiplication is needed, still have $L1$ and could multiply once more (then rescale to $L0$). For deeper circuits, the chain is extended; when it’s exhausted, it is either stopped or **bootstrap** to refresh noise/levels.
+>If another multiplication is needed, we still have $L1$ and could multiply once more (then rescale to $L0$). For deeper circuits, the chain is extended; when it's exhausted, we either stop or **bootstrap** to refresh noise/levels.
 
-## Rust example
+Having traced through the mathematical operations at the CKKS level, we can now see how these concepts translate into practical code. Modern FHE libraries abstract away much of this complexity, allowing developers to work with encrypted data using familiar programming patterns.
 
-Below is an example in Rust to show the same idea: compute $(x+1)^2$ on encrypted data and decrypt the result.
+## Rust Example
 
-TFHE-rs supports encrypted integers (8–128 bits) with operator overloading, relinearization/keyswitching handled.
+Let's implement the same $(x+1)^2$ computation using TFHE-rs, a high-performance Rust library for FHE. This example will demonstrate how the complex mathematical operations we've discussed can be expressed through simple, intuitive code.
+
+TFHE-rs supports encrypted integers (8–128 bits) with operator overloading; relinearization and key-switching are handled automatically.
 
 **Cargo.toml**
 
@@ -457,7 +479,7 @@ use tfhe::integer::prelude::*;
 
 // Compute (x + 1)^2 on encrypted 64-bit unsigned integers.
 fn main() -> tfhe::core_crypto::prelude::Result<()> {
-    // 1) Parameter set — choose a standard 128-bit secure config provided by the lib
+    // 1) Parameter set — choose a standard 128-bit secure configuration provided by the library
     let config = tfhe::ConfigBuilder::all_disabled()
         .enable_default_integers() // enable integer types/ops
         .build();
@@ -466,38 +488,41 @@ fn main() -> tfhe::core_crypto::prelude::Result<()> {
     let mut rng = thread_rng();
     let (client_key, server_key) = tfhe::integer::gen_keys(config, &mut rng);
 
-    // 3) "Upload" server key (in real apps, the server holds this)
+    // 3) "Upload" server key (in real applications, the server holds this)
     tfhe::integer::set_server_key(server_key);
 
-    // Plain x:
+    // Plain value of x:
     let x_clear: u64 = 1_234_567;
 
     // 4) Encrypt x and the constant 1
     let x: FheUint64 = FheUint64::try_encrypt(x_clear, &client_key)?;
     let one: FheUint64 = FheUint64::try_encrypt(1u64, &client_key)?;
 
-    // 5) Homomorphic compute: (x + 1)^2
-    //    Thanks to operator overloading, this looks like plain Rust.
+    // 5) Homomorphic computation: (x + 1)^2
+    //    Thanks to operator overloading, this looks like plain Rust
     let y = (&x + &one) * (&x + &one);
 
     // 6) Decrypt
     let y_clear: u64 = y.decrypt(&client_key);
     println!("Result = {}", y_clear);
 
-    // Sanity check in the clear
+    // Sanity check with plaintext computation
     let expected = (x_clear + 1).wrapping_mul(x_clear + 1);
     assert_eq!(y_clear, expected);
     Ok(())
 }
 ```
 
-* The example uses `FheUint64`; change to `FheIntXX` / `FheUintXX` as needed.
-* TFHE-rs provides integer ops `+ - * / % << >> & | ^` and comparisons over encrypted values; constants can be plaintext or encrypted.
+**Notes:**
 
+* The example uses `FheUint64`; change to `FheIntXX` / `FheUintXX` as needed
+* TFHE-rs provides integer operations `+ - * / % << >> & | ^` and comparisons over encrypted values; constants can be plaintext or encrypted
+
+This code example illustrates the remarkable accessibility that modern FHE libraries provide. What began as complex mathematical operations involving polynomial rings, noise management, and bootstrapping has been abstracted into simple, familiar programming constructs. The gap between FHE theory and practice continues to narrow as these tools mature.
 
 ## Conclusion
 
-Fully Homomorphic Encryption represents a paradigm shift in how we approach privacy-preserving computation. From Craig Gentry's groundbreaking theoretical work in 2009 to today's practical implementations in libraries like TFHE-rs, Microsoft SEAL, and Zama's Concrete, FHE has evolved from an abstract mathematical concept to a deployable technology with real-world applications.
+As we reach the end of our exploration, it's worth reflecting on the remarkable journey that Fully Homomorphic Encryption represents—both as a field of study and as a transformative technology. FHE truly represents a paradigm shift in how we approach privacy-preserving computation. From Craig Gentry's groundbreaking theoretical work in 2009 to today's practical implementations in libraries like TFHE-rs, Microsoft SEAL, and Zama's Concrete, FHE has evolved from an abstract mathematical concept to a deployable technology with real-world applications.
 
 Throughout this exploration, we've seen how different FHE schemes—BFV, BGV, CKKS, and TFHE—each bring unique strengths to the table. BFV and BGV excel at exact integer arithmetic, making them ideal for applications requiring precise calculations on whole numbers. CKKS introduces approximate arithmetic for real numbers, enabling privacy-preserving machine learning and statistical analysis. TFHE pushes the boundaries with its ability to perform arbitrary Boolean circuits on encrypted data with minimal noise growth.
 
@@ -540,7 +565,7 @@ The journey from Gentry's first FHE construction to today's practical implementa
 [3]: https://github.com/google/fully-homomorphic-encryption
 [4]: https://github.com/google/heir
 [5]: https://github.com/zama-ai/concrete
-[6]: https://www.cs.cmu.edu/~odonnell/hits09/gentry-homomorphic-encryption.pdf
+[6]: https://dl.acm.org/doi/10.1145/1536414.1536440
 [7]: https://en.wikipedia.org/wiki/Learning_with_errors
 [8]: https://en.wikipedia.org/wiki/Ring_learning_with_errors
 [9]: https://faculty.kfupm.edu.sa/coe/mfelemban/SEC595/References/Introduction%20to%20the%20BFV%20FHE%20Scheme.pdf
