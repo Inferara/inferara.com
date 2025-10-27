@@ -1,6 +1,6 @@
 +++
 title = "Introduction to Fully Homomorphic Encryption"
-date = 2025-10-24T10:10:15+09:00
+date = 2025-10-27T10:10:15+09:00
 draft = false
 math = "katex"
 summary = "An introduction to Fully Homomorphic Encryption (FHE), a cryptographic technique that allows computations to be performed on encrypted data without needing to decrypt it first."
