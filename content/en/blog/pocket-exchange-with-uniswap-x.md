@@ -79,7 +79,7 @@ This design is somewhat more complex, but for good reasons. The protocol splits 
 
 In both cases, Quoters compete to offer the most favorable quote for the client. The platform selects a winner, shows that quote in the swap form, and invites the user to sign a payment instruction. From that moment, the winning Quoter is considered to have taken on an obligation to honor the quote provided the user signs before a countdown timer (30 seconds) expires. This stage is exclusive to the winning Quoter. Execution of the signed instruction is also given a fixed, on-chain deadline; upon expiry, the overdue obligation is deemed breached and the client’s order is considered to have failed the exclusive stage. A Quoter who does not keep their promise to execute the order in time is penalized with a temporary suspension from quoting new orders. 
 
-> **_Note:_** This initial cooldown period which uniswap calls "fading" begins at 15 minutes and increases exponentially!
+> **_Note:_** This initial cooldown period which uniswap calls "fading" begins at 15 minutes and increases exponentially with each failure in succession. Though, after each fade ends even one successful fulfillment of order resets penalty escalation.
 
 Only orders abandoned by their winning Quoters proceed to the second stage, which is a more archetypal Dutch auction much like the 1inch Fusion mechanism described above. The most economically significant difference here is that Uniswap X’s second stage is open to the public without registration. From the end of exclusivity period until the auction reaches the client’s reserve price, anyone can act as the executor (a Filler), which should further compress the final spread by intensifying competition.
 
