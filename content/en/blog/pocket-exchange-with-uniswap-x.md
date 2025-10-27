@@ -69,7 +69,7 @@ An order is configured by only three numbers (start price, reserve price, and au
 The final step is closing the escrow, which simultaneously releases the frozen funds in both directions.
 This final step is also paid for by the executor before the exclusivity expires. 
 
-> **_Note:_** The esclusivity window is on average...... 
+> **_Note:_** The concrete timeframes of auction and exclusivity periods are not defined in protocol and are subject to service provider. At the moment of writing in both 1inch advertisements and practice vast majority of swaps complete in 5 minutes.
 
 If something goes wrong and the executor stops midway after freezing the user’s funds, then once the exclusivity period ends the act of closing the escrow becomes public: By paying the network fee, any wallet can either return the user’s tokens in full (if the counter-escrow was never sufficiently funded) or complete the swap (if it was funded but the executor couldn’t close the escrow for technical reasons). To make public closure economically meaningful, the protocol requires auction participants to bond a small amount of their own funds in the escrow alongside freezing the user’s tokens—an amount sufficient to cover network fees. These funds are always paid to whoever signs the escrow closure; during exclusivity they are returned to the executor; after exclusivity they become a reward for the party that completes or cancels the swap. Through this method it allows for fulfilling the client’s needs in a way that remains transparent to them.
 
