@@ -14,7 +14,7 @@ aliases = ["/blog/pocket-exchange-with-uniswap-x"]
 - [1inch Fusion: The Classic Dutch Auction](#1inch-fusion-the-classic-dutch-auction)
 - [Uniswap X: A Two-Stage, Differentiated Auction](#uniswap-x-a-two-stage-differentiated-auction)
 - [Learnings](#learnings)
-- [Monitoring](#monitoring)
+- [Monitoring \& Data Acquisition](#monitoring--data-acquisition)
 - [How to become a Filler](#how-to-become-a-filler)
 - [Possible profit](#possible-profit)
 - [Utilize our expertise](#utilize-our-expertise)
@@ -105,14 +105,52 @@ First, the bot’s effectiveness depends directly on its ability to price quotes
 
 Second, any serious optimization of the bot’s profitability is impossible without close attention to efficient liquidity reserve management. Although intent-based protocols allow executors to draw missing liquidity from virtually any source available in the market at any time, maintaining adequate operational reserves on the bot’s own wallets can materially reduce transaction costs.
 
-## Monitoring
+## Monitoring & Data Acquisition
+
+Due to the open nature of blockchains there is a lot of data that is readily available, however actually parsing and making sense of it can be more difficult. 
+Throughout our research phase we used and created several resources to help monitor the transactions and activities of fillers on Uniswap X specifically.
+For this specific research our client wanted to focus exclusively on transactions occuring on Ethereum mainnet. Since we can not share the exact mathematical modeling, datasets and fully applied results of our research, we will instead focus on explaining some of the methods used for monitoring & acquiring this data.
+
+The easiest to access but perhaps also the most tedious of the tools that can be used is [Etherscan.](https://etherscan.io/) Etherscan provides a lot of data for transactions, wallets and contracts but navigating it without knowing ahead of time precisely which contract addresses are which or "who is who" can be frustrating. Although we certainly used and would reccomend it as a tool, it should be considered as a microscope. In our context it is better purposed as a way to see very precise data such as the transactions of a specific Uniswap X filler. For a much broader approach there is another service that we reccomend which helps us get a clear picture on the general activities on Uniswap X compared to an individual wallet. 
+
+This primary tool we used is dune.xyz. It let's anyone create both public and private dashboards which uses on-chain transaction for data visualization. 
+During our research phase there were very few public dashboards through which we could see and track the activity of Uniswap X fillers easily, in fact there was only a single reliable dashboard at the time!
+
+The Uniswap X [dashboard by @flashbots](https://dune.com/flashbots/uniswap-x) lists not only the different active fillers but also vital information such as volume, order size, fillers, transaction hashes and more. 
+> **_Note:_** This dashboard might be discontinued or no longer up-to-date
+
+Let's take a look at some of the publicly available data here.
+There are 2 views by default, the top section shows information based on Weekly statistics, the lower section shows All time data. 
+
+For now let's focus on the Weekly area. The most notable query that helps us get a better understanding of what kind of trades (and their direction) is the [Top 10 Volume Tokens Grouped by Filler](https://dune.com/queries/3053887/5081486) query. This not only shows us the top wallets (fillers) but we can clearly see that the most volume for trades occurs between the USDC & WETH (wrapped Ethereum) pair. 
+
+(insert some pictures)
+
+> **_Note:_** Wrapped Ethereum (wETH) is an ERC-20 token that represents Ethereum (ETH) on a 1:1 basis, making it compatible with decentralized finance (DeFi) applications and other ERC-20 compliant platforms. While ETH is the native currency of the Ethereum blockchain, it is not an ERC-20 token and cannot be used in many dApps.
+
+Although it is quite the useful dashboard, it does not meet all our requirements in this instance. Things such as estimated ROI of fillers, transaction costs, portfolio history & allocation are not easily available or calculated through this dashboard.
 
 Explain how to use Dune to monitor UniswapX, Fillers and so on. Share references on public dashboards we created.
+
+
 
 ## How to become a Filler
 
 ## Possible profit
 
+As of writing there are currently more orders being filled on base chain (an Ethereum layer 2) than Ethereum main net. 
+https://dune.com/dune/uniswap-x-orders-filled
+
+Although the # of swaps seem to have increased from our initial time of research, the # of unique fillers has not increased proportionally. This shows that existing fillers are enjoying more volume within their markets with minimal competition. 
+
+(something something you could also become a filler and take advantage of this)
+
+(insert some data about a fillers profitiability? can't use angoya data ofc)
+
 ## Utilize our expertise 
+
+As we've explained in the Monitoring & Data Acquisition section, there are not just many methods for acquiring information that make things difficult as an individual. There is also the matter of applying it with context of the general market conditions and infrastructure requirements in order to create an efficient market making engine (bot).
+
+Through our research and experience we can alleviate the high barriers of entry that exist when wanting to become a participant in market making platforms such as Uniswap X. 
 
 ## Conclusion
