@@ -60,8 +60,8 @@ This seemingly impossible capability opens the door to transformative applicatio
 
 5. **Data Sharing Between Companies**: Two companies can collaborate (for example, on customer behavior analysis) without exposing their raw data to each other.
 
->[!note]
 >FHE is mathematically complex and computationally intensive, making it significantly slower than normal operations. However, recent improvements in libraries such as Microsoft SEAL [[1]], IBM HElib [[2]], Google's FHE libraries [[3]][[4]], and Zama Concrete [[5]] are making FHE increasingly practical, especially for limited computations or small datasets.
+{.note}
 
 To better illustrate FHE's transformative potential, let's examine two detailed scenarios that demonstrate how this technology is already solving real-world privacy challenges:
 
@@ -75,7 +75,7 @@ How FHE helps:
 2. Researchers or AI systems in the cloud perform computations — e.g.:
 * 2.1. "What percentage of patients with this gene develop diabetes?"
 * 2.2. "Train an AI model to detect early cancer signs."
-3. All these computations happen on encrypted data.
+1. All these computations happen on encrypted data.
 
 The hospitals then decrypt the final results, getting useful statistics or trained AI models without revealing any individual’s personal medical information.
 
@@ -133,10 +133,10 @@ This remarkable property emerges from the careful mathematical structure of FHE 
 
 The term "homomorphic" captures the essential mathematical property that makes this possible.
 
->[!note]
 >Why is it called "homomorphic"? The word *homomorphic* means "same structure."
 >
 >In this context, it means that operations on ciphertexts (such as $+$ or $\times$) behave the same way as operations on plaintexts.
+{.note}
 
 | Operation Type               | What It Means                                     | Example                                               |
 | ---------------------------- | --------------------------------------------------| ----------------------------------------------------- |
@@ -194,8 +194,8 @@ Ciphertexts support two primitive operations:
    * **Modulus switching**: Reduce modulus $q$ to shrink noise
    * **Re-linearization**: Project the result back to a fixed ciphertext dimension
 
->[!important]
 >Noise management is the central engineering challenge in FHE.
+{.important}
 
 **Bootstrapping (Gentry's Insight)** involves homomorphically evaluating the decryption circuit itself.
 * The secret key is encrypted under itself
@@ -395,11 +395,11 @@ To bridge the gap between theory and practice, let's walk through a detailed exa
 * Encoding: CKKS complex slots; here we use **one real** slot
 * Example value: $x=1.2345$ → ground-truth $(x+1)^2 = 4.99299025$
 
-> [!note]
 >Note 1: Level ($L$) indexes how many primes remain in the chain. We start at ($L=2$) (using ($q_0q_1q_2$)).
+{.note}
 
->[!note]
 >Note 2: "Noise budget" is the common "bits until failure" indicator; exact numbers depend on implementation—values below are illustrative.
+{.note}
 
 **Step-by-step trace**
 
@@ -446,8 +446,8 @@ c_r   = Rescale(c_s)                    // scale ~2^40, L1
 y_hat = Dec( c_r )                      // ≈ (x+1)^2
 ```
 
->[!note]
 >If another multiplication is needed, we still have $L1$ and could multiply once more (then rescale to $L0$). For deeper circuits, the chain is extended; when it's exhausted, we either stop or **bootstrap** to refresh noise/levels.
+{.note}
 
 Having traced through the mathematical operations at the CKKS level, we can now see how these concepts translate into practical code. Modern FHE libraries abstract away much of this complexity, allowing developers to work with encrypted data using familiar programming patterns.
 
