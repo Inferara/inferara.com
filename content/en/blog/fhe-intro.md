@@ -461,35 +461,34 @@ TFHE-rs supports encrypted integers (8–128 bits) with operator overloading; re
 
 ```toml
 [package]
-name = "fhe_tfhe_example"
+name = "fhe_test"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-tfhe = ">=1.4.1"        # use the latest released version
-rand = "0.8"
+tfhe = { version = "~1.4.1", features = ["integer"]}
+
+[profile.release]
+lto = "fat"
 ```
 
-**src/main.rs**
+{{< detail-tag "Gist" >}}
+{{<rawhtml>}}
+<script src="https://gist.github.com/0xGeorgii/7cc261b052b0384e879095db935f5fe6.js"></script>
+{{</rawhtml>}}
+{{< /detail-tag >}}
 
 ```rust
-use rand::thread_rng;
-use tfhe::prelude::*;
-use tfhe::integer::prelude::*;
+use tfhe::{ConfigBuilder, FheUint64, generate_keys, prelude::*, set_server_key};
 
-// Compute (x + 1)^2 on encrypted 64-bit unsigned integers.
-fn main() -> tfhe::core_crypto::prelude::Result<()> {
-    // 1) Parameter set — choose a standard 128-bit secure configuration provided by the library
-    let config = tfhe::ConfigBuilder::all_disabled()
-        .enable_default_integers() // enable integer types/ops
-        .build();
+fn main() -> tfhe::Result<()> {
+    let config = ConfigBuilder::default().build();
 
     // 2) Client keygen
-    let mut rng = thread_rng();
-    let (client_key, server_key) = tfhe::integer::gen_keys(config, &mut rng);
+    let (client_key, server_key) = generate_keys(config);
 
     // 3) "Upload" server key (in real applications, the server holds this)
-    tfhe::integer::set_server_key(server_key);
+    set_server_key(server_key);
 
     // Plain value of x:
     let x_clear: u64 = 1_234_567;
@@ -504,7 +503,6 @@ fn main() -> tfhe::core_crypto::prelude::Result<()> {
 
     // 6) Decrypt
     let y_clear: u64 = y.decrypt(&client_key);
-    println!("Result = {}", y_clear);
 
     // Sanity check with plaintext computation
     let expected = (x_clear + 1).wrapping_mul(x_clear + 1);
@@ -517,6 +515,34 @@ fn main() -> tfhe::core_crypto::prelude::Result<()> {
 
 * The example uses `FheUint64`; change to `FheIntXX` / `FheUintXX` as needed
 * TFHE-rs provides integer operations `+ - * / % << >> & | ^` and comparisons over encrypted values; constants can be plaintext or encrypted
+
+![alt text](/img/fhe-execution.png)
+
+Command:
+```bash
+RUSTFLAGS="-C target-cpu=native" cargo run --release
+```
+10 subsequent runs yield the following performance results:
+```
+===============================================================================
+FHE EXPERIMENT RESULTS - 10 RUNS
+===============================================================================
+Run  |      Key Gen |   Encryption |  Computation |   Decryption |        Total
+-----+--------------+--------------+--------------+--------------+-------------
+1    |        655ms |          5ms |        5.43s |          0ms |        6.09s
+2    |        445ms |          5ms |        5.49s |          0ms |        5.95s
+3    |        469ms |          5ms |        5.37s |          0ms |        5.85s
+4    |        427ms |          5ms |        5.36s |          0ms |        5.79s
+5    |        469ms |          5ms |        5.39s |          0ms |        5.87s
+6    |        447ms |          5ms |        5.50s |          0ms |        5.96s
+7    |        470ms |          5ms |        5.44s |          0ms |        5.92s
+8    |        434ms |          5ms |        5.56s |          0ms |        6.01s
+9    |        451ms |          5ms |        5.48s |          0ms |        5.94s
+10   |        435ms |          5ms |        5.42s |          0ms |        5.87s
+-----+--------------+--------------+--------------+--------------+-------------
+AVG  |        470ms |          5ms |        5.44s |          0ms |        5.93s
+===============================================================================
+```
 
 This code example illustrates the remarkable accessibility that modern FHE libraries provide. What began as complex mathematical operations involving polynomial rings, noise management, and bootstrapping has been abstracted into simple, familiar programming constructs. The gap between FHE theory and practice continues to narrow as these tools mature.
 

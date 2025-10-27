@@ -45,20 +45,6 @@ As protocols 🏯 and their infrastructure 🏙 become more complex in their int
 By applying our insights you can ensure your protocol is ready to be visited by people around the world, just like a beautiful castle. 
 Secure but welcoming.
 
-## Pricing Tiers
-
-Choose the analysis that fits your protocol's current stage. All tiers are part of our Limited Time Beta Program.
-
-| Service Tier      | Price       | Key Features                                                                                                                                                                                                                                                             | Turnaround Time (after approve)   |
-| :---------------- | :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
-| **Quick Scan** | $1,000      | - Automated tooling run<br>- Automatically generated report<br>- Brief expert review                                                                                                                                                                                   | 1 business day     |
-| **Standard Report** | $5,000      | - Automated tooling run<br>- Personalized expert review<br>- Comprehensive analysis report<br>                                                                                                                                  | 4 business days    |
-| **Deep Analysis** | (From $30,000) [Contact Us](mailto:info@inferara.com)  | - All Standard features, **plus**:<br>- Dedicated team with professional mathematicians<br>- Formal modeling & verification<br>- Strategic advisory<br>-Direct communication & iterations                                                                                       | Custom timeline    |
-
-Payment accepted through standard methods.
-
-Since we are building in the Web3 space, payments in crypto are also welcome.
-
 ## Ready to Fortify Your Protocol?
 
 Take the first step towards building a secure protocol. Contact us to start your Protocol Analysis and gain true confidence in your system's foundation.
