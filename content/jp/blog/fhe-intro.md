@@ -206,7 +206,7 @@ $c = \bigl(a,, b = \langle a, s \rangle + m + e\bigr) \bmod q$
 
 概念図：
 
-```
+```plaintext
 高レベルプログラム（Python, C++, ML モデル）
            ↓
 同型計算用 IR（加算·乗算·回転、剰余演算）
@@ -427,7 +427,7 @@ $c' = \text{Rescale}(c_1 \cdot c_2, \Delta)$。
 
 **$(x+1)^2$ の最小 IR（CKKS 風）**
 
-```
+```plaintext
 c_x   = Enc(x, scale=2^40, level=L2)
 c_one = Enc(1, scale=2^40, level=L2)
 
@@ -521,7 +521,7 @@ RUSTFLAGS="-C target-cpu=native" cargo run --release
 
 10 回の連続実行における性能結果：
 
-```
+```plaintext
 ===============================================================================
 FHE 実験結果 - 10 回実行
 ===============================================================================

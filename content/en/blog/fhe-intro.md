@@ -206,7 +206,7 @@ Bootstrapping is expensive (orders of magnitude slower than native operations) b
 
 Conceptually:
 
-```
+```plaintext
 High-Level Program (Python, C++, ML model)
            ↓
 Homomorphic IR (add/mul/rot, modular arithmetic)
@@ -434,7 +434,7 @@ Ground truth: $(1.2345+1)^2 = 4.99299025$.
 
 **Minimal IR for $(x+1)^2$ (CKKS-style)**
 
-```
+```plaintext
 c_x   = Enc(x, scale=2^40, level=L2)
 c_one = Enc(1, scale=2^40, level=L2)
 
@@ -522,8 +522,10 @@ Command:
 ```bash
 RUSTFLAGS="-C target-cpu=native" cargo run --release
 ```
+
 10 subsequent runs yield the following performance results:
-```
+
+```plaintext
 ===============================================================================
 FHE EXPERIMENT RESULTS - 10 RUNS
 ===============================================================================
