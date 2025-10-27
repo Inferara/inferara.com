@@ -77,7 +77,7 @@ How FHE helps:
 * 2.2. "Train an AI model to detect early cancer signs."
 1. All these computations happen on encrypted data.
 
-The hospitals then decrypt the final results, getting useful statistics or trained AI models without revealing any individual’s personal medical information.
+The hospitals then decrypt the final results, getting useful statistics or trained AI models without revealing any individual's personal medical information.
 
 The breakthrough benefit: Sensitive medical records never leave the hospital in readable form—yet global research collaboration becomes possible, accelerating medical discoveries while preserving patient privacy.
 
@@ -87,7 +87,7 @@ Similarly, the financial sector faces a parallel dilemma: Banks want to calculat
 
 How FHE helps:
 
-1. A user’s financial data is encrypted before being sent to the scoring service.
+1. A user's financial data is encrypted before being sent to the scoring service.
 2. The scoring service runs its algorithm (sum, average, risk formulas) on encrypted data.
 3. The result (credit score) is encrypted and returned to the bank.
 4. The bank decrypts it locally — getting the credit score without the scoring company ever seeing any real numbers.
@@ -328,7 +328,7 @@ To control growth:
 
 **CKKS: Approximate Arithmetic for Real Numbers**
 
-For ML and signal processing, exact integers aren’t enough.
+For ML and signal processing, exact integers aren't enough.
 
 **CKKS** encodes real numbers as scaled integers, allowing approximate operations.
 
@@ -398,7 +398,7 @@ To bridge the gap between theory and practice, let's walk through a detailed exa
 >Note 1: Level ($L$) indexes how many primes remain in the chain. We start at ($L=2$) (using ($q_0q_1q_2$)).
 {.note}
 
->Note 2: "Noise budget" is the common "bits until failure" indicator; exact numbers depend on implementation—values below are illustrative.
+>Note 2: "Noise budget" is the common "bits until failure" indicator; exact numbers depend on implementation - values below are illustrative.
 {.note}
 
 **Step-by-step trace**
@@ -581,7 +581,7 @@ The journey from Gentry's first FHE construction to today's practical implementa
 - [Introduction to the BFV FHE Scheme][9]
 - [Introduction to the BGV FHE Scheme][10]
 - [Introduction to the CKKS/HEAAN FHE Scheme][11]
-- [Hitchhiker’s Guide to the TFHE Scheme][12]
+- [Hitchhiker's Guide to the TFHE Scheme][12]
 - [Chinese Remainder Theorem][13]
 - [TFHE-rs][14]
 - [OpenFHE-rs][15]

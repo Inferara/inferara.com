@@ -574,7 +574,7 @@ BFV・BGV・CKKS・TFHE といった各方式は、それぞれに強みを持�
 * [Introduction to the BFV FHE Scheme][9]
 * [Introduction to the BGV FHE Scheme][10]
 * [Introduction to the CKKS/HEAAN FHE Scheme][11]
-* [Hitchhiker’s Guide to the TFHE Scheme][12]
+* [Hitchhiker's Guide to the TFHE Scheme][12]
 * [Chinese Remainder Theorem][13]
 * [TFHE-rs][14]
 * [OpenFHE-rs][15]
