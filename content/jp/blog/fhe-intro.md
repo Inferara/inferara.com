@@ -594,3 +594,6 @@ BFV・BGV・CKKS・TFHE といった各方式は、それぞれに強みを持�
 [13]: https://en.wikipedia.org/wiki/Chinese_remainder_theorem
 [14]: https://github.com/zama-ai/tfhe-rs
 [15]: https://github.com/fairmath/openfhe-rs
+
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="36" x_post_id="1982981077565345919">}}
+{{<ai-translated>}}

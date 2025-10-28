@@ -603,3 +603,5 @@ The journey from Gentry's first FHE construction to today's practical implementa
 [13]: https://en.wikipedia.org/wiki/Chinese_remainder_theorem
 [14]: https://github.com/zama-ai/tfhe-rs
 [15]: https://github.com/fairmath/openfhe-rs
+
+{{<post-socials page_content_type="blog" telegram_post_id="36" x_post_id="1982981077565345919">}}
