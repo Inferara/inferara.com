@@ -59,7 +59,7 @@ Although this isolation method doesn't eliminate the problem of the module being
 
 Compilation of contract into `.wasm` was performed by `cargo contract build --verifiable` toolchain in the following environment:
 
-```
+```plaintext
 Operating System: Kubuntu 25.04
 Kernel Version: 6.14.0-33-generic (64-bit)
 Processors: 16 × AMD Ryzen 7 7840HS w/ Radeon 780M Graphics
@@ -81,7 +81,7 @@ Source record of build json:
 
 Binary was decompiled by `wasm2wat` version `1.0.36` and manually annotated. Bit-exactness of annotated module to the build atrifact was checked by comparing assembly output:
 
-```
+```plaintext
 ~/Git/pallet-balances-formal-verification/balances_contract$ wat2wasm balances_contract.wat 
 ~/Git/pallet-balances-formal-verification/balances_contract$ cmp balances_contract.wasm target/ink/polkadot_balances_contract_formal_verification.wasm 
 ```
@@ -188,7 +188,7 @@ i64.lt_u             ;; Check for carry
 
 This pattern can be specified as:
 
-```
+```plaintext
 checked_add(a: u128, b: u128) → Result<u128> where
   a + b < 2^128 → Ok(a + b)
   a + b ≥ 2^128 → Err(Overflow)
@@ -197,7 +197,8 @@ checked_add(a: u128, b: u128) → Result<u128> where
 **Pattern 3.2: Preservation Mode Enforcement**
 
 Functions like `transfer_with_checks` implement complex logic for preservation modes:
-```
+
+```plaintext
 if preservation = Preserve then
   new_balance ≥ existential_deposit ∨ new_balance = 0
 ```
@@ -210,7 +211,8 @@ This requires verification that:
 **Pattern 3.3: Lock Respect During Withdrawals**
 
 Function `transfer_with_checks` ensures transfers respect frozen balances:
-```
+
+```plaintext
 usable_balance = account.free - account.frozen
 withdraw_amount ≤ usable_balance
 ```
@@ -247,7 +249,7 @@ local.set 12                    ;; Store as amount_low
 
 This reconstructs a little-endian u128 from two overlapping unaligned `i64` loads. To verify this preserves the encoded value, we need to prove:
 
-```
+```plaintext
 ∀ bytes[0..16]: u128::from_le_bytes(bytes) = 
   (bytes[11..19] as u64) << 56 | (bytes[19..27] as u64) >> 8
 ```
@@ -272,7 +274,7 @@ The vector growth logic (function `vec_reserve`) must preserve all existing elem
 
 The dust collection mechanism (transferring sub-ED balances to `dust_trap`) must maintain total issuance:
 
-```
+```plaintext
 Pre:  total_issuance = Σ(account.free) + Σ(account.reserved)
 Post: total_issuance' = Σ(account'.free) + Σ(account'.reserved)
       ∨ (dust_trap.is_none() ∧ total_issuance' = total_issuance - dust_removed)
@@ -312,7 +314,7 @@ Given the complexity, we propose **incremental formalization** rather than attem
   - **Non-Negativity**
   - **Overflow Freedom** (all checked arithmetic succeeds within preconditions)
 - Define **invariant predicate** `I(state)`:
-  ```
+  ```plaintext
   I(state) ≜ 
     total_issuance = Σ(account.free) + Σ(account.reserved) - dust_lost ∧
     ∀ account: account.free ≥ 0 ∧

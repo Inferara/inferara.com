@@ -58,7 +58,7 @@ Polkadot の主要な開発言語は Rust であるため、まず形式検証�
 
 `.wasm` へのコントラクトのコンパイルは、以下の環境で `cargo contract build --verifiable` ツールチェーンにより行いました。
 
-```
+```plaintext
 Operating System: Kubuntu 25.04
 Kernel Version: 6.14.0-33-generic (64-bit)
 Processors: 16 × AMD Ryzen 7 7840HS w/ Radeon 780M Graphics
@@ -80,7 +80,7 @@ Source record of build json:
 
 バイナリは `wasm2wat` バージョン `1.0.36` で逆アセンブルし、手動で注釈を付しました。注釈付きモジュールがビルド成果物と**ビット完全一致**であることは、アセンブリ出力の比較によって確認しました。
 
-```
+```plaintext
 ~/Git/pallet-balances-formal-verification/balances_contract$ wat2wasm balances_contract.wat 
 ~/Git/pallet-balances-formal-verification/balances_contract$ cmp balances_contract.wasm target/ink/polkadot_balances_contract_formal_verification.wasm 
 ```
@@ -194,7 +194,7 @@ i64.lt_u             ;; Check for carry
 
 このパターンは次のように仕様化できます。
 
-```
+```plaintext
 checked_add(a: u128, b: u128) → Result<u128> where
   a + b < 2^128 → Ok(a + b)
   a + b ≥ 2^128 → Err(Overflow)
@@ -204,7 +204,7 @@ checked_add(a: u128, b: u128) → Result<u128> where
 
 `transfer_with_checks` は保全モードの複雑なロジックを実装します：
 
-```
+```plaintext
 if preservation = Preserve then
   new_balance ≥ existential_deposit ∨ new_balance = 0
 ```
@@ -219,7 +219,7 @@ if preservation = Preserve then
 
 `transfer_with_checks` は凍結残高を尊重します：
 
-```
+```plaintext
 usable_balance = account.free - account.frozen
 withdraw_amount ≤ usable_balance
 ```
@@ -255,7 +255,7 @@ local.set 12                    ;; Store as amount_low
 
 これは、**2 つの重なり合う非整列 `i64` ロード**からリトルエンディアンの `u128` を再構成します。エンコードされた値が保たれることを検証するには、次を示す必要があります。
 
-```
+```plaintext
 ∀ bytes[0..16]: u128::from_le_bytes(bytes) = 
   (bytes[11..19] as u64) << 56 | (bytes[19..27] as u64) >> 8
 ```
@@ -281,7 +281,7 @@ local.set 12                    ;; Store as amount_low
 
 ダスト回収（ED 未満の残高を `dust_trap` へ移す）では、**総発行量**を維持しなければなりません。
 
-```
+```plaintext
 Pre:  total_issuance = Σ(account.free) + Σ(account.reserved)
 Post: total_issuance' = Σ(account'.free) + Σ(account'.reserved)
       ∨ (dust_trap.is_none() ∧ total_issuance' = total_issuance - dust_removed)
@@ -313,7 +313,6 @@ Post: total_issuance' = Σ(account'.free) + Σ(account'.reserved)
 
 * ストレージを**部分写像** `Storage: (Prefix × Key) ⇀ Value` としてモデル化
 * ストレージ操作が次を満たすことを証明：
-
   * **Set-Get 往復**：`storage_set(k, v); storage_get(k) = Some(v)`
   * **キーの独立性**：`k₁ ≠ k₂ → storage_set(k₁, v₁)` は `storage_get(k₂)` に影響しない
 * BLAKE2 のハッシュは**抽象化**（衝突なしを仮定）
@@ -328,8 +327,7 @@ Post: total_issuance' = Σ(account'.free) + Σ(account'.reserved)
   * **非負性**
   * **オーバーフローフリー**（前提条件の下で検査付き算術が成功）
 * **不変述語** `I(state)` を定義：
-
-  ```
+  ```plaintext
   I(state) ≜ 
     total_issuance = Σ(account.free) + Σ(account.reserved) - dust_lost ∧
     ∀ account: account.free ≥ 0 ∧
@@ -348,7 +346,6 @@ Post: total_issuance' = Σ(account'.free) + Σ(account'.reserved)
 **Step 5: エンドツーエンドのメッセージ安全性**
 
 * ディスパッチ関数の正しさを証明：
-
   * 35 のセレクタ**すべて**でパラメータを正しくデコード
   * 無効セレクタは **Err** を返す（パニックしない）
 * すべての有効入力で**パニックが起きない**こと
