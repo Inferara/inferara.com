@@ -394,3 +394,6 @@ Post: total_issuance' = Σ(account'.free) + Σ(account'.reserved)
 * **保全モード**のロジックは、複数の条件が相互作用するために複雑
 
 まず**インフラの公理化**から始め、**コアの残高不変条件**へ進み、最後に**エンドツーエンドのメッセージ安全性**を証明するという**段階的アプローチ**が、志と実現可能性の最良のバランスを提供します。
+
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="37" x_post_id="1985161277346562147">}}
+{{<ai-translated>}}
