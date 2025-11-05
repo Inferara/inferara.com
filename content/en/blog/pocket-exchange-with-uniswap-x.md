@@ -15,6 +15,11 @@ aliases = ["/blog/pocket-exchange-with-uniswap-x"]
 - [Uniswap X: A Two-Stage, Differentiated Auction](#uniswap-x-a-two-stage-differentiated-auction)
 - [Learnings](#learnings)
 - [Monitoring \& Data Acquisition](#monitoring--data-acquisition)
+  - [1. Complex, Multi-Protocol Event Aggregation](#1-complex-multi-protocol-event-aggregation)
+  - [2. Sophisticated Filler Identification \& Labeling](#2-sophisticated-filler-identification--labeling)
+  - [3. Holistic Transaction-Level Profitability Analysis](#3-holistic-transaction-level-profitability-analysis)
+  - [4. Intelligent Token Pair Normalization](#4-intelligent-token-pair-normalization)
+  - [Conclusion: The "Server-Side SQL" Value Proposition](#conclusion-the-server-side-sql-value-proposition)
 - [How to become a Filler](#how-to-become-a-filler)
 - [Possible profit](#possible-profit)
 - [Utilize our expertise](#utilize-our-expertise)
@@ -105,17 +110,18 @@ First, the bot’s effectiveness depends directly on its ability to price quotes
 
 Second, any serious optimization of the bot’s profitability is impossible without close attention to efficient liquidity reserve management. Although intent-based protocols allow executors to draw missing liquidity from virtually any source available in the market at any time, maintaining adequate operational reserves on the bot’s own wallets can substantially reduce transaction costs.
 
-<!-- Likely move below paragraphs to Monitoring & Data Acquisition. has been reworded / checked translations -->
-
 Since the model of protocols for addressing the points addressed above has to be algorithmic, i.e., delegating financial decisions to a program, the problem of access to data for market analysis becomes particularly acute. On traditional exchanges, trading participants are naturally divided into three main groups, depending on how they obtain the information on which their strategy is based. Buy and hold investors learn market news from newspapers or other traditional forms of media. Day traders sit in front of several monitors displaying Nansen, Arkham, and Etherscan information panels. Finally, High Frequency Trading (HFT) robots listen to the raw APIs of trading platforms, filtering useful signals from gigabytes of digital noise in real time. In terms of the requirements for market data sources, the automation of order execution for intent-based protocols occupies a middle ground between day trading and HFT. On the one hand, we can no longer place full responsibility for financial decisions on humans, but on the other hand, trading takes place at a fairly calm pace by modern automation standards. The tightest timing in the protocols we reviewed is half a second (500ms) for a quote in Uniswap X, while all other periods are measured in blocks (12 seconds each for Ethereum). Here, unlike with HFT, the speed of reaction to events does not create any significant engineering problems. Since 12 seconds is a rather forgiving time frame for such systems, it would take severe errors in design or execution to fail these requirements.  
 
 Accordingly, the need for accuracy in determining exchange quotes and the optimization of liquidity management present themselves in the auction model. The bots who consistently offer a better price than competitors while remaining profitable take all the revenue from the market.
 
 For the economic tasks at hand, due to such intermediate position of data requirements between day trading and HFT, the usual sources of data create a number of inconveniences. Classic information panels (Nansen, Arkham, and Etherscan), which are mainly aimed at day traders, offer a fairly limited set of market activity projections. Their unquestionable convenience in terms of supporting specific economic decisions in a rapidly changing market environment, unfortunately, does not translate well into supporting the detailed statistical research required to refine the parameters of the algorithm. The need to filter and aggregate data sets that are too large for manual processing makes the use of template GUI representations extremely impractical.
 
-On the other hand, using “raw” blockchain infrastructure APIs and trading platforms, while providing complete freedom of automation, immediately turns any statistical research into a separate engineering task of searching through haystacks for needles. Therefore, before reaching an economist's desk, the data will inevitably have to pass through the hands of a competent data scientist capable of extracting grains of useful information from the mountains of digital slag spewing out of low-level APIs. Fortunately, thanks to the existence of the Dune platform, this problem can be partially avoided.
+On the other hand, using “raw” blockchain infrastructure APIs and trading platforms, while providing complete freedom of automation, immediately turns any statistical research into a separate engineering task of searching through haystacks for needles. The easiest to access but perhaps also one of the more tedious of the tools that can be used is [Etherscan.](https://etherscan.io/) Etherscan provides a lot of data for transactions, wallets and contracts but navigating it without knowing ahead of time precisely which contract addresses are which or "who is who" can be a frustrating experience. The haystack being the vast amount of information available whereas the needle would be the precise details which we are searching for. In our context it is better purposed as a way to see very precise data such as the transactions of a specific Uniswap X filler. Therefore to avoid this engineering task, before reaching an economist's desk, the data will inevitably have to pass through the hands of a competent data scientist capable of extracting grains of useful information from the mountains of digital slag spewing out of low-level APIs. Fortunately, thanks to the existence of the Dune platform, this problem can be partially avoided.
 
-This is where the Dune platform emerges as a methodological "sweet spot," uniquely suited to the needs of intent protocol architects. It effectively splits the problem in two: the platform itself handles the monumental engineering task of data ingestion, decoding, and structuring, while the analyst retains the full, granular power of querying this refined dataset.
+
+## Monitoring & Data Acquisition
+
+This is where the [Dune](https://dune.com/) platform emerges as a methodological "sweet spot," uniquely suited to the needs of intent protocol architects. It effectively splits the problem in two: the platform itself handles the monumental engineering task of data ingestion, decoding, and structuring, while the analyst retains the full, granular power of querying this refined dataset.
 
 Dune's server-side SQL model provides a "Goldilocks Zone" for data access. It offers a level of abstraction that is:
 
@@ -146,15 +152,15 @@ logs AS (
 ```
 
 **The Convenience Illustrated:**
-- **What it does:** This CTE seamlessly combines fill events from two different Uniswap X Reactor contracts into a single dataset.
+- **What it does:** This Common Table Expression (CTE) seamlessly combines fill events from two different Uniswap X Reactor contracts into a single dataset.
 - **Why it's powerful:** A GUI dashboard would likely show these as separate pages or filters. Here, an analyst can treat the entire Uniswap X ecosystem as a single entity from the start.
 - **The Raw API Alternative:** You would need to:
-  1. Know the exact ABI and deployment addresses for both contracts.
-  2. Make separate eth_getLogs calls for each contract.
+  1. Know the exact Application Binary Interface (ABI) and deployment addresses for both contracts.
+  2. Make separate `eth_getLogs` calls for each contract.
   3. Manually decode the hex data from the logs for both.
   4. Handle any schema differences between the events.
 
-**The Dune Advantage:** The platform has already decoded both smart contracts and presented them as clean SQL tables with identical schemas, making unioning them trivial.
+**The Dune Advantage:** The platform has already decoded both smart contracts and presented them as clean SQL tables with identical schemas, making the process of combining them trivial.
 
 ### 2. Sophisticated Filler Identification & Labeling
 
@@ -225,17 +231,12 @@ This single query performs a task that sits perfectly in the "intermediate posit
 
 **On Dune, this complexity can be subdued by a single analyst.**
 
-The methodology allows the researcher to focus entirely on the **economic logic** (`CASE` statements, `JOIN` conditions, `SUM` aggregations) rather than the **data engineering plumbing** (decoding logs, fetching prices, managing decimals). This is the ultimate convenience of server-side SQL: it turns deep, custom, protocol-level economic research from an infrastructure problem into a query problem.
-
-## Monitoring & Data Acquisition
-
-Due to the open nature of blockchains there is a lot of data that is readily available, however actually parsing and making sense of it can be more difficult. 
+The methodology allows the researcher to focus entirely on the **economic logic** (`CASE` statements, `JOIN` conditions, `SUM` aggregations) rather than the **data engineering plumbing** (decoding logs, fetching prices, managing decimals). This is the ultimate convenience of server-side SQL: it turns deep, custom, protocol-level economic research from an infrastructure problem into a query problem.Due to the open nature of blockchains there is a lot of data that is readily available, however actually parsing and making sense of it can be more difficult. 
 Throughout our research phase we used and created several resources to help monitor the transactions and activities of fillers on Uniswap X specifically.
 For this specific research our client wanted to focus exclusively on transactions occuring on Ethereum mainnet. Since we can not share the exact mathematical modeling, datasets and fully applied results of our research, we will instead focus on explaining some of the methods used for monitoring & acquiring this data.
 
-The easiest to access but perhaps also the most tedious of the tools that can be used is [Etherscan.](https://etherscan.io/) Etherscan provides a lot of data for transactions, wallets and contracts but navigating it without knowing ahead of time precisely which contract addresses are which or "who is who" can be frustrating. Although we certainly used and would reccomend it as a tool, it should be considered as a microscope. In our context it is better purposed as a way to see very precise data such as the transactions of a specific Uniswap X filler. For a much broader approach there is another service that we reccomend which helps us get a clear picture on the general activities on Uniswap X compared to an individual wallet. 
-
-This primary tool we used is dune.xyz. It let's anyone create both public and private dashboards which uses on-chain transaction for data visualization. 
+<!-- Might just remove these explanations below? Or would have to integrate them into the more complex sections without interrupting the flow of thinking -->
+Dune let's anyone create both public and private dashboards which uses on-chain transaction for data visualization. 
 During our research phase there were very few public dashboards through which we could see and track the activity of Uniswap X fillers easily, in fact there was only a single reliable dashboard at the time!
 
 The Uniswap X [dashboard by @flashbots](https://dune.com/flashbots/uniswap-x) lists not only the different active fillers but also vital information such as volume, order size, fillers, transaction hashes and more. 
