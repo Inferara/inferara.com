@@ -15,10 +15,7 @@ aliases = ["/blog/pocket-exchange-with-uniswap-x"]
 - [Uniswap X: A Two-Stage, Differentiated Auction](#uniswap-x-a-two-stage-differentiated-auction)
 - [Learnings](#learnings)
 - [Monitoring \& Data Acquisition](#monitoring--data-acquisition)
-  - [1. Complex, Multi-Protocol Event Aggregation](#1-complex-multi-protocol-event-aggregation)
-  - [2. Sophisticated Filler Identification \& Labeling](#2-sophisticated-filler-identification--labeling)
-  - [3. Holistic Transaction-Level Profitability Analysis](#3-holistic-transaction-level-profitability-analysis)
-  - [4. Intelligent Token Pair Normalization](#4-intelligent-token-pair-normalization)
+  - [The Query Parts \& Their Significance](#the-query-parts--their-significance)
   - [Conclusion: The "Server-Side SQL" Value Proposition](#conclusion-the-server-side-sql-value-proposition)
 - [Possible profit](#possible-profit)
 - [Utilize our expertise](#utilize-our-expertise)
@@ -133,96 +130,75 @@ This capability is not merely a convenience; it is a fundamental enabler for the
 2.  Optimize Liquidity Sourcing: The "winner-takes-most" dynamic of auction-based models means that marginal improvements in liquidity sourcing are paramount. Solvers must analyze fragmented liquidity across pools and chains, model gas costs, and identify arbitrage opportunities that can be bundled with user intents to offer more competitive quotes. This is a integrative problem ill-suited for static dashboards but perfectly suited for exploratory SQL analysis on a dataset like Dune's.
 3.  Conduct Post-Mortem and Competitive Analysis: Why was a specific order won by a competitor? Was their quote abnormally high, suggesting a novel routing strategy? By replaying market conditions for any past block and querying the on-chain activity of competing solvers, protocols can reverse-engineer successful strategies and identify weaknesses in their own models. This forensic capability is native to Dune's historical data access.
 
-In essence, Dune acts as a computational substrate for economic R&D. It allows small teams of researchers and developers to perform the kind of deep, quantitative market analysis that was previously the exclusive domain of large, well funded trading firms with proprietary data pipelines. To illustrate the power and convenience of Dune's server-side SQL methodology, we can point, for example, at [the main SQL query](https://dune.com/queries/5383565) we have used for aggregation of Uniswap X transactions for ROI analysis. Let's deconstruct it to highlight the meaningful parts that would be extremely difficult or impossible to achieve with standard GUI dashboards or raw APIs.
+In essence, Dune acts as a computational substrate for economic R&D. It allows small teams of researchers and developers to perform the kind of deep, quantitative market analysis that was previously the exclusive domain of large, well funded trading firms with proprietary data pipelines. To illustrate the power and convenience of Dune's server-side SQL methodology, we can point, for example, at [the main SQL query](https://dune.com/queries/5383565) we have used for aggregation of Uniswap X transactions for ROI analysis (called through [this wrapper](https://dune.com/queries/5382736) for parametrization and filtering). Let's deconstruct it to highlight the meaningful parts that would be extremely difficult or impossible to achieve with standard GUI dashboards or raw APIs.
 
-### 1. Complex, Multi-Protocol Event Aggregation
+### **The Query Parts & Their Significance**
 
-**The Query Part:**
+**Part A: The `get_transfers` Common Table Expression (CTE) - Unified Token & Native ETH Transfer Handling**
 ```sql
-logs AS (
-  SELECT *
-  FROM uniswap_ethereum.V2DutchOrderReactor_evt_Fill
-  WHERE evt_block_time > now() - interval '{{days_num}}' day
-  UNION ALL
-  SELECT *
-  FROM uniswap_ethereum.ExclusiveDutchOrderReactor_evt_Fill
-  WHERE evt_block_time > now() - interval '{{days_num}}' day
-)
+WITH
+  get_transfers AS (
+    SELECT ... FROM erc20_ethereum.evt_Transfer ...
+    UNION ALL
+    SELECT ... FROM ethereum.traces ...
+  )
 ```
+*   **What it does:** Creates a unified view of all token transfers (ERC-20) and native ETH transfers for each transaction. This is crucial because economic analysis must consider both asset types.
+*   **The Convenience Illustrated:** **Automatic decoding of raw blockchain data.**
+    *   **With Raw APIs:** You would need to:
+        1.  Fetch all transaction receipts and decode hex-encoded log data using Application Binary Interface (ABI) specifications to identify ERC-20 transfers.
+        2.  Separately parse `ethereum.traces` for `CALL` operations with `value` to find native ETH movements.
+        3.  Manually reconcile the different data structures into a single dataset.
+    *   **On Dune:** The `erc20_ethereum.evt_Transfer` and `ethereum.traces` tables are pre-decoded and standardized. The complex engineering of data normalization is already done.
 
-**The Convenience Illustrated:**
-- **What it does:** This Common Table Expression (CTE) seamlessly combines fill events from two different Uniswap X Reactor contracts into a single dataset.
-- **Why it's powerful:** A GUI dashboard would likely show these as separate pages or filters. Here, an analyst can treat the entire Uniswap X ecosystem as a single entity from the start.
-- **The Raw API Alternative:** You would need to:
-  1. Know the exact Application Binary Interface (ABI) and deployment addresses for both contracts.
-  2. Make separate `eth_getLogs` calls for each contract.
-  3. Manually decode the hex data from the logs for both.
-  4. Handle any schema differences between the events.
-
-**The Dune Advantage:** The platform has already decoded both smart contracts and presented them as clean SQL tables with identical schemas, making the process of combining them trivial.
-
-### 2. Sophisticated Filler Identification & Labeling
-
-**The Query Part:**
+**Part B: The `logs` CTE - Protocol Event Aggregation**
 ```sql
-coalesce(labels.name, cast(x.filler as varchar)) as filler,
-x.filler as filler_address,
-...
-LEFT JOIN query_2812729 labels ON x.filler = labels.address
+  logs AS (
+    SELECT * FROM uniswap_ethereum.V2DutchOrderReactor_evt_Fill ...
+    UNION ALL
+    SELECT * FROM uniswap_ethereum.ExclusiveDutchOrderReactor_evt_Fill ...
+  )
 ```
+*   **What it does:** Aggregates `Fill` events from two different versions of the Uniswap X protocol smart contracts.
+*   **The Convenience Illustrated:** **Abstracted smart contract complexity and versioning.**
+    *   **With a GUI Dashboard:** A platform like Nansen might show "Uniswap Volume" but would almost certainly not expose a specific "Filler Profitability" view, let alone one that seamlessly combines two different contract versions.
+    *   **On Dune:** The specific, low-level events are readily available in human-readable tables. The analyst can trivially combine them to get a complete picture of protocol activity without knowing the specific contract addresses or ABI details.
 
-**The Convenience Illustrated:**
-- **What it does:** It attempts to resolve a filler's hex address to a human-readable name (like 'jawn.eth' or 'Alpha Filler') by joining to a saved query (`query_2812729`), falling back to the raw address if no label exists.
-- **Why it's powerful:** This demonstrates the **composability** of Dune. Someone (either the Dune team or the community) has already created and maintained a mapping of known filler addresses to names. Instead of building this list from scratch, any analyst can leverage this public good.
-- **The GUI Alternative:** A platform like Arkham might show labels, but you couldn't easily use this labeled list as a base for your own custom, complex aggregations.
-- **The Raw API Alternative:** You would need to create and maintain your own database of entity labels, a massive ongoing curation task.
-
-### 3. Holistic Transaction-Level Profitability Analysis
-
-**The Query Part:**
+**Part C: The `txs_with_evt_fill` CTE - Enriching Transactions with Labels and Prices**
 ```sql
-tx.gas_used * tx.gas_price / 1e18 * pu.price as tx_fee,
-...
-SUM(cast(amount as double) / pow(10, decimals) * price) as sent_amount,
-...
-SUM(cast(amount as double) / pow(10, decimals) * price) as received_amount,
-...
-SUM(cast(amount as double) / pow(10, decimals) * price) as uniswap_fee
+      JOIN ethereum.transactions tx ON x.evt_tx_hash = tx.hash
+      LEFT JOIN prices.usd pu ON ... -- For TX fee USD value
+      LEFT JOIN query_2812729 labels ON x.filler = labels.address -- For Filler labels
 ```
+*   **What it does:** Joins the core fill events with transaction data (to get gas fees), real-time price feeds (to value those fees in USD), and a labels table (to humanize filler addresses).
+*   **The Convenience Illustrated:** **Seamless, on-the-fly data enrichment.**
+    *   **With Raw APIs:** Calculating the USD cost of a transaction fee would require:
+        1.  Fetching historical ETH price data from another API at the exact block timestamp.
+        2.  Manually joining this data.
+    *   **The Labeling Problem:** Identifying "who" a filler is (e.g., "janitooor.eth" or "Uniswap Team") is a core feature of GUI platforms like Arkham. On Dune, this is democratized. The `query_2812729` is a public, community-maintained labels list that anyone can use, fork, or contribute to. This turns a proprietary "secret sauce" into a collaborative, public good.
 
-**The Convenience Illustrated:**
-- **What it does:** It calculates the total cost and value flows for a single trade in USD terms, including:
-  - The Ethereum transaction fee (gas).
-  - The total value of assets sent by the swapper.
-  - The total value of assets received by the swapper.
-  - The fees paid to liquidity providers (the "LP reward").
-- **Why it's powerful:** This is the core of economic analysis. It allows you to calculate the **net effective cost** for the swapper and the **net profit** for the filler, which is critical for understanding the protocol's health and competitiveness.
-- **The Raw API Nightmare:** To do this, you'd need to:
-  1. Get the transaction receipt to calculate gas costs.
-  2. Get the ETH/USD price at that exact block.
-  3. For every ERC20 transfer, you'd need to:
-     - Fetch the token's `decimals()` and `symbol()`.
-     - Find a reliable price feed for that token at that block time.
-  This turns one logical question into hundreds of RPC calls per transaction.
-
-**The Dune Advantage:** The `prices.usd` table is a masterpiece of abstraction. With a simple join on `contract_address` and `minute`, you get a historically accurate price for almost any token, which the query uses to normalize everything to USD.
-
-### 4. Intelligent Token Pair Normalization
-
-**The Query Part:**
+**Part D: The `get_swapper_txs` CTE & Subsequent Aggregations - Complex Business Logic**
 ```sql
-CASE
-  WHEN sent.sent_token_symbol <= received.received_token_symbol THEN sent.sent_token_symbol || '-' || received.received_token_symbol
-  ELSE received.received_token_symbol || '-' || sent.sent_token_symbol
-END as token_pair
+CASE WHEN transfers."to" = fill.swapper THEN true ... END as to_swapper
 ...
-WHERE token_pair != 'WETH-WETH'
+CASE transfers."to" WHEN 0x000000fee13a103A10D593b9AE06b3e05F2E7E1c THEN true ... END as to_uniswap
 ```
+*   **What it does:** This is the core of the economic logic. It categorizes every token flow in the transaction:
+    *   Was it sent *from* the swapper? (This is the input)
+    *   Was it sent *to* the swapper? (This is the output)
+    *   Was it sent to a known Uniswap fee address? (This is the protocol fee/LP reward)
+*   **The Convenience Illustrated:** **Full expressibility to encode custom economic models.**
+    *   **With a GUI Dashboard:** You are locked into the platform's predefined metrics (e.g., "Volume," "TVL"). You could not create a custom metric for "Filler Net Profit" that subtracts protocol fees and gas costs from their gross spread.
+    *   **On Dune:** The analyst defines the business logic directly in SQL. The `CASE` statements and subsequent `sent_data`, `received_data`, and `uniswap_fee_data` CTEs are a direct implementation of their unique economic model for the protocol.
 
-**The Convenience Illustrated:**
-- **What it does:** It creates a canonical representation for a trading pair (e.g., ensuring both `WETH-USDC` and `USDC-WETH` are stored as `USDC-WETH`) and filters out internal WETH wraps/unwraps.
-- **Why it's powerful:** This is essential for clean aggregation. Without it, your analysis would double-count volume for the same economic activity and be polluted with non-trades.
-- **The GUI/API Problem:** A low-level API would just give you the raw transfers, leaving you to figure out the logic to filter out wraps. A GUI might filter them out but wouldn't let you define your own canonical pair logic for a custom report.
+**Part E: The Wrapper Query - Parameterization and Filtering**
+```sql
+from "query_5383565(days_num='60')"
+where contains(array[ 'DAI-USDT', 'DAI-USDC' ... ], token_pair)
+```
+*   **What it does:** The main, complex query is saved as a reusable "data source." This wrapper query calls it with a parameter (`days_num='60'`) and filters the results for specific token pairs.
+*   **The Convenience Illustrated:** **Composability and parameterization.**
+    *   This turns a complex, one-off analysis into a reusable tool. An analyst can now trivially run the same deep analysis for different time periods or asset pairs without rewriting the core logic. This modularity is a cornerstone of efficient research.
 
 ### Conclusion: The "Server-Side SQL" Value Proposition
 
