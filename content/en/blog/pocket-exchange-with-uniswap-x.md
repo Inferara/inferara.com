@@ -20,7 +20,6 @@ aliases = ["/blog/pocket-exchange-with-uniswap-x"]
   - [3. Holistic Transaction-Level Profitability Analysis](#3-holistic-transaction-level-profitability-analysis)
   - [4. Intelligent Token Pair Normalization](#4-intelligent-token-pair-normalization)
   - [Conclusion: The "Server-Side SQL" Value Proposition](#conclusion-the-server-side-sql-value-proposition)
-- [How to become a Filler](#how-to-become-a-filler)
 - [Possible profit](#possible-profit)
 - [Utilize our expertise](#utilize-our-expertise)
 - [Conclusion](#conclusion)
@@ -256,10 +255,9 @@ Although it is quite the useful dashboard, it does not meet all our requirements
 Explain how to use Dune to monitor UniswapX, Fillers and so on. Share references on public dashboards we created.
 
 
-
-## How to become a Filler
-
 ## Possible profit
+
+(insert notes about selecting budget and portfolio management, deployment)
 
 As of writing there are currently more orders being filled on base chain (an Ethereum layer 2) than Ethereum main net. 
 https://dune.com/dune/uniswap-x-orders-filled
