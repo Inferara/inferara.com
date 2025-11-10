@@ -128,7 +128,7 @@ When the program finishes, the destructors of global objects are called, ensurin
 
 To visualize how these files fit into the program startup flow, here is a simplified diagram:
 
-```
+```plaintext
         ┌─────────────────────┐
         │ Program Entry Point │  (Defined in crt1.o or crt0.o)
         │     _start()        │
