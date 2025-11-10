@@ -128,7 +128,7 @@ clang main.c -o main
 
 これらのファイルがどのように連携してプログラムを開始・終了させるのかを、簡単なフローチャートに示します。
 
-```
+```plaintext
         ┌─────────────────────┐
         │ Program Entry Point │  (Defined in crt1.o or crt0.o)
         │     _start()        │
