@@ -68,7 +68,7 @@ An order is configured by only three numbers (start price, reserve price, and au
 The final step is closing the escrow, which simultaneously releases the frozen funds in both directions.
 This final step is also paid for by the executor before the exclusivity expires. 
 
-> **_Note:_** The concrete timeframes of auction and exclusivity periods are not defined in protocol and are subject to service provider. At the moment of writing in both 1inch advertisements and practice vast majority of swaps complete in 5 minutes.
+> **_Note:_** The concrete timeframes of auction and exclusivity periods are not defined in the protocol and are subject to service provider. At the moment of writing in both 1inch advertisements and practice the vast majority of swaps complete within 5 minutes.
 
 If something goes wrong and the executor stops midway after freezing the user’s funds, then once the exclusivity period ends the act of closing the escrow becomes public: By paying the network fee, any wallet can either return the user’s tokens in full (if the counter-escrow was never sufficiently funded) or complete the swap (if it was funded but the executor couldn’t close the escrow for technical reasons). To make public closure economically meaningful, the protocol requires auction participants to bond a small amount of their own funds in the escrow alongside freezing the user’s tokens—an amount sufficient to cover network fees. These funds are always paid to whoever signs the escrow closure; during exclusivity they are returned to the executor; after exclusivity they become a reward for the party that completes or cancels the swap. Through this method it allows for fulfilling the client’s needs in a way that remains transparent to them.
 
@@ -130,7 +130,7 @@ For now let's focus on the Weekly area.
 ![alt text](/static/img/pocket-exchange-with-uniswap-x/weekly-dashboard-view.png)
 
 
-The most notable query that helps us get a better understanding of what kind of trades (and their direction) is the [Top 10 Volume Tokens Grouped by Filler](https://dune.com/queries/3053887/5081486) query. This not only shows us the top wallets (fillers) but we can clearly see that the trades with the most volume occurs between the USDC & WETH (wrapped Ethereum) pair. 
+The most notable query that helps us get a better understanding of what kind of trades (and their direction) is the [Top 10 Volume Tokens Grouped by Filler](https://dune.com/queries/3053887/5081486) query. This not only shows us the top wallets (fillers) but we can clearly see that the trades with the most volume occur between the USDC & WETH (wrapped Ethereum) pair. 
 
 ![alt text](/static/img/pocket-exchange-with-uniswap-x/Top-10-Volume-Tokens-Grouped-by-Filler.png)
 
@@ -227,9 +227,9 @@ This single query performs a task that sits perfectly in the "intermediate posit
 
 **On Dune, this complexity can be subdued by a single analyst.**
 
-The methodology allows the researcher to focus entirely on the **economic logic** (`CASE` statements, `JOIN` conditions, `SUM` aggregations) rather than the **data engineering plumbing** (decoding logs, fetching prices, managing decimals). This is the ultimate convenience of server-side SQL: it turns deep, custom, protocol-level economic research from an infrastructure problem into a query problem.Due to the open nature of blockchains there is a lot of data that is readily available, however actually parsing and making sense of it can be more difficult. 
+The methodology allows the researcher to focus entirely on the **economic logic** (`CASE` statements, `JOIN` conditions, `SUM` aggregations) rather than the **data engineering plumbing** (decoding logs, fetching prices, managing decimals). This is the ultimate convenience of server-side SQL: it turns deep, custom, protocol-level economic research from an infrastructure problem into a query problem. Due to the open nature of blockchains there is a lot of data that is readily available, however actually parsing and making sense of it can be more difficult. 
 Throughout our research phase we used and created several resources to help monitor the transactions and activities of fillers on Uniswap X specifically.
-For this specific research our client wanted to focus exclusively on transactions occurring on Ethereum mainnet. Since we can not share the exact mathematical modeling, datasets and fully applied results of our research, we will instead focus on explaining some of the methods used for monitoring & acquiring this data.
+For this specific research our client wanted to focus exclusively on transactions occurring on Ethereum mainnet. Since we can not share the exact mathematical modeling, datasets and fully applied results of our research, we instead focused on explaining some the methods and reasons that are important when monitoring & acquiring data of this kind. We hope this has been an insightful peek into the complexities of building and researching such systems.
 
 
 ## Seizing the Opportunity: From Research to Revenue
@@ -265,11 +265,11 @@ You provide the capital and strategic vision, we provide the expert team to buil
 Our partnership is designed to get you to market in a fraction of the time and cost it would take to start from zero. 
 We work with you to build:
 
-- **Custom Strategy Development**: Design, model, and deploy proprietary algorithms tailored to your specific risk appetite and capital base.
+- **Custom Strategies**: Design, model, and deploy proprietary algorithms tailored to your specific risk appetite and capital base.
 
-- **Bespoke Data & Analytics**: We will build and deploy the proprietary, real-time dashboards and data pipelines you need to gain a true competitive edge beyond public queries.
+- **Bespoke Data & Analytics**: Build and deploy the proprietary, real-time dashboards and data pipelines you need to gain a true competitive edge beyond public queries.
 
-- **Custom Portfolio Automation**: Our team will develop the automated tools required to efficiently manage your liquidity reserves, hedge exposure, and rebalance assets.
+- **Custom Portfolio Automation**: The automated tools required to efficiently manage your liquidity reserves, hedge exposure, and rebalance assets.
 
 #### Become a market leader, not a research team.
 By building on our completed research, you can avoid the intensive R&D phase required and move directly to building your institutional grade system.
