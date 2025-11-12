@@ -1,10 +1,10 @@
 +++
-title = "Pocket exchange with UniswapX"
-date = 2025-08-13T12:21:00+09:00
+title = "Pocket exchange with UniswapX and 1inch Fusion"
+date = 2025-11-12T16:22:00+09:00
 draft = false
-summary = ""
-tags = ["DeFi", "Uniswap"]
-aliases = ["/blog/pocket-exchange-with-uniswap-x"]
+summary = "We compare UniswapX’s RFQ→exclusive-then-open Dutch two-stage auction with 1inch Fusion’s classic Dutch model to show how intent-based swaps curb MEV, failures, and liquidity fragmentation for better market-making."
+tags = ["DeFi", "Uniswap", "1inch", "Market Making", "Automated Market Maker", "AMM", "Liquidity Provision", "Crypto Trading Bots"]
+aliases = ["/blog/pocket-exchange"]
 +++
 
 **Table of Contents**
@@ -15,10 +15,10 @@ aliases = ["/blog/pocket-exchange-with-uniswap-x"]
 - [Uniswap X: A Two-Stage, Differentiated Auction](#uniswap-x-a-two-stage-differentiated-auction)
 - [Learnings](#learnings)
 - [Monitoring \& Data Acquisition](#monitoring--data-acquisition)
-  - [**The Query Parts \& Their Significance**](#the-query-parts--their-significance)
+  - [The Query Parts \& Their Significance](#the-query-parts--their-significance)
   - [Conclusion: The "Server-Side SQL" Value Proposition](#conclusion-the-server-side-sql-value-proposition)
 - [Seizing the Opportunity: From Research to Revenue](#seizing-the-opportunity-from-research-to-revenue)
-    - [Become a market leader, not a research team.](#become-a-market-leader-not-a-research-team)
+- [Become a market leader, not a research team.](#become-a-market-leader-not-a-research-team)
 
 ## Introduction
 
@@ -56,7 +56,7 @@ Both 1inch Fusion and Uniswap X have similar answers to these questions. By refr
 
  • Transparent aggregation of fragmented liquidity: Because the system merely enforces the contract between the parties, it does not require executors to pre-deposit funds to form a common liquidity pool. From the auction’s perspective it doesn’t matter where the tokens come from, as long as they land in the client’s wallet before the deadline. This allows executors to effectively resell all liquidity available in the market through a single window.
 
-It’s hard not to notice that while this economic model dramatically simplifies the swap for the initiator, it necessarily makes life more complex for the executors. Compared with classic exchanges—where participation can be as simple as depositing liquidity, posting a price, and passively waiting for buyers, the auction scheme forces participants on the execution side to make many more decisions under tight deadlines. Automation here is non-negotiable. It creates a state of constant readiness with hard response times which leaves a human with no chance to beat the robots. Below we dive into which economic decisions compel such automation on both platforms.
+It’s hard not to notice that while this economic model dramatically simplifies the swap for the initiator, it necessarily makes life more complex for the executors. Compared with classic exchanges — where participation can be as simple as depositing liquidity, posting a price, and passively waiting for buyers, the auction scheme forces participants on the execution side to make many more decisions under tight deadlines. Automation here is non-negotiable. It creates a state of constant readiness with hard response times which leaves a human with no chance to beat the robots. Below we dive into which economic decisions compel such automation on both platforms.
 
 Although 1inch Fusion and Uniswap X implement the same core idea schematically, they differ quite substantially in the design of their mechanisms. We’ll examine them separately and then compare them, starting with 1inch.
 
@@ -68,13 +68,13 @@ An order is configured by only three numbers (start price, reserve price, and au
 The final step is closing the escrow, which simultaneously releases the frozen funds in both directions.
 This final step is also paid for by the executor before the exclusivity expires. 
 
-> **_Note:_** The concrete timeframes of auction and exclusivity periods are not defined in the protocol and are subject to service provider. At the moment of writing in both 1inch advertisements and practice the vast majority of swaps complete within 5 minutes.
+> The concrete timeframes of auction and exclusivity periods are not defined in the protocol and are subject to service provider. At the moment of writing in both 1inch advertisements and practice the vast majority of swaps complete within 5 minutes.
 
-If something goes wrong and the executor stops midway after freezing the user’s funds, then once the exclusivity period ends the act of closing the escrow becomes public: By paying the network fee, any wallet can either return the user’s tokens in full (if the counter-escrow was never sufficiently funded) or complete the swap (if it was funded but the executor couldn’t close the escrow for technical reasons). To make public closure economically meaningful, the protocol requires auction participants to bond a small amount of their own funds in the escrow alongside freezing the user’s tokens—an amount sufficient to cover network fees. These funds are always paid to whoever signs the escrow closure; during exclusivity they are returned to the executor; after exclusivity they become a reward for the party that completes or cancels the swap. Through this method it allows for fulfilling the client’s needs in a way that remains transparent to them.
+If something goes wrong and the executor stops midway after freezing the user’s funds, then once the exclusivity period ends the act of closing the escrow becomes public: By paying the network fee, any wallet can either return the user’s tokens in full (if the counter-escrow was never sufficiently funded) or complete the swap (if it was funded but the executor couldn’t close the escrow for technical reasons). To make public closure economically meaningful, the protocol requires auction participants to bond a small amount of their own funds in the escrow alongside freezing the user’s tokens — an amount sufficient to cover network fees. These funds are always paid to whoever signs the escrow closure; during exclusivity they are returned to the executor; after exclusivity they become a reward for the party that completes or cancels the swap. Through this method it allows for fulfilling the client’s needs in a way that remains transparent to them.
 
 ## Uniswap X: A Two-Stage, Differentiated Auction
 
-This design is somewhat more complex, but for good reasons. The protocol splits executors into two unequal groups that perform actions at different stages. The first group to interact with the client’s order are registered, KYC-verified Quoters, whose work actually starts before the user signs anything. When the user selects a direction of their trade and types the desired amount (either what they want to sell or what they want to buy) into the form, a draft of the order is broadcast to all Quoters serving that trade direction. Each Quoter is expected to respond very quickly (within roughly half a second) with a quote—i.e., the complementary amount of tokens. If the client sells a fixed quantity of their tokens, the quote is the price the executor is willing to pay. If instead the client wants to buy a fixed quantity of the other token, the quote is the price at which the executor is willing to sell those tokens.
+This design is somewhat more complex, but for good reasons. The protocol splits executors into two unequal groups that perform actions at different stages. The first group to interact with the client’s order are registered, KYC-verified Quoters, whose work actually starts before the user signs anything. When the user selects a direction of their trade and types the desired amount (either what they want to sell or what they want to buy) into the form, a draft of the order is broadcast to all Quoters serving that trade direction. Each Quoter is expected to respond very quickly (within roughly half a second) with a quote — i.e., the complementary amount of tokens. If the client sells a fixed quantity of their tokens, the quote is the price the executor is willing to pay. If instead the client wants to buy a fixed quantity of the other token, the quote is the price at which the executor is willing to sell those tokens.
 
 In both cases, Quoters compete to offer the most favorable quote for the client. The platform selects a winner, shows that quote in the swap form, and invites the user to sign a payment instruction. From that moment, the winning Quoter is considered to have taken on an obligation to honor the quote provided the user signs before a countdown timer (30 seconds) expires. This stage is exclusive to the winning Quoter. Execution of the signed instruction is also given a fixed, on-chain deadline; upon expiry, the overdue obligation is deemed breached and the client’s order is considered to have failed the exclusive stage. A Quoter who does not keep their promise to execute the order in time is penalized with a temporary suspension from quoting new orders. 
 
@@ -84,12 +84,10 @@ Only orders abandoned by their winning Quoters proceed to the second stage, whic
 
 This added complexity is not wasted: by forcing first-stage Quoters to shoulder an obligation to honor the price shown to the user even before the user decides to swap, Uniswap X creates a valuable user-experience feature that would be hard to reproduce otherwise. By comparison, under 1inch Fusion the exchange rate visible to the client at signing time is merely an approximate, non-binding estimate by the platform; the final price is determined somewhere between the start and reserve prices during the (sometimes lengthy) auction. 
 
-![alt text](/static/img/pocket-exchange-with-uniswap-x/uniswapx-mainnet_flowchart.png)
+![alt text](/img/pocket-exchange/uniswapx-mainnet_flowchart.png)
 *courtesy of [uniswap documentation](https://docs.uniswap.org/contracts/uniswapx/auctiontypes#ethereum-rfq--exclusive-dutch-auction)*
 
 Under Uniswap X, in the overwhelming majority of cases the user decides to sign while looking at the actual amounts that will be sent and received almost immediately after pressing “Approve and swap”. That’s because instances of a Quoter failing to complete an order are relatively rare; the open Dutch auction plays the role of a safety net rather than the backbone of the system.
-
-
 
 A qualitative economic analysis suggests that this undeniably useful feature is not free for the user. The extra obligations and risks shouldered by Quoters in Uniswap X naturally push them toward more conservative expectations of execution profitability for the same nominal spreads. One should expect that for swaps involving more volatile tokens (or during volatile periods for otherwise stable pairs), the simplicity of the classic Dutch auction in 1inch Fusion will, on average, extract a smaller share of value from client orders.
 
@@ -111,7 +109,6 @@ For the economic tasks at hand, due to such intermediate position of data requir
 
 On the other hand, using “raw” blockchain infrastructure APIs and trading platforms, while providing complete freedom of automation, immediately turns any statistical research into a separate engineering task of searching through haystacks for needles. The easiest to access but perhaps also one of the more tedious of the tools that can be used is [Etherscan.](https://etherscan.io/) Etherscan provides a lot of data for transactions, wallets and contracts but navigating it without knowing ahead of time precisely which contract addresses are which or "who is who" can be a frustrating experience. The haystack being the vast amount of information available whereas the needle would be the precise details which we are searching for. In our context it is better purposed as a way to see very precise data such as the transactions of a specific Uniswap X filler. Therefore to avoid this engineering task, before reaching an economist's desk, the data will inevitably have to pass through the hands of a competent data scientist capable of extracting grains of useful information from the mountains of digital slag spewing out of low-level APIs. Fortunately, thanks to the existence of the Dune platform, this problem can be partially avoided.
 
-
 ## Monitoring & Data Acquisition
 
 This is where the [Dune](https://dune.com/) platform emerges as a methodological "sweet spot," uniquely suited to the needs of intent protocol architects. It effectively splits the problem in two: the platform itself handles the monumental engineering task of data ingestion, decoding, and structuring, while the analyst retains the full, granular power of querying this refined dataset.
@@ -121,20 +118,19 @@ Dune lets anyone create both public and private dashboards which on the surface 
 During our research phase there were very few public dashboards through which we could see and track the activity of Uniswap X fillers easily, in fact there was only a single reliable dashboard at the time!
 
 The Uniswap X [dashboard by @flashbots](https://dune.com/flashbots/uniswap-x) lists not only the different active fillers but also vital information such as volume, order size, fillers, transaction hashes and more. 
-> **_Note:_** This dashboard might be discontinued or no longer up-to-date
+> This dashboard might be discontinued or no longer up-to-date
 
 Let's take a look at some of the publicly available data here.
 There are two views by default, the top section shows information based on Weekly statistics, the lower section shows All time data.
 
 For now let's focus on the Weekly area. 
-![alt text](/static/img/pocket-exchange-with-uniswap-x/weekly-dashboard-view.png)
-
+![alt text](/img/pocket-exchange/weekly-dashboard-view.png)
 
 The most notable query that helps us get a better understanding of what kind of trades (and their direction) is the [Top 10 Volume Tokens Grouped by Filler](https://dune.com/queries/3053887/5081486) query. This not only shows us the top wallets (fillers) but we can clearly see that the trades with the most volume occur between the USDC & WETH (wrapped Ethereum) pair. 
 
-![alt text](/static/img/pocket-exchange-with-uniswap-x/Top-10-Volume-Tokens-Grouped-by-Filler.png)
+![alt text](/img/pocket-exchange/Top-10-Volume-Tokens-Grouped-by-Filler.png)
 
-> **_Note:_** Wrapped Ethereum (wETH) is an ERC-20 token that represents Ethereum (ETH) on a 1:1 basis, making it compatible with decentralized finance (DeFi) applications and other ERC-20 compliant platforms. While ETH is the native currency of the Ethereum blockchain, it is not an ERC-20 token and cannot be used in many dApps.
+> Wrapped Ethereum (wETH) is an ERC-20 token that represents Ethereum (ETH) on a 1:1 basis, making it compatible with decentralized finance (DeFi) applications and other ERC-20 compliant platforms. While ETH is the native currency of the Ethereum blockchain, it is not an ERC-20 token and cannot be used in many dApps.
 
 Although it is quite a useful dashboard, in its current state it does not meet all the requirements of a sophisticated automated market maker (bot) for Uniswap X. Basic metrics such as estimated ROI of fillers, transaction costs, portfolio history & allocation are not easily available or calculated through this dashboard. When abstracting towards even more complex concepts such as risk management, liquidity sourcing and performance analytics, a more meticulously refined approach is required. 
 
@@ -151,11 +147,12 @@ This capability is not merely a convenience; it is a fundamental enabler for the
 
 In essence, Dune acts as a computational substrate for economic R&D. It allows small teams of researchers and developers to perform the kind of deep, quantitative market analysis that was previously the exclusive domain of large, well funded trading firms with proprietary data pipelines. To illustrate the power and convenience of Dune's server-side SQL methodology, we can point, for example, at [the main SQL query](https://dune.com/queries/5383565) we have used for aggregation of Uniswap X transactions for ROI analysis (called through [this wrapper](https://dune.com/queries/5382736) for parametrization and filtering). Let's deconstruct it to highlight the meaningful parts that would be extremely difficult or impossible to achieve with standard GUI dashboards or raw APIs.
 
-![alt text](/static/img/pocket-exchange-with-uniswap-x/main-sql-query.png)
+![alt text](/img/pocket-exchange/main-sql-query.png)
 
-### **The Query Parts & Their Significance**
+### The Query Parts & Their Significance
 
 **Part A: The `get_transfers` Common Table Expression (CTE) - Unified Token & Native ETH Transfer Handling**
+
 ```sql
 WITH
   get_transfers AS (
@@ -164,6 +161,7 @@ WITH
     SELECT ... FROM ethereum.traces ...
   )
 ```
+
 *   **What it does:** Creates a unified view of all token transfers (ERC-20) and native ETH transfers for each transaction. This is crucial because economic analysis must consider both asset types.
 *   **The Convenience Illustrated:** **Automatic decoding of raw blockchain data.**
     *   **With Raw APIs:** You would need to:
@@ -244,7 +242,7 @@ It's not just the methods of acquiring information that adds complexity to compe
 
 Through our research and experience we can alleviate the high barriers of entry that exist when wanting to become a participant in market making platforms such as Uniswap X. 
 
-Our team will help steer you in the right direction through consultation & custom development work. We've done the research and built the tools to help our clients achieve their vision. 
+Our team will help steer you in the right direction through research & consulting work. We've done the research and built the tools to help our clients achieve their vision. 
 
 As we have demonstrated, the barrier to entry isn't capital. It's the immense technical and economic complexity. A successful market making operation requires:
 
@@ -271,10 +269,11 @@ We work with you to build:
 
 - **Custom Portfolio Automation**: The automated tools required to efficiently manage your liquidity reserves, hedge exposure, and rebalance assets.
 
-#### Become a market leader, not a research team.
+## Become a market leader, not a research team.
+
 By building on our completed research, you can avoid the intensive R&D phase required and move directly to building your institutional grade system.
 
-We are a trusted research and development team for top-tier protocols like Stellar and Polkadot. We bring this same level of institutional grade expertise to our market-making clients.
+We are a trusted research and development team for top-tier Web3 protocols and bring this same level of institutional grade expertise to our market-making clients.
 
 The window of opportunity is open now, but it won't be for long. Don't spend your budget on the research phase.
 

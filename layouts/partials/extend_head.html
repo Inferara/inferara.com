@@ -4,3 +4,8 @@
 
 {{ template "_internal/google_analytics.html" . }}
 
+{{- /* Image Modal Component CSS */ -}}
+{{- $cssOpts := (dict "targetPath" "css/image-modal.css" "outputStyle" "compressed") -}}
+{{- $css := resources.Get "css/common/redesign.css" | resources.ToCSS $cssOpts | resources.Minify -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" />
+

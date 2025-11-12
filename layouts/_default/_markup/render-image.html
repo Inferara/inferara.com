@@ -1,0 +1,27 @@
+{{- /*
+Render hook for Markdown images - automatically wraps them with modal functionality
+This makes all standard ![alt](src) images clickable with modal zoom
+*/ -}}
+
+{{- $src := .Destination -}}
+{{- $alt := .Text -}}
+{{- $title := .Title -}}
+{{- $id := printf "img-modal-%s" (md5 $src) -}}
+
+<figure class="image-modal-trigger" data-modal-id="{{ $id }}">
+  <img src="{{ $src | safeURL }}" alt="{{ $alt }}" {{- with $title }} title="{{ . }}"{{- end }} loading="lazy" class="modal-thumbnail" role="button" tabindex="0" aria-label="Click to view full size: {{ $alt }}" />
+  {{- if $title }}
+  <figcaption>{{ $title | markdownify }}</figcaption>
+  {{- end }}
+</figure>
+
+<div id="{{ $id }}" class="image-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="{{ $id }}-title">
+  <div class="image-modal-backdrop"></div>
+  <div class="image-modal-content">
+    <button class="image-modal-close" aria-label="Close image viewer">×</button>
+    <img src="{{ $src | safeURL }}" alt="{{ $alt }}" id="{{ $id }}-title" />
+    {{- if $title }}
+    <div class="image-modal-caption">{{ $title | markdownify }}</div>
+    {{- end }}
+  </div>
+</div>

@@ -1,0 +1,3 @@
+{{- /* Image Modal Component JavaScript */ -}}
+{{- $js := resources.Get "js/site.js" | resources.Minify | resources.Fingerprint -}}
+<script src="{{ $js.RelPermalink }}" defer></script>
