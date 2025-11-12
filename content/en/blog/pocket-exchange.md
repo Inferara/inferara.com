@@ -273,3 +273,5 @@ We are a trusted research and development team for top-tier Web3 protocols and b
 The window of opportunity is open now, but it won't be for long. Don't spend your budget on the research phase.
 
 [Contact us today for a private consultation](https://www.inferara.com/en/contact/) to discuss building your own custom, high performance market making bot.
+
+{{<post-socials page_content_type="blog" telegram_post_id="38" x_post_id="1988520868830736587">}}

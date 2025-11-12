@@ -274,3 +274,6 @@ where contains(array[ 'DAI-USDT', 'DAI-USDC' ... ], token_pair)
 チャンスの窓は**今**開いていますが、長くは続きません。**研究フェーズに予算を費やさないでください**。
 
 [今すぐプライベート相談](https://www.inferara.com/en/contact/)にお申し込みいただき、**高性能なカスタム・マーケットメイキング・ボット**の構築についてご相談ください。
+
+{{<post-socials language="jp" page_content_type="blog" telegram_post_id="38" x_post_id="1988520868830736587">}}
+{{<ai-translated>}}
