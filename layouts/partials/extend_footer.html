@@ -1,3 +1,9 @@
 {{- /* Image Modal Component JavaScript */ -}}
 {{- $js := resources.Get "js/site.js" | resources.Minify | resources.Fingerprint -}}
 <script src="{{ $js.RelPermalink }}" defer></script>
+
+{{- /* Demo Wizard JavaScript - only load on demo pages */ -}}
+{{- if eq .Layout "demo" -}}
+<script src="/js/demo-wizard.js" defer></script>
+{{- end -}}
+

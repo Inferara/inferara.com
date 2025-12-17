@@ -1,0 +1,15 @@
+{{- $label := .label | default .text | default "" -}}
+{{- $href := .href | default .url | default "#" -}}
+{{- $variant := .variant | default "primary" -}}
+{{- $size := .size | default "md" -}}
+{{- $rel := .rel | default "noopener" -}}
+{{- $target := .target | default "" -}}
+
+<a href="{{ $href }}"
+   class="button ds-button ds-button--{{ $variant }} ds-button--{{ $size }}"
+   {{- with $rel }} rel="{{ . }}"{{ end }}
+   {{- with $target }} target="{{ . }}"{{ end }}>
+  <span class="button-inner">
+    {{- $label -}}
+  </span>
+</a>

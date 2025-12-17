@@ -1,0 +1,427 @@
+:root {
+  /* Color tokens (light theme) */
+  --ds-color-bg: #f9fafb;
+  --ds-color-bg-elevated: #ffffff;
+  --ds-color-surface-muted: #f3f4f6;
+  --ds-color-text: #111827;
+  --ds-color-text-muted: #4b5563;
+  --ds-color-border: #e5e7eb;
+  --ds-color-border-strong: #d1d5db;
+
+  /* Brand accent hooks into existing accent_color when available */
+  --ds-color-accent: var(--accent_color, #111827);
+  --ds-color-accent-soft: #fee2e2;
+
+  /* Semantic colors */
+  --ds-color-info: #2563eb;
+  --ds-color-success: #15803d;
+  --ds-color-warning: #b45309;
+  --ds-color-danger: #b91c1c;
+
+  /* Typography scale */
+  --ds-font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ds-font-size-xs: 0.75rem;
+  --ds-font-size-sm: 0.875rem;
+  --ds-font-size-md: 1rem;
+  --ds-font-size-lg: 1.125rem;
+  --ds-font-size-xl: 1.25rem;
+  --ds-font-size-2xl: 1.5rem;
+  --ds-font-size-3xl: 1.875rem;
+
+  /* Line heights */
+  --ds-leading-tight: 1.2;
+  --ds-leading-normal: 1.5;
+  --ds-leading-relaxed: 1.7;
+
+  /* Spacing scale */
+  --ds-space-1: 0.25rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-10: 2.5rem;
+
+  /* Radii */
+  --ds-radius-sm: 0.25rem;
+  --ds-radius-md: 0.5rem;
+  --ds-radius-lg: 0.75rem;
+  --ds-radius-full: 9999px;
+
+  /* Shadows */
+  --ds-shadow-none: none;
+  --ds-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --ds-shadow-md: 0 4px 6px rgba(15, 23, 42, 0.10), 0 2px 4px rgba(15, 23, 42, 0.08);
+  --ds-shadow-lg: 0 10px 15px rgba(15, 23, 42, 0.15), 0 4px 6px rgba(15, 23, 42, 0.10);
+}
+
+body {
+  font-family: var(--ds-font-family-sans);
+  color: var(--ds-color-text);
+}
+
+body.dark {
+  --ds-color-bg: #020617;
+  --ds-color-bg-elevated: #020617;
+  --ds-color-surface-muted: #111827;
+  --ds-color-text: #e5e7eb;
+  --ds-color-text-muted: #9ca3af;
+  --ds-color-border: #1f2937;
+  --ds-color-border-strong: #374151;
+  --ds-color-accent-soft: #4b5563;
+}
+
+/* Buttons
+   Use existing .button elements as the primary button component
+*/
+
+.button,
+.ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-2);
+  padding: var(--ds-space-2) var(--ds-space-4);
+  border-radius: var(--ds-radius-full);
+  border: 1px solid transparent;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  line-height: var(--ds-leading-tight);
+  text-decoration: none;
+  cursor: pointer;
+  background-color: var(--ds-color-accent);
+  color: var(--code-bg, #f9fafb);
+  box-shadow: var(--ds-shadow-sm);
+  transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.06s ease;
+}
+
+.button:hover,
+.ds-button:hover {
+  box-shadow: var(--ds-shadow-md);
+  transform: translateY(-1px);
+}
+
+.button:active,
+.ds-button:active {
+  box-shadow: var(--ds-shadow-sm);
+  transform: translateY(0);
+}
+
+.button:focus-visible,
+.ds-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Secondary and ghost variants for use via additional classes */
+
+.ds-button--secondary {
+  background-color: transparent;
+  color: var(--ds-color-text);
+  border-color: var(--ds-color-border-strong);
+  box-shadow: var(--ds-shadow-none);
+}
+
+.ds-button--secondary:hover {
+  background-color: var(--ds-color-surface-muted);
+}
+
+.ds-button--ghost {
+  background-color: transparent;
+  color: var(--ds-color-text-muted);
+  border-color: transparent;
+  box-shadow: var(--ds-shadow-none);
+}
+
+.ds-button--ghost:hover {
+  background-color: rgba(148, 163, 184, 0.15);
+}
+
+.button-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+}
+
+.button-inner svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Cards
+   Apply to generic cards and PaperMod post entries for consistency
+*/
+
+.ds-card,
+article.post-entry,
+article.first-entry,
+article.tag-entry {
+  position: relative;
+  background-color: var(--ds-color-bg-elevated);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-color-border);
+  box-shadow: var(--ds-shadow-sm);
+  padding: var(--ds-space-5) var(--ds-space-5);
+}
+
+.ds-card + .ds-card {
+  margin-top: var(--ds-space-4);
+}
+
+article.post-entry:hover,
+article.first-entry:hover,
+article.tag-entry:hover,
+.ds-card:hover {
+  background-color: var(--ds-color-surface-muted);
+}
+
+body.dark article.post-entry,
+body.dark article.first-entry,
+body.dark article.tag-entry,
+body.dark .ds-card {
+  background-color: var(--ds-color-bg-elevated);
+  border-color: var(--ds-color-border-strong);
+}
+
+/* Card title and meta */
+
+.ds-card__title {
+  font-size: var(--ds-font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--ds-space-2);
+}
+
+.ds-card__meta {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-text-muted);
+  margin-bottom: var(--ds-space-3);
+}
+
+.ds-card__body {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-muted);
+}
+
+/* Callouts */
+
+.ds-callout {
+  padding: var(--ds-space-3) var(--ds-space-4);
+  border-radius: var(--ds-radius-md);
+  border-left: 4px solid var(--ds-color-border-strong);
+  background-color: var(--ds-color-surface-muted);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ds-callout--info {
+  border-left-color: var(--ds-color-info);
+}
+
+.ds-callout--success {
+  border-left-color: var(--ds-color-success);
+}
+
+.ds-callout--warning {
+  border-left-color: var(--ds-color-warning);
+}
+
+.ds-callout--danger {
+  border-left-color: var(--ds-color-danger);
+}
+
+/* Map existing note styles to design-system colors */
+
+.note {
+  border-left-color: var(--ds-color-info) !important;
+}
+
+.tip {
+  border-left-color: var(--ds-color-success) !important;
+}
+
+.warning {
+  border-left-color: var(--ds-color-warning) !important;
+}
+
+.danger {
+  border-left-color: var(--ds-color-danger) !important;
+}
+
+/* Layout helpers */
+
+.ds-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: var(--ds-space-4);
+}
+
+.ds-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-4);
+}
+
+.ds-stat {
+  min-width: 160px;
+}
+
+.ds-stat__label {
+  font-size: var(--ds-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ds-color-text-muted);
+}
+
+.ds-stat__value {
+  font-size: var(--ds-font-size-xl);
+  font-weight: 600;
+}
+
+.ds-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--ds-space-4);
+}
+
+.ds-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--ds-space-3);
+  align-items: flex-start;
+}
+
+.ds-step__index {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--ds-radius-full);
+  background-color: var(--ds-color-accent);
+  color: var(--code-bg, #f9fafb);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+}
+
+.ds-step__content h3 {
+  margin: 0 0 var(--ds-space-1) 0;
+  font-size: var(--ds-font-size-md);
+}
+
+.ds-step__content p {
+  margin: 0;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-muted);
+}
+
+/* CTA section */
+
+.ds-cta {
+  padding: var(--ds-space-5);
+  border-radius: var(--ds-radius-lg);
+  background: linear-gradient(135deg, var(--ds-color-accent), #1f2937);
+  color: var(--code-bg, #f9fafb);
+  display: grid;
+  gap: var(--ds-space-3);
+}
+
+.ds-cta__title {
+  font-size: var(--ds-font-size-2xl);
+  font-weight: 600;
+}
+
+.ds-cta__body {
+  font-size: var(--ds-font-size-sm);
+  max-width: 42rem;
+}
+
+.ds-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-3);
+}
+
+.ds-cta .ds-button--secondary {
+  background-color: transparent;
+  color: var(--code-bg, #f9fafb);
+  border-color: rgba(249, 250, 251, 0.6);
+}
+
+.ds-cta .ds-button--secondary:hover {
+  background-color: rgba(15, 23, 42, 0.35);
+}
+
+@media (max-width: 640px) {
+  article.post-entry,
+  article.first-entry,
+  article.tag-entry,
+  .ds-card {
+    padding: var(--ds-space-4);
+  }
+
+  .ds-cta {
+    padding: var(--ds-space-4);
+  }
+}
+
+/* Callouts */
+.ds-callout {
+  padding: var(--ds-space-4);
+  border-radius: var(--ds-radius-md);
+  border-left: 4px solid;
+  background: var(--ds-color-surface-muted);
+  margin: var(--ds-space-4) 0;
+}
+
+.ds-callout--info {
+  border-left-color: var(--ds-color-accent);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.ds-callout--warning {
+  border-left-color: var(--ds-color-warning);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.ds-callout--danger {
+  border-left-color: var(--ds-color-danger);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.ds-callout--success {
+  border-left-color: var(--ds-color-success);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.ds-callout p:last-child {
+  margin-bottom: 0;
+}
+
+/* Wizard */
+.wizard-start,
+.wizard-question,
+.wizard-summary {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--ds-space-6) var(--ds-space-4);
+}
+
+.wizard-select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L6 6L11 1" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right var(--ds-space-3) center;
+  padding-right: var(--ds-space-8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ds-callout {
+    background: rgba(255, 255, 255, 0.03);
+  }
+  
+  .wizard-select {
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L6 6L11 1" stroke="%23aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  }
+}

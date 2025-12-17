@@ -1,5 +1,139 @@
-# Inferara Protocol Design Analysis
-### We do not hunt for individual bugs; we identify patterns of systemic risk.
+# Protocol Design Analysis
+
+**We analyze your protocol as a whole system — code, economics, and incentives — to surface design-level risks that traditional audits miss.**
+
+<div style="margin: var(--ds-space-6) 0;">
+
+### Who it's for
+
+- Teams designing new L1/L2 protocols, AMMs, lending markets, or cross-chain bridges
+- Protocols approaching mainnet launch, major upgrade, or governance change
+- Engineering and research leaders who want mathematically-grounded confidence, not just bug lists
+
+<div style="margin-top: var(--ds-space-6);">
+<a href="/en/contact/#request-analysis" class="button ds-button" style="margin-right: var(--ds-space-3);">Request Analysis</a>
+<a href="/en/use-cases/" class="button ds-button ds-button--secondary">View use cases</a>
+</div>
+
+</div>
+
+---
+
+## Outcomes you can expect
+
+- Identify systemic design weaknesses before they become expensive exploits
+- Gain a shared, rigorous understanding of how your protocol behaves under edge cases and adversarial strategies
+- Make governance and economic design decisions with explicit, documented assumptions
+
+---
+
+## Our analysis process
+
+<ol class="ds-steps">
+  <li class="ds-step">
+    <div class="ds-step__index">1</div>
+    <div class="ds-step__content">
+      <h3>Scoping</h3>
+      <p>We align on your goals, critical properties, and constraints. Together we choose the parts of the protocol that matter most.</p>
+    </div>
+  </li>
+  <li class="ds-step">
+    <div class="ds-step__index">2</div>
+    <div class="ds-step__content">
+      <h3>Modeling</h3>
+      <p>We build or refine formal models of the protocol, capturing state transitions, invariants, and economic rules.</p>
+    </div>
+  </li>
+  <li class="ds-step">
+    <div class="ds-step__index">3</div>
+    <div class="ds-step__content">
+      <h3>Exploration</h3>
+      <p>We explore the model using theorem provers, model checking, and game-theoretic reasoning to search for failure modes.</p>
+    </div>
+  </li>
+  <li class="ds-step">
+    <div class="ds-step__index">4</div>
+    <div class="ds-step__content">
+      <h3>Reporting</h3>
+      <p>We deliver a written report with findings, counterexamples where possible, and prioritized recommendations.</p>
+    </div>
+  </li>
+  <li class="ds-step">
+    <div class="ds-step__index">5</div>
+    <div class="ds-step__content">
+      <h3>Follow-up</h3>
+      <p>We walk through the results with your team and answer detailed technical questions.</p>
+    </div>
+  </li>
+</ol>
+
+---
+
+## Typical timelines
+
+Exact timelines depend on protocol complexity and scope. As a guideline:
+
+- **Focused component or mechanism:** ~2–3 weeks
+- **Full-protocol design pass** (without implementation verification): ~4–6 weeks
+- **Deep formalization of critical components:** typically scheduled as a follow-on engagement
+
+_These are indicative ranges, not guarantees; each engagement is scoped explicitly._
+
+---
+
+## What we need from you
+
+- High-level architecture diagrams and protocol description
+- Access to specifications, whitepapers, and relevant research notes
+- Read-only access to repositories (if code already exists)
+- A point-of-contact on your side (engineering or research) for questions and clarifications
+
+---
+
+## What you receive
+
+- **Written risk report** (Markdown or PDF) with:
+  - Clear description of identified risks and why they arise
+  - Links to the underlying formal models or reasoning steps where applicable
+  - Suggested mitigations and trade-off discussion
+- **Optional formal models/specifications** for key components, suitable as a base for further verification
+- **A closing call or workshop** to walk through findings with your team
+
+---
+
+## Sample report structure
+
+- Executive summary
+- Scope and assumptions
+- Protocol overview
+- Formal model / specification overview
+- Identified risks (by severity, with reasoning)
+- Economic and game-theoretic observations
+- Recommended changes and next steps
+
+---
+
+## Frequently asked questions
+
+**Q: How is this different from a traditional smart contract audit?**  
+A: We focus on design-level properties and incentives rather than only code-level bugs. Our work often precedes or complements a traditional audit.
+
+**Q: Do you need our code to be finished?**  
+A: No. We can start from specifications, prototypes, or partial implementations. Earlier is often better.
+
+**Q: Can we reuse the models you build?**  
+A: Yes. Wherever possible, we write models and specifications so that your team can extend and reuse them in future work.
+
+---
+
+<section class="ds-cta" style="margin: var(--ds-space-10) 0;">
+  <h2 class="ds-cta__title">Ready to scope your analysis?</h2>
+  <p class="ds-cta__body">Share your protocol documentation and we will propose a focused analysis scope.</p>
+  <div class="ds-cta__actions">
+    <a href="/en/contact/#request-analysis" class="button ds-button">Request Analysis</a>
+    <a href="/en/papers/" class="button ds-button ds-button--secondary">View example research</a>
+  </div>
+</section>
 
 >"If you don’t do this design right from the beginning, then every piece of the code you write is a patch. And you start out from day 1 with a mess." – Leslie Lamport
 

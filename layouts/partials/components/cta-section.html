@@ -1,0 +1,24 @@
+{{- $title := .title | default "" -}}
+{{- $body := .body | default "" -}}
+{{- $primary := .primary | default dict -}}
+{{- $secondary := .secondary | default dict -}}
+
+<section class="ds-cta">
+  {{- if $title }}
+  <h2 class="ds-cta__title">{{ $title }}</h2>
+  {{- end }}
+
+  {{- if $body }}
+  <p class="ds-cta__body">{{ $body | markdownify }}</p>
+  {{- end }}
+
+  <div class="ds-cta__actions">
+    {{- with $primary }}
+      {{- partial "components/button.html" (merge . (dict "variant" "primary")) -}}
+    {{- end }}
+
+    {{- with $secondary }}
+      {{- partial "components/button.html" (merge . (dict "variant" "secondary")) -}}
+    {{- end }}
+  </div>
+</section>

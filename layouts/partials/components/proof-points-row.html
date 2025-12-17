@@ -1,0 +1,20 @@
+{{- $proofPointsFile := printf "proof-points/proofpoints.%s.yml" .Site.Language.Lang -}}
+{{- $proofPoints := index .Site.Data $proofPointsFile | default (index .Site.Data "proof-points" (printf "proofpoints.%s" .Site.Language.Lang)) -}}
+
+{{- if $proofPoints }}
+<section class="ds-proof-points" style="margin: var(--ds-space-8) 0;">
+  <div class="ds-stat-row">
+    {{- range $proofPoints }}
+    <div class="ds-stat">
+      <div class="ds-stat__label">{{ .label }}</div>
+      <div class="ds-stat__value" style="font-size: var(--ds-font-size-md); font-weight: 500; margin-top: var(--ds-space-1);">
+        {{ .copy }}
+      </div>
+      {{- if .link }}
+      <a href="{{ .link }}" style="font-size: var(--ds-font-size-xs); margin-top: var(--ds-space-2); display: inline-block;">Learn more →</a>
+      {{- end }}
+    </div>
+    {{- end }}
+  </div>
+</section>
+{{- end }}

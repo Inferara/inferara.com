@@ -16,11 +16,19 @@ main:
   #   name: "About"
   #   url: "/about/"
   #   weight: 4
+  - identifier: services
+    name: "Services"
+    url: "/services/"
+    weight: 5
+  - identifier: use-cases
+    name: "Use Cases"
+    url: "/use-cases/"
+    weight: 6
+  - identifier: demo
+    name: "Risk Self-Check"
+    url: "/demo/"
+    weight: 7
   - identifier: contact
     name: "Contact Us"
     url: "/contact/"
     weight: 10
-  - identifier: services
-    name: "Services"
-    url: "/services/"
-    weight: 6

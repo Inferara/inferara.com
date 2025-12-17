@@ -1,0 +1,14 @@
+{{- $steps := .steps | default slice -}}
+{{- if $steps }}
+<ol class="ds-steps">
+  {{- range $index, $step := $steps }}
+  <li class="ds-step">
+    <div class="ds-step__index">{{ add $index 1 }}</div>
+    <div class="ds-step__content">
+      <h3>{{ $step.title }}</h3>
+      <p>{{ $step.copy }}</p>
+    </div>
+  </li>
+  {{- end }}
+</ol>
+{{- end }}

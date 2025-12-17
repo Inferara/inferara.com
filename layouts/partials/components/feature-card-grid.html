@@ -1,0 +1,12 @@
+{{- $servicesFile := printf "services/services.%s.yml" .Site.Language.Lang -}}
+{{- $services := index .Site.Data $servicesFile | default (index .Site.Data "services" (printf "services.%s" .Site.Language.Lang)) -}}
+
+{{- if $services }}
+<section class="ds-what-we-do" style="margin: var(--ds-space-8) 0;">
+  <div class="ds-feature-grid">
+    {{- range $services }}
+    {{ partial "components/card.html" (dict "title" .title "body" .copy "href" .link) }}
+    {{- end }}
+  </div>
+</section>
+{{- end }}

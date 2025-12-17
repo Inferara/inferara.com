@@ -1,0 +1,11 @@
+- label: Open research
+  copy: Formal methods and protocol design papers published on our site and external venues.
+  link: /en/papers/
+  
+- label: Open-source tooling
+  copy: Inference specification language and WASM tooling released under open licenses.
+  link: https://github.com/Inferara
+  
+- label: Web3 protocol focus
+  copy: Research and specifications focused on smart contracts, WASM runtimes, and protocol economics.
+  link: /en/research/

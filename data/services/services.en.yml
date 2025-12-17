@@ -1,0 +1,11 @@
+- title: Protocol Design Analysis
+  copy: We model your protocol's execution and incentives using formal specifications and theorem provers to uncover design-level risks.
+  link: /en/services/
+  
+- title: Economic & Game-Theoretic Review
+  copy: We analyze how rational and adversarial actors can use your protocol, stress-testing incentives and governance.
+  link: /en/services/#game-theory
+  
+- title: WASM / Runtime Safety Review
+  copy: We focus on WebAssembly and low-level execution, validating that specifications and implementations match under adversarial conditions.
+  link: /en/services/#wasm

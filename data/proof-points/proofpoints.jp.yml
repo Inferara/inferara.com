@@ -1,0 +1,11 @@
+- label: 研究成果
+  copy: 形式手法とプロトコル設計に関する論文をサイトおよび外部媒体で公開。
+  link: /jp/papers/
+  
+- label: オープンソースツール
+  copy: Inference 仕様言語や WASM ツール群をオープンライセンスで公開。
+  link: https://github.com/Inferara
+  
+- label: Web3 プロトコル特化
+  copy: スマートコントラクト、WASM ランタイム、プロトコル経済設計に焦点を当てた研究と仕様。
+  link: /jp/research/

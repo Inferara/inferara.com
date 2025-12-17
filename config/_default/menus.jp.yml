@@ -18,7 +18,15 @@ main:
   - identifier: services
     name: "サービス"
     url: "/services/"
+    weight: 5
+  - identifier: use-cases
+    name: "ユースケース"
+    url: "/use-cases/"
     weight: 6
+  - identifier: demo
+    name: "リスクチェック"
+    url: "/demo/"
+    weight: 7
   - identifier: contact
     name: "お問い合わせ"
     url: "/contact/"

@@ -1,84 +1,61 @@
+<!-- Intro section -->
 <div class="profile-first-block">
-    <p>私たちは、自動定理証明器<sup><a href="https://rocq-prover.org/" target="_blank" rel="noopener noreferrer">1</a>,<a
-                href="https://lean-lang.org/" target="_blank"
-                rel="noopener noreferrer">2</a></sup>がコードのエラーを発見するための最も強力なツールであることを知っています。しかし、大学以外では、ほとんど誰もそれを使用していません。
+    <p style="font-size: var(--ds-font-size-lg); line-height: var(--ds-leading-relaxed);">
+        定理証明器、モデルチェック、ゲーム理論を用いて、複雑なプロトコルをより安全にします。
     </p>
-    <br />
-    <span>そこで、私たちは以下を目指します：</span>
-    <ul style="padding-inline-start: 40px;">
-        <li>
-            自動定理証明器をエンジニアが利用できるようにする
-        </li>
-        <li>
-            ミッションクリティカルなソフトウェアの安定性とセキュリティの向上
-        </li>
-        <li>
-            ソフトウェア障害、評判、物理的損害、金銭的損害の防止
-        </li>
-    </ul>
-    <br />
-    <p>当社はオープンソースプロジェクトを運営しておりますので、ぜひご支援をお願いいたします。💌</p>
-    <p>このお<a href="./notice" style="border-bottom-style: dotted;">知らせ</a>をお読みください</p>
-    <br/>
-    <p><a class="github-button" href="https://github.com/sponsors/inferara" data-icon="octicon-heart" data-size="large" aria-label="Sponsor @inferara on GitHub">Inferara会員</a></p>
 </div>
-<hr class="horizontal-delimiter" />
+
+<!-- Proof Points Row -->
+{{ partial "components/proof-points-row.html" . }}
+
+<hr class="horizontal-delimiter"/>
+
+<!-- What We Do -->
+<section style="margin: var(--ds-space-8) 0;">
+    <h2 style="font-size: var(--ds-font-size-2xl); margin-bottom: var(--ds-space-4);">プロトコルに対して何を行うか</h2>
+    <p style="margin-bottom: var(--ds-space-6); color: var(--ds-color-text-muted);">
+        個々のバグを追いかけるのではなく、コード・経済設計・インセンティブ構造を含めた「プロトコルの構造」そのものを分析します。
+    </p>
+    {{ partial "components/feature-card-grid.html" . }}
+</section>
+
+<hr class="horizontal-delimiter"/>
+
+<!-- How Engagement Works -->
+<section style="margin: var(--ds-space-8) 0;">
+    <h2 style="font-size: var(--ds-font-size-2xl); margin-bottom: var(--ds-space-4);">ご支援の進め方</h2>
+    <p style="margin-bottom: var(--ds-space-6); color: var(--ds-color-text-muted);">
+        エンジニアリング時間を尊重し、厳密で再現可能な結果を生み出す構造化されたプロセス。
+    </p>
+    {{ partial "components/engagement-steps.html" (dict 
+        "steps" (slice
+            (dict "title" "共有" "copy" "アーキテクチャ図、経済設計メモ、リポジトリの読み取り専用アクセスを共有いただき、スコープと分析したい性質を合意します。")
+            (dict "title" "モデル化" "copy" "Inference や他の証明支援系を用いて、プロトコルの形式モデル（仕様・不変条件・経済仮定）を構築・整理します。")
+            (dict "title" "分析" "copy" "形式的証明（可能な範囲）、モデルチェック、シナリオベースのゲーム理論分析を実施します。")
+            (dict "title" "レポート & 議論" "copy" "リスク、反例、推奨事項をまとめたレポートを提出し、貴チームとともにトレードオフと次の一手を議論します。")
+        )
+    ) }}
+</section>
+
+<!-- CTA Section -->
+{{ partial "components/cta-section.html" (dict
+    "title" "設計レベルのリスクを確認しませんか？"
+    "body" "プロトコル資料を共有いただければ、スコープを絞った分析プランをご提案します。"
+    "primary" (dict "label" "分析を依頼する" "href" "/jp/contact/#request-analysis")
+    "secondary" (dict "label" "論文を読む" "href" "/jp/papers/")
+) }}
+
+<hr class="horizontal-delimiter"/>
+
+<!-- Inference Block -->
 <div class="inference-block">
-    <div class="centered-image-container"><img style="width: 80%;" src="/img/inference-logo.svg" /></div>
+    <div class="centered-image-container"><img style="width: 80%; max-width: 400px;" src="/img/inference-logo.svg" alt="Inference ロゴ" /></div>
     <p class="inference-block-subtitle">Inferaraが設計・開発した、エンジニアフレンドリーな最初の形式仕様言語。</p>
-    <p>Inferenceを使えば、数学の博士号を必要とせずにソフトウェア プログラムのプロパティを指定して正式に証明できます。</p>
-    <p></p>
-    <a href="/assets/Inference.pdf" download class="inference-block-subtitle" rel="noopener" style="text-decoration: underline; width: 3rem;">
-        Inferenceプログラミング言語に関する 1 ページのパンフレットをダウンロードしてください。
-    </a>
+    <p>Inferenceを使えば、数学の博士号を必要とせずにスマートコントラクトのプロパティを指定して正式に証明できます。</p>
+    
+    <p style="margin-top: var(--ds-space-6);">
+        Inferenceは、Inferaraの非決定的抽象機械実行に関する研究に基づいた形式仕様プログラミング言語です。詳細については、
+        <a href="/jp/papers/specifying-algorithms-using-non-deterministic-computations" style="border-bottom-style: dotted;">論文</a>をご覧ください。
     </p>
-    <span class="profile-subtitle">仕組み</span>
-    <pre class="mermaid">
-        flowchart LR
-            Inference --> WAT
-            WAT --> WASM
-            WASM --> V;
-    </pre>
-    <p>
-        Inferenceのコンパイルプロセスは、以下のステップから構成されています：
-    <ul>
-        <li>InferenceコードをWebAssembly Text (WAT)にトランスパイルする</li>
-        <li>WATをWebAssembly (WASM)にコンパイルする</li>
-        <li>WASMをV（証明支援コード）に変換する</li>
-    </ul>
-    </p>
-    <pre class="mermaid">
-        graph TD
-            SC -.->|コンパイル＆インクルード| A
-            PA[証明]
-            A -->|帰納的プログラムシミュレーション| PA
-            PA --> B
-            PA --> C
-
-            subgraph UC[ユーザーコンテキスト]
-                A[Inference仕様]
-                SC[スマートコントラクト]
-            end
-            
-            subgraph OC[動作コンテキスト]
-                B[最終マシン状態]
-            end
-
-            subgraph LC[論理コンテキスト]
-                C[証明すべき定理のリスト]
-            end
-
-            C -.-> |状態が到達可能であることを証明：トラップがなく、ガス切れなど| B
-            C --> H[Hammer]
-            C --> S[Inferara tactics]
-            S -.-> H
-            H -.-> S
-            S --> D([✅ 正しさの証明書])
-            H --> D;
-    </pre>
-    <p>Inferenceは、Inferaraの非決定的抽象機械実行に関する研究に基づいた形式仕様プログラミング言語です。詳細については、<a
-            href="/jp/papers/specifying-algorithms-using-non-deterministic-computations"
-            style="border-bottom-style: dotted;">論文</a>をご覧ください。</p>
-    <p><a class="github-button" href="https://github.com/Inferara/inference-language-spec" data-size="large"
-            data-show-count="true" aria-label="Watch buttons/github-buttons on GitHub">Inferenceドキュメント（英語版）</a></p>
+    <p style="margin-top: var(--ds-space-4);"><a class="github-button" href="https://github.com/Inferara/inference-language-spec" data-size="large" data-show-count="true" aria-label="Inference language specification on GitHub">Inferenceドキュメント（英語版）</a></p>
 </div>

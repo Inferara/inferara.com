@@ -1,0 +1,35 @@
+{{- define "main" }}
+
+<article class="post-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">
+      {{ .Title }}
+    </h1>
+    {{- if .Description }}
+    <div class="post-description">
+      {{ .Description }}
+    </div>
+    {{- end }}
+  </header>
+
+  <div class="post-content">
+    {{- if not (.Param "disableAnchoredHeadings") }}
+    {{- partial "anchored_headings.html" .Content -}}
+    {{- else }}
+    {{ .Content }}
+    {{- end }}
+  </div>
+
+  <footer class="post-footer">
+  </footer>
+</article>
+
+{{- /* Demo-specific JavaScript */ -}}
+{{- $demoJS := resources.Get "js/demo-wizard.js" -}}
+{{- if $demoJS -}}
+  {{- $demoJSProcessed := $demoJS | resources.Minify | resources.Fingerprint -}}
+  <script src="{{ $demoJSProcessed.RelPermalink }}" integrity="{{ $demoJSProcessed.Data.Integrity }}" defer></script>
+{{- end -}}
+
+{{- end }}{{/* end main */}}

@@ -1,0 +1,11 @@
+- title: プロトコル設計分析
+  copy: 形式仕様と定理証明器を用いて、設計レベルのリスクを特定します。
+  link: /jp/services/
+  
+- title: 経済・ゲーム理論レビュー
+  copy: 合理的・敵対的な参加者の振る舞いを分析し、インセンティブとガバナンスをストレステストします。
+  link: /jp/services/#game-theory
+  
+- title: WASM・ランタイム安全性レビュー
+  copy: WebAssembly などの実行基盤に注目し、仕様と実装が adversarial な条件でも一致するか検証します。
+  link: /jp/services/#wasm

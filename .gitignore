@@ -2,3 +2,5 @@ themes
 *.lock
 /public
 /resources/_gen
+.github/agents
+docs

@@ -67,8 +67,10 @@ languages:
         title: "Independent research group specializing in Programming Languages and Formal Methods"
         subtitle: "Our goal is to make formal verification accessible for Web3 developers."
         buttons:
-          - name: Read Our Papers
-            url: "/en/papers"
+          - name: Request Analysis
+            url: "/en/contact/#request-analysis"
+          - name: Explore Inference
+            url: "/en/research/"
       socialIcons:
         - name: "X"
           url: "https://www.x.com/Inferara_kk"
@@ -95,8 +97,10 @@ languages:
         title: "プログラミング言語と形式手法に特化した研究開発会社"
         subtitle: "Inferaraの目標は、エンジニアが形式検証をより利用しやすくすることです。"
         buttons:
-          - name: 論文を読む
-            url: "/jp/papers"
+          - name: 分析を依頼する
+            url: "/jp/contact/#request-analysis"
+          - name: Inference を見る
+            url: "/jp/research/"
       socialIcons:
         - name: "X"
           url: "https://www.x.com/Inferara_kk"

@@ -1,0 +1,39 @@
+name: Quality Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.146.0'
+          extended: true
+          
+      - name: Build Site
+        run: hugo --gc --minify
+        
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+        
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=lighthouserc.json
+        
+      - name: Upload Lighthouse Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/

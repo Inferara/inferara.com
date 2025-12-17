@@ -1,0 +1,27 @@
+{{- $title := .title | default "" -}}
+{{- $body := .body | default "" -}}
+{{- $href := .href | default "" -}}
+{{- $meta := .meta | default "" -}}
+
+{{- if $href }}
+<a href="{{ $href }}" class="ds-card">
+{{- else }}
+<div class="ds-card">
+{{- end }}
+  {{- if $title }}
+  <h3 class="ds-card__title">{{ $title }}</h3>
+  {{- end }}
+
+  {{- if $meta }}
+  <div class="ds-card__meta">{{ $meta }}</div>
+  {{- end }}
+
+  {{- if $body }}
+  <div class="ds-card__body">{{ $body | markdownify }}</div>
+  {{- end }}
+
+{{- if $href }}
+</a>
+{{- else }}
+</div>
+{{- end }}
