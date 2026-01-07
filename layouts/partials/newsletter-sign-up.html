@@ -1,0 +1,41 @@
+{{- /* Detect language from the site context */ -}}
+{{- $language := .Language.Lang | default "en" -}}
+{{- $formId := "sf3z2494ad1c98b0c2377e8f237704f8b1048e717c892f1c67f1a59ba50d4b9d496b" -}}
+
+<div class="newsletter-signup-container" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <script type="text/javascript" src="https://fed-zcmp.maillist-manage.jp/js/optin.min.js" onload="setupSF('{{$formId}}','ZCFORMVIEW',false,'light',false,'0')"></script>
+
+    <style>
+        .quick_form_12_css { width: 100% !important; max-width: 400px !important; margin: 0 auto; }
+        .quick_form_12_css * { box-sizing: border-box !important; }
+    </style>
+
+    <div id="{{$formId}}" data-type="signupform">
+        <div id="customForm">
+            <div class="quick_form_12_css" style="background-color: #f5f5f5; border: 1px solid #ebebeb; border-radius: 4px; overflow: hidden;" name="SIGNUP_BODY">
+                <div style="padding: 15px;">
+                    <div style="font-size: 14px; font-weight: bold; color: #1e1e1e; margin-bottom: 10px;" id="SIGNUP_HEADING">
+                        {{- if eq $language "jp" -}}
+                            新しいブログ投稿のニュースレターに参加する
+                        {{- else -}}
+                            Subscribe to be notified of new blog posts
+                        {{- end -}}
+                    </div>
+                    <form method="POST" id="zcampaignOptinForm" action="https://fed-zcmp.maillist-manage.jp/weboptin.zc" target="_zcSignup">
+                        <div style="display: flex; gap: 0;">
+                            <input type="text" style="flex: 2; border: 1px solid #863737; border-radius: 5px 0 0 5px; padding: 8px 12px; outline: none;" placeholder="Email" name="CONTACT_EMAIL">
+                            <input type="button" style="flex: 1; background-color: #863737; color: white; border: none; border-radius: 0 5px 5px 0; cursor: pointer; font-weight: bold;" name="SIGNUP_SUBMIT_BUTTON" id="zcWebOptin" 
+                                value="{{- if eq $language "jp" -}}登録{{- else -}}Join Now{{- end -}}">
+                        </div>
+                        <input type="hidden" name="zc_formIx" value="{{$formId}}">
+                        <input type="hidden" name="submitType" value="optinCustomView">
+                        <input type="hidden" name="zx" value="114f48f293f">
+                        <input type="hidden" name="zcvers" value="2.0">
+                        <input type="hidden" name="zctd" value="145d163cf216127">
+                        <input type="hidden" name="zc_trackCode" value="ZCFORMVIEW">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
