@@ -3,6 +3,8 @@
 {{- $xPostID := .Get "x_post_id" | default "" -}}
 {{- $pageContentType := .Get "page_content_type" | default "paper" -}}
 
+{{- partial "newsletter-sign-up.html" .Page -}}
+
 {{- $icons := dict
     "x" ("https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white")
     "telegram" ("https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white")
