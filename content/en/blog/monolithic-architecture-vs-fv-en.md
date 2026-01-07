@@ -1,5 +1,7 @@
 # **A Hammer in Search of Nails**
-<!-- need a header image or thumbnail here -->
+
+![alt text](/static/img/monolithic-architecture-vs-fv/hammertime4real.png)
+
 In the process of developing a new tool, a reasonable need inevitably arises at some point to test it outside of one's own workshop, in the uncontrolled environment of the real world. Our innovative framework for specifying and verifying programs known as **Inference** is reaching exactly this stage - calling us as its creators to try this futuristic hammer on every nail they encounter. However, since there are only 24 hours in a day and the number of projects on GitHub to which formal methods could theoretically be applied is substantially larger than makes sense to count, one has to somehow filter the potential territory of work.
 
 For obvious reasons, when discussing ways to improve software reliability, it is sensible to focus on projects with a higher cost of error. Blockchain platforms inevitably end up at the top of the list because damage from emergency situations in the crypto industry almost always has a direct monetary valuation, the average value of which continues to grow. A second natural selection criterion is the technology stack: the automation of the WebAssembly standard became the experimental testing ground for our technology. Therefore, a short list of nails suitable for our hammer at the current stage can be composed of blockchain platforms targeting WebAssembly for cost-bearing purposes. Within this article, we will touch upon three such projects: Polkadot Substrate, Stellar Soroban, and Arbitrum Stylus.
@@ -8,7 +10,7 @@ When looking at this trio from a distance, a certain superficial kinship catches
 
 # **Polkadot Substrate**
 
-<!-- Insert polkadot logo or something here -->
+![alt text](/static/img/monolithic-architecture-vs-fv/Polkadot_Logo_Pink-Black.png)
 
 The framework authored by the Parity Technologies represents a continuously expanding set of ready-made solutions for core crypto-financial accounting patterns, organized as a collection of modules with a special structure (pallets) in the Rust language. A high-tech build system allows these modules to be combined in any way, thereby producing new versions of the runtime containing only the functionality necessary for each individual case. The main architectural principles of the collection can be formulated as follows:
 
@@ -20,13 +22,13 @@ At first, it might seem that the qualities listed above are a hymn of praise, bu
 
 When discussing the methodological benchmark of formal methods, which is the verification of executable binary modules at the level of platform semantics, any sufficiently large codebase subject to verification requires a series of properties that programmers usually rarely worry about. These requirements arise in connection with the fundamental principles of reasoning about algorithms and are, in fact, mandatory:
 
-<!--  might be a good place for images here -->
-
 1. Complex systems are not verifiable in their entirety. The only practical way to verify complex systems consists of breaking them down and specifying subsystems that are as isolated from each other as possible, which are then verified independently of each other.  
 2. The total verification costs grow proportionally to the square of the number of subsystems sharing the common state space. Without clearly defined boundaries of “domains” whose integrity is ensured at the platform level, verification must be based on the presumption of mutual influence of all on all.  
 3. Reusing judgments about algorithm properties is much harder than reusing the algorithms themselves. Monomorphization and inlining are effectively free for the developer and end user but are very costly in the context of formal verification because every copy of the code produced by these procedures becomes a separate target requiring independent coverage.
 
 In this light, it suddenly becomes apparent that the FRAME architecture, unfortunately, chooses to complicate the task of formal verification at virtually every turn. Yes, at the source code level, the pallet system exudes flexibility, modularity, and ease of use. However, full formal verification of source code in Rust will remain a utopian dream for a long time to come (simply due to the lack of an official specification of its semantics), while at the level of executable binaries, the picture becomes much bleaker.
+
+
 
 The central problem is that all structural boundaries between source code modules are completely erased by the compilation process at a fairly early stage. In fact, the ability to use macro definitions from one pallet in another erodes them even at the preprocessing stage. If one disassembles the final result, for example the official Polkadot runtime, the result will be a single monolithic module with over two million instructions, where only a very rare function can be unambiguously assigned to a specific pallet. Worse still, at the center of this artifact will lie a single function spanning hundred thousand lines, generated by the automatic inlining of a myriad of completely heterogeneous pieces of code from all corners of the project directly into the body of the central event dispatcher.
 
@@ -36,7 +38,8 @@ Is it possible to somehow compensate for the above problems with little effort w
 
 # **Stellar Soroban**
 
-<!-- Insert stellar logo or something here -->
+![alt text](/static/img/monolithic-architecture-vs-fv/Stellar%20Logo%20Final%20RGB.png)
+
 
 When encountering this platform after Substrate, the first thing that catches the eye is its radical minimalism. The dedicated core of the cryptographic ledger contains only 500 thousand lines of a very orthodox subset of C/C++ code. There is no excesses, only the basic functionality of the network protocol and and an algorithm that implements distributed consensus. There are no optional components, as every function is necessary for the system to work. Metaprogramming and polymorphism are rarely used, and classic procedural code operates straightforwardly on explicitly defined data structures. 
 
@@ -45,7 +48,7 @@ you might joke, and you would not be far from the truth. Indeed, with the except
 
 However, it would be a big mistake to mistake this minimalism for archaism. Some development methodologies change little over the years for the same reason that crocodiles do not evolve, because they are perfectly adapted to their ecological niche. As paradoxical as it may sound, if you are planning a system that is subject to formal verification at the level of an executable binary, the classic procedural style of straightforward operation with clearly defined data structures is your best (and, as the system grows, your only) chance.
 
-<!-- evolution / crocodile image (inspiration from nature board game perhaps?) -->
+![alt text](/static/img/monolithic-architecture-vs-fv/crocodile%20in%20my%20own%20lane.png)
 
 The fact is that this seemingly archaic development method is optimized from the point of view of the main parameter affecting the verifiability of the system as a whole, which is the structural distance between the source code and the assembly listing. By consciously giving up the comfort and flexibility that modern programmers are used to, we receive in exchange an invaluable advantage for reasoning about algorithms. The ability to juxtapose, line by line, the statements and expressions of the language used by the programmer with the compact groups of machine instructions that come out of the assembly process. The clarity of the developer's thought, which is completely lost when minced by additional layers of abstraction in meat grinder of more sophisticated modern compiler, remains relatively intact through the transparent compilation process of orthodox C/C++ and can be read by a trained eye, often even after applying fairly aggressive optimization techniques.
 
@@ -55,7 +58,7 @@ It is not entirely fair to directly compare the Polkadot and Stellar platforms, 
 
 # **Arbitrum Stylus**
 
-<!-- Insert arbitrum logo or something here -->
+![alt text](/static/img/monolithic-architecture-vs-fv/0923_Arbitrum_Logos_Primary_horizontal_RGB.jpg)
 
 The third project that caught our attention occupies an intermediate position, in a sense, in terms of potential verifiability between the polar opposite approaches of the first two. To understand its verifiability, one must distinguish between the Nitro host and the Stylus execution environment. The underlying node software (Nitro) is primarily written in Go, a choice driven by its origin as a fork of the Ethereum Geth client. While Go provides excellent concurrency for handling network interactions and sequencing, it does indeed introduce a complex runtime and garbage collection layer into the node’s infrastructure. 
 
@@ -68,31 +71,105 @@ Another architectural decision that somewhat complicates verification is the cho
 In light of the above, full verification of Arbitrum's runtime still seems to be a more difficult task compared to a similar undertaking for Stellar, but hopefully it is still within the realm of possibility.
 
 # **Focusing on the essentials**
+![alt text](/img/monolithic-architecture-vs-fv/cottage%20or%20palace.jpg)
 
-<!-- Imagery of building a palace (or pyramid) vs a simple house? -->
-
-Let us, however, lay aside world domination plans for a while and talk about shorter perspective. For quite understandable reasons, it is rash to immediately try to apply tools built on truly innovative principles to the construction of palaces. Common sense dictates that we should first practice on small cottages. Even the most favorable of the objects considered, the Stellar core, is no less than the Louvre in this allegory. The question inevitably arises as to how can the work plan be narrowed down to obtain a smoother entry curve in terms of scale? The answer is obvious: it is well known that in terms of total financial damage, the vulnerabilities of the business logic of contracts totally dominate the vulnerabilities of the blockchain platforms themselves. So why not put aside questions of infrastructure reliability for now and try to focus solely on business logic?
+Let us, however, lay aside plans for world domination for a while and talk about a more narrow perspective. For quite understandable reasons, it is rash to immediately try to apply tools built on truly innovative principles to the construction of palaces. Common sense dictates that we should first practice on small cottages. Even the most favorable of the objects considered, the Stellar core, is no less than the Louvre in this allegory. The question inevitably arises as to how can the work plan be narrowed down to obtain a smoother entry curve in terms of scale? The answer is obvious: it is well known that in terms of total financial damage, the vulnerabilities of the business logic of contracts totally dominate the vulnerabilities of the blockchain platforms themselves. So why not put aside questions of infrastructure reliability for now and try to focus solely on business logic?
 
 By the very nature of DeFi, the business logic of each blockchain must inevitably break down into strictly isolated atomic transactions with narrowly defined interaction semantics corresponding to mostly simple accounting operations. The contracts serving these transactions can thus act as a natural training target for testing new verification technologies. When viewed from this perspective, the overall picture changes only in scale:
-<!-- maybe a comparison image of the 3 chains? -->
+
 1. Polkadot Substrate, which does not separate business logic from infrastructure, appears to be the most challenging target by a wide margin. Accounting pallets differ from system pallets only in meaning, and after being assembled into a single monolith, one should not even try to cover them with formal specifications. In such a situation, it is only possible to obtain any worthwhile guarantees of reliability by limiting oneself to verifying Ink! contracts written in a completely self-sufficient manner, relying only on a strictly limited subset of system pallets. This does not completely solve the problem of mixing accounting operations with the entire infrastructure, and such an approach can hardly be called a conventional way of using Substrate, but unfortunately, it still seems to be the only promising one regarding formal verification of business logic.  
 2. Stellar Soroban once again appears to be the benchmark for verifiability. Business logic and infrastructure are strictly separated along the physical boundaries of the WebAssembly sandbox, cross-border interfaces are ridiculously simple, and the consensus mechanism is completely abstracted. The executable contract module consists only of business logic with literally zero overhead.  
 3. Arbitrum Stylus is again somewhere in the middle. They clearly tried to get rid of excess overhead, but unfortunately, the EVM persistence model sets an insurmountable lower limit on complexity.
 
 In this context, the scale of such an undertaking ceases to be intimidating. The relative compactness and isolation of the objects under consideration allows for experimentation with approaches without fear of getting bogged down in details. Work on Soroban contracts can begin immediately after receiving a functioning MVP, and even Polkadot is moving from the category of unthinkable to the category of “not easy, but possible.”
-<!-- What do we mean by MVP here? In relation to infc being usable for this? -->
-<!-- ANSWER: working compiler + working wasm mechanization + basic proof tactics -->
 
-<!-- sandbox / sandcastle image? -->
+
 
 # **The Silver Bullet**
-<!-- inference logo or imagery -->
+
+![alt text](/static/img/inference-logo.svg)
+
 So how does this unusual new tool work? We hope to demonstrate its capabilities soon by using smart contract verification as a testing ground. It consists of three main components:
-<!-- the rust + rocq image from ramen tech here -->
+
 1. The inference compiler (`infc` ) for the innovative high-level language [Inference](https://inference-lang.org/), combining the semantic transparency of C, a Rust-like syntax more familiar to modern developers, and a unique ingredient which is controlled non-determinism combined with quantifiers for generalizing statements about computations. This language will allow both the source code of the contract itself and its full formal specification to be formulated in a uniform syntax with the expressive power of higher-order logic.  
 2. Mechanization of the WebAssembly standard in the interactive theorem prover Rocq, enhanced by a new formalism; a definitional interpreter, proven to be isomorphic to the inductive definition of operational semantics. Using such an interpreter as a basic tactic will effectively turn the interactive Rocq mode into a full-fledged environment for symbolic computation in WebAssembly semantics.  
 3. A mathematical theory, also mechanized in Rocq, that allows any definitive interpreter to be generalized to an entire language of tactics, with which the properties formulated in the specifications of our new paradigm can be proven with an unprecedented level of comfort, completely abstracting away all the insignificant details of the analyzed code.
 
 We hope that, after testing these innovations in the smart contract sandbox, we will be able to scale up our approach in the future to improve the reliability of the platforms themselves. To our understanding, there are no fundamental obstacles to this at present.
 
-<!-- blog sign up either as individual button or as a footer within each blog post / paper on english content. Would also have a japanese version button or form on /jp content -->
+<!--Zoho Campaigns Web-Optin Form's Header Code Starts Here-->
+
+<script type="text/javascript" src="https://fed-zcmp.maillist-manage.jp/js/optin.min.js" onload="setupSF('sf3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6','ZCFORMVIEW',false,'light',false,'0')"></script>
+<script type="text/javascript">
+	function runOnFormSubmit_sf3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6(th){
+		/*Before submit, if you want to trigger your event, "include your code here"*/
+	};
+</script>
+
+<style>.quick_form_12_css * { -webkit-box-sizing: border-box !important; -moz-box-sizing: border-box !important; box-sizing: border-box !important; overflow-wrap: break-word }@media only screen and (max-width: 600px) {.quick_form_12_css[name="SIGNUP_BODY"] { width: 100% !important; min-width: 100% !important; margin: 0px auto !important; padding: 0px !important } .SIGNUP_FLD { width: 90% !important; margin: 10px 5% !important; padding: 0px !important } .SIGNUP_FLD input { margin: 0 !important; border-radius: 25px !important } }</style>
+
+<!--Zoho Campaigns Web-Optin Form's Header Code Ends Here--><!--Zoho Campaigns Web-Optin Form Starts Here-->
+
+<div id="sf3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6" data-type="signupform" style="opacity: 1;">
+	<div id="customForm">
+		<div class="quick_form_12_css" style="background-color: rgb(245, 245, 245); width: 350px; z-index: 2; font-family: Arial; border-width: 1px; border-style: solid; border-color: rgb(235, 235, 235); overflow: hidden" name="SIGNUP_BODY">
+			<div>
+				<div style="font-size: 14px; font-family: Arial; font-weight: bold; color: rgb(30, 30, 30); text-align: left; padding: 10px 15px 5px; width: 601px; display: block" id="SIGNUP_HEADING">Join Our Newsletter for New Blog Posts</div>
+				<div style="position:relative;">
+					<div id="Zc_SignupSuccess" style="display:none;position:absolute;margin-left:4%;width:90%;background-color: white; padding: 3px; border: 3px solid rgb(194, 225, 154);  margin-top: 10px;margin-bottom:10px;word-break:break-all">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0">
+							<tbody>
+								<tr>
+									<td width="10%">
+										<img class="successicon" src="https://fed-zcmp.maillist-manage.jp/images/challangeiconenable.jpg" align="absmiddle">
+									</td>
+									<td>
+										<span id="signupSuccessMsg" style="color: rgb(73, 140, 132); font-family: sans-serif; font-size: 14px;word-break:break-word">&nbsp;&nbsp;Thank you for Signing Up</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<form method="POST" id="zcampaignOptinForm" style="margin: 0px; width: 100%; padding: 0px 15px" action="https://fed-zcmp.maillist-manage.jp/weboptin.zc" target="_zcSignup">
+					<div style="background-color: rgb(255, 235, 232); padding: 10px; color: rgb(210, 0, 0); font-size: 11px; margin: 20px 10px 0px; border: 1px solid rgb(255, 217, 211); opacity: 1; display: none" id="errorMsgDiv">Please correct the marked field(s) below.</div>
+					<div style="position: relative; margin: 10px 0 15px; width: 225px; height: 30px; display: inline-block" class="SIGNUP_FLD">
+						<input type="text" style="font-size: 14px; border: 1px solid rgb(134, 55, 55); border-radius: 50px 0px 0px 50px; width: 100%; height: 100%; z-index: 4; outline: none; padding: 5px 10px; color: rgb(255, 255, 255); text-align: left; font-family: Arial; background-color: transparent; box-sizing: border-box" placeholder="Email" changeitem="SIGNUP_FORM_FIELD" name="CONTACT_EMAIL" id="EMBED_FORM_EMAIL_LABEL">
+					</div>
+					<div style="position: relative; width: 98px; height: 30px; margin: 0px 0px 15px; text-align: left; display: inline-block" class="SIGNUP_FLD">
+						<input type="button" style="text-align: center; width: 100%; height: 100%; z-index: 5; border: 0px; color: rgb(255, 255, 255); cursor: pointer; outline: none; font-size: 14px; background-color: rgb(134, 55, 55); margin: 0px 0px 0px -5px; border-radius: 0px 50px 50px 0px" name="SIGNUP_SUBMIT_BUTTON" id="zcWebOptin" value="Join Now">
+					</div>
+					<input type="hidden" id="fieldBorder" value="">
+					<input type="hidden" id="submitType" name="submitType" value="optinCustomView">
+					<input type="hidden" id="emailReportId" name="emailReportId" value="">
+					<input type="hidden" id="formType" name="formType" value="QuickForm">
+					<input type="hidden" name="zx" id="cmpZuid" value="114f48f293f">
+					<input type="hidden" name="zcvers" value="2.0">
+					<input type="hidden" name="oldListIds" id="allCheckedListIds" value="">
+					<input type="hidden" id="mode" name="mode" value="OptinCreateView">
+					<input type="hidden" id="zcld" name="zcld" value="145d163cf21611b">
+					<input type="hidden" id="zctd" name="zctd" value="145d163cf216127">
+					<input type="hidden" id="document_domain" value="">
+					<input type="hidden" id="zc_Url" value="fed-zcmp.maillist-manage.jp">
+					<input type="hidden" id="new_optin_response_in" value="0">
+					<input type="hidden" id="duplicate_optin_response_in" value="0">
+					<input type="hidden" name="zc_trackCode" id="zc_trackCode" value="ZCFORMVIEW">
+					<input type="hidden" id="zc_formIx" name="zc_formIx" value="3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6">
+					<input type="hidden" id="viewFrom" value="URL_ACTION">
+					<span style="display: none" id="dt_CONTACT_EMAIL">1,true,6,Contact Email,2</span>
+				</form>
+			</div>
+		</div>
+	</div>
+	<img src="https://fed-zcmp.maillist-manage.jp/images/spacer.gif" id="refImage" onload="referenceSetter(this)" style="display:none;">
+</div>
+<input type="hidden" id="signupFormType" value="QuickForm_Horizontal">
+<div id="zcOptinOverLay" oncontextmenu="return false" style="display:none;text-align: center; background-color: rgb(0, 0, 0); opacity: 0.5; z-index: 100; position: fixed; width: 100%; top: 0px; left: 0px; height: 988px;"></div>
+<div id="zcOptinSuccessPopup" style="display:none;z-index: 9999;width: 800px; height: 40%;top: 84px;position: fixed; left: 26%;background-color: #FFFFFF;border-color: #E6E6E6; border-style: solid; border-width: 1px;  box-shadow: 0 1px 10px #424242;padding: 35px;">
+	<span style="position: absolute;top: -16px;right:-14px;z-index:99999;cursor: pointer;" id="closeSuccess">
+		<img src="https://fed-zcmp.maillist-manage.jp/images/videoclose.png">
+	</span>
+	<div id="zcOptinSuccessPanel"></div>
+</div>
+
+<!--Zoho Campaigns Web-Optin Form Ends Here-->

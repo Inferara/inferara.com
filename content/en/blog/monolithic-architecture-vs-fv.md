@@ -1,845 +1,178 @@
-+++
-title = "Monolithic Architecture vs. Formal Verification: The Combinatorial Explosion Problem"
-date = 2025-12-17T15:56:00+09:00
-draft = false
-math = "katex"
-summary = "Monolithic architectures create combinatorial explosions in verification complexity. Modular boundaries tame this growth, making bytecode-level formal verification tractable."
-tags = ["Architecture", "Formal Verification", "Stellar", "Polkadot", "Arbitrum"]
-aliases = ["/blog/monolithic-architecture-vs-fv"]
-+++
-
-**Table of contents**
-
-- [1. Introduction](#1-introduction)
-- [2. What the Compiler Does to Your Code](#2-what-the-compiler-does-to-your-code)
-  - [2.1 The Semantic Gap](#21-the-semantic-gap)
-  - [2.2 The Rogues' Gallery of Optimizations](#22-the-rogues-gallery-of-optimizations)
-  - [2.3 Link-Time Optimization (LTO): Amplified Challenges](#23-link-time-optimization-lto-amplified-challenges)
-- [3. The Combinatorial Pain Point](#3-the-combinatorial-pain-point)
-  - [3.1 State Space Explosion](#31-state-space-explosion)
-  - [3.2 The Monolithic Multiplier](#32-the-monolithic-multiplier)
-  - [3.3 Why Monoliths Make It Worse](#33-why-monoliths-make-it-worse)
-  - [3.4 Concrete Complexity Estimates](#34-concrete-complexity-estimates)
-- [4. Concrete Examples](#4-concrete-examples)
-  - [4.1 Polkadot Substrate: The Monolithic Runtime Problem](#41-polkadot-substrate-the-monolithic-runtime-problem)
-  - [4.2 Stellar Soroban: Designed for Verification Boundaries](#42-stellar-soroban-designed-for-verification-boundaries)
-  - [4.3 Arbitrum Stylus: The Hybrid Approach](#43-arbitrum-stylus-the-hybrid-approach)
-  - [4.4 Synthesis: What the Examples Teach Us](#44-synthesis-what-the-examples-teach-us)
-    - [The Boundary Principle Validated](#the-boundary-principle-validated)
-    - [The Performance-Verification Trade-off is Real](#the-performance-verification-trade-off-is-real)
-    - [Architectural Decisions are Verification Decisions](#architectural-decisions-are-verification-decisions)
-- [5. Why Microservices/Modular Boundaries Help](#5-why-microservicesmodular-boundaries-help)
-  - [5.1 The Verification Boundary Principle](#51-the-verification-boundary-principle)
-  - [5.2 Compositional Verification](#52-compositional-verification)
-  - [5.3 The Microservice Verification Advantage](#53-the-microservice-verification-advantage)
-  - [5.4 The Cost of Boundaries](#54-the-cost-of-boundaries)
-- [6. Practical Architectural Strategies](#6-practical-architectural-strategies)
-    - [Identify Verification Targets Early](#identify-verification-targets-early)
-    - [The Verification Kernel Pattern](#the-verification-kernel-pattern)
-    - [Design Boundaries the Compiler Cannot Cross](#design-boundaries-the-compiler-cannot-cross)
-    - [Minimize Generics in Verification Targets](#minimize-generics-in-verification-targets)
-    - [Thoughtful Compilation and Building](#thoughtful-compilation-and-building)
-    - [Specification as Documentation Foundation](#specification-as-documentation-foundation)
-- [7. Conclusion](#7-conclusion)
+# **A Hammer in Search of Nails**
 
 
-**When one attempts bytecode-level formal verification on monolithic systems, the compiler becomes an adversary.** Every optimization, every inlined function, every monomorphization of generics _that could have been avoided_ creates verification obligations that grow combinatorially with system complexity.
 
-## 1. Introduction
+![alt text](/img/monolithic-architecture-vs-fv/hammertime4real.png)
 
-Humanity has already grown accustomed to the fact that damage from software engineering errors can be measured in tens of millions of dollars. Many methods have been invented to combat this, yet few can stand alongside classical formal verification of executable modules at the bytecode level in terms of the reliability of the guarantees they provide. The problem is that the very idea of bytecode-level verification naturally tempts one to postpone questions of reliability until the appearance of the actual executable module subject to verification. However, without prior architectural planning that accounts for the difficulties one will almost inevitably encounter on this path, applying formal methods in this way has extremely little chance of success.
+In the process of developing a new tool, a reasonable need inevitably arises at some point to test it outside of one's own workshop, in the uncontrolled environment of the real world. Our innovative framework for specifying and verifying programs known as [**Inference**](https://inference-lang.org/) is reaching exactly this stage - calling us as its creators to try this futuristic hammer on every nail they encounter. However, since there are only 24 hours in a day and the number of projects on GitHub to which formal methods could theoretically be applied is substantially larger than makes sense to count, one has to somehow filter the potential territory of work.
 
-The enticing promise of formal verification is _total correctness_ -mathematical proof that your code does exactly what it should, and nothing else. But this promise comes with a brutal caveat: **you are not verifying the code you wrote; you are verifying the code the compiler produced**. Between your elegant source and the actual executing bytecode lies a transformation pipeline that can - and will - destroy the structural assumptions your verification strategy depends upon.
+For obvious reasons, when discussing ways to improve software reliability, it is sensible to focus on projects with a higher cost of error. Blockchain platforms inevitably end up at the top of the list because damage from emergency situations in the crypto industry almost always has a direct monetary valuation, the average value of which continues to grow. A second natural selection criterion is the technology stack: the automation of the WebAssembly standard became the experimental testing ground for our technology. Therefore, a short list of nails suitable for our hammer at the current stage can be composed of blockchain platforms targeting WebAssembly for cost-bearing purposes. Within this article, we will touch upon three such projects: Polkadot Substrate, Stellar Soroban, and Arbitrum Stylus.
 
-We argue that architectural decisions made at project inception have profound, often deterministic effects on whether formal verification remains tractable. Specifically, we demonstrate that monolithic architectures create verification state spaces that grow superlinearly with system size, while modular architectures with well-defined boundaries can reduce verification complexity to something manageable - or at least, not catastrophically unmanageable.
+When looking at this trio from a distance, a certain superficial kinship catches the eye as they all use Rust as one of the primary languages for contract development, and the WebAssembly platform is the foundation of their runtime. However, upon closer examination through the lens of formal verifiability, fundamental architectural differences begin to manifest, which I would like to discuss here.
 
-## 2. What the Compiler Does to Your Code
+# **Polkadot Substrate**
 
-### 2.1 The Semantic Gap
+![alt text](/img/monolithic-architecture-vs-fv/Polkadot_Logo_Pink-Black.png)
 
-When one writes:
+The framework authored by the Parity Technologies represents a continuously expanding set of ready-made solutions for core crypto-financial accounting patterns, organized as a collection of modules with a special structure (pallets) in the Rust language. A high-tech build system allows these modules to be combined in any way, thereby producing new versions of the runtime containing only the functionality necessary for each individual case. The main architectural principles of the collection can be formulated as follows:
 
-```rust
-fn calculate_interest(principal: u64, rate: f64, years: u32) -> f64 {
-    principal as f64 * rate * years as f64
-}
+1. The pallet as a universal unit of integration. Any functionality that a blockchain developer might need, from individual aspects of infrastructure to popular business logic patterns, is provided in the form of uniformly connected modules.  
+2. Active use of the Rust type system and advanced metaprogramming tools in the horizontal interaction of modules for the most comfortable and safe code reuse.  
+3. Great attention to runtime performance optimization using the most powerful techniques. Aggressive inlining at the Link Time Optimization (LTO) stage is the default setting when building the final binary.
 
-fn process_account(account: &Account) -> f64 {
-    calculate_interest(account.balance, account.rate, account.tenure)
-}
-```
+At first, it might seem that the qualities listed above are a hymn of praise, but unfortunately, such an architecture also has a dark side that inevitably follows from the same combination of factors that create its advantages. In the shadow of these benefits, alas, hide problems capable of effectively putting an end to the feasibility of an entire class of methods for formally ensuring the reliability of the system both as a whole and in parts.
 
-You imagine two discrete functions with a clear call boundary. The compiler sees an optimization opportunity. After inlining, constant propagation, and dead code elimination, in the bytecode you may see:
+When discussing the methodological benchmark of formal methods, which is the verification of executable binary modules at the level of platform semantics, any sufficiently large codebase subject to verification requires a series of properties that programmers usually rarely worry about. These requirements arise in connection with the fundamental principles of reasoning about algorithms and are, in fact, mandatory:
 
-- No function boundary exists anymore
-- `calculate_interest` has been absorbed into `process_account`
-- Constant propagation of `rate` may trigger strength reduction of multiplication
-- The u64→f64 conversions may be fused with multiplication operations on certain architectures
+1. Complex systems are not verifiable in their entirety. The only practical way to verify complex systems consists of breaking them down and specifying subsystems that are as isolated from each other as possible, which are then verified independently of each other.  
+2. The total verification costs grow proportionally to the square of the number of subsystems sharing the common state space. Without clearly defined boundaries of “domains” whose integrity is ensured at the platform level, verification must be based on the presumption of mutual influence of all on all.  
+3. Reusing judgments about algorithm properties is much harder than reusing the algorithms themselves. Monomorphization and inlining are effectively free for the developer and end user but are very costly in the context of formal verification because every copy of the code produced by these procedures becomes a separate target requiring independent coverage.
 
-**This represents correct compiler behavior**—the production of optimized code. Each transformation, however, creates a _semantic gap_ between the source code and the verification target.
+In this light, it suddenly becomes apparent that the FRAME architecture, unfortunately, chooses to complicate the task of formal verification at virtually every turn. Yes, at the source code level, the pallet system exudes flexibility, modularity, and ease of use. However, full formal verification of source code in Rust will remain a utopian dream for a long time to come (simply due to the lack of an official specification of its semantics), while at the level of executable binaries, the picture becomes much bleaker.
 
-### 2.2 The Rogues' Gallery of Optimizations
+![alt text](/img/monolithic-architecture-vs-fv/blog1.svg)
 
-Certain compiler optimizations present particular challenges to verification tractability:
+The central problem is that all structural boundaries between source code modules are completely erased by the compilation process at a fairly early stage. In fact, the ability to use macro definitions from one pallet in another erodes them even at the preprocessing stage. If one disassembles the final result, for example the official Polkadot runtime, the result will be a single monolithic module with over two million instructions, where only a very rare function can be unambiguously assigned to a specific pallet. Worse still, at the center of this artifact will lie a single function spanning hundred thousand lines, generated by the automatic inlining of a myriad of completely heterogeneous pieces of code from all corners of the project directly into the body of the central event dispatcher.
 
-**Inlining**
+Unfortunately, the only thing any formal verification engineer can do when faced with such a task of work is to throw up their hands and give up, because at this point specifying and proving correctness in such conditions is technologically nearly impossible and economically absurd. Even if by some miracle one could create a comprehensive and rigorously proven specification for a specific version of the Polkadot runtime, this achievement would be completely non-transferable not only to its derivative forks with a different composition of included pallets but even to subsequent versions of Polkadot itself. Furthermore, considering the lack of reliable determinism in the Rust build process even with Docker sandboxing, it would sometimes be enough to simply recompile the binary on another machine to invalidate it; due to thread racing (apparently) during parallel compilation, the address space of shared memory and the ordinal indexing of functions are mixed up completely freely.
 
-Inlining eliminates call boundaries, merging callee code into the caller. From a verification perspective:
+Is it possible to somehow compensate for the above problems with little effort without performing a radical revision of the architecture? This is a difficult question considering how rapidly progress moves in this area. It is possible that in just a few years, verification automation using LLMs will allow us to simply throw a rack of graphics cards at all the scaling problems. But until then, I fear the outlook is disappointing: attempts to obtain formal confirmation of the correctness of any runtime that inherits the Polkadot code base, in the form in which it is deployed and executed seem impractical. This should not, however, deter its users and developers from applying formal methods to improve reliability on a smaller scale. For example, non-trivial arithmetic in important functions can be verified at the pseudocode level, and the isolation of contracts in separate wasm modules allows us to consider verification at the assembler level, at least for them.
 
-- The verifier cannot reason about `calculate_interest` in isolation
-- Every call site becomes a separate verification target
-- If `calculate_interest` is called from $n$ locations, the verification obligation multiplies to $n$ separate copies of the logic, each within a different context
+# **Stellar Soroban**
 
-**Monomorphization**
+![alt text](/img/monolithic-architecture-vs-fv/Stellar%20Logo%20Final%20RGB.png)
 
-Generic code like:
 
-```
-fn max<T: Ord>(a: T, b: T) -> T {
-    if a > b { a } else { b }
-}
-```
+When encountering this platform after Substrate, the first thing that catches the eye is its radical minimalism. The dedicated core of the cryptographic ledger contains only 500 thousand lines of a very orthodox subset of C/C++ code. There is no excesses, only the basic functionality of the network protocol and and an algorithm that implements distributed consensus. There are no optional components, as every function is necessary for the system to work. Metaprogramming and polymorphism are rarely used, and classic procedural code operates straightforwardly on explicitly defined data structures. 
 
-becomes, at bytecode level, potentially dozens of concrete implementations:
+>"That's how our grandfathers and great-grandfathers wrote code"
 
-- `max_u32`
-- `max_u64`
-- `max_i32`
-- `max_String`
-- `max_MyCustomType`
-- ...
+you might joke, and you would not be far from the truth. Indeed, with the exception of the progress of the TCP/IP stack and a slight artistic exaggeration, the Stellar core could have been compiled for a mainframe from the last millennium using a compiler from the mid-90s.
 
-Each monomorphized instance is a separate verification target. A generic function called with $k$ distinct type instantiations produces $k$ copies of the verification obligation.
+However, it would be a big mistake to mistake this minimalism for archaism. Some development methodologies change little over the years for the same reason that crocodiles do not evolve, because they are perfectly adapted to their ecological niche. As paradoxical as it may sound, if you are planning a system that is subject to formal verification at the level of an executable binary, the classic procedural style of straightforward operation with clearly defined data structures is your best (and, as the system grows, your only) chance.
 
-**Loop Unrolling**
+![alt text](/img/monolithic-architecture-vs-fv/crocodile%20in%20my%20own%20lane.png)
 
-```
-for i in 0..4 {
-    buffer[i] = 0;
-}
-```
+The fact is that this seemingly archaic development method is optimized from the point of view of the main parameter affecting the verifiability of the system as a whole, which is the structural distance between the source code and the assembly listing. By consciously giving up the comfort and flexibility that modern programmers are used to, we receive in exchange an invaluable advantage for reasoning about algorithms. The ability to juxtapose, line by line, the statements and expressions of the language used by the programmer with the compact groups of machine instructions that come out of the assembly process. The clarity of the developer's thought, which is completely lost when minced by additional layers of abstraction in meat grinder of more sophisticated modern compiler, remains relatively intact through the transparent compilation process of orthodox C/C++ and can be read by a trained eye, often even after applying fairly aggressive optimization techniques.
 
-May become:
+At the same time, Stellar developers do not force end users to adhere to such strict asceticism when developing Soroban contracts deployed on their blockchain. Yes, when communicating with the external environment (the platform and other contracts), programmers have to limit themselves to the classic monomorphic Foreign Function Interface (FFI) with a small list of permitted base types, which, from the point of view of verification, is again a significant advantage. However, the official SDK is written in Rust, so within the contract itself, everyone is free to build arbitrarily complex abstractions without significant obstacles. At the same time, thanks to the isolated WebAssembly execution environment and the absence of shared state with the infrastructure and other contracts, programmers do not have to worry about breaking any reliability guarantees provided by the platform.
 
-```
-mov [buffer + 0], 0
-mov [buffer + 1], 0
-mov [buffer + 2], 0
-mov [buffer + 3], 0
-```
+It is not entirely fair to directly compare the Polkadot and Stellar platforms, since the former, in addition to the basic blockchain infrastructure, offers users a wide range of ready-made engineering solutions for all occasions, while the latter clearly disclaims responsibility for all business logic issues. Typically, functionality that is just a simple inclusion in Substrate's ready-made pallets is expected to be implemented by the user themselves in Soroban in the form of contracts based on examples from a separate repository. However, it is difficult not to notice how strongly architectural decisions influence the prospects for formal verification. Yes, 500k lines of C/C++ is also a lot, and full verification of the project would likely stand alongside unique achievements like seL4 and CompCert, but the success of this endeavor is at least conceivable\!
 
-The original loop had a single invariant to verify. The unrolled version requires reasoning about four separate memory operations and their interactions.
+# **Arbitrum Stylus**
 
-**Devirtualization and Speculative Optimization**
+![alt text](/img/monolithic-architecture-vs-fv/0923_Arbitrum_Logos_Primary_horizontal_RGB.jpg)
 
-When the compiler can prove (or probabilistically guess) the concrete type behind a trait object or interface, it may:
+The third project that caught our attention occupies an intermediate position, in a sense, in terms of potential verifiability between the polar opposite approaches of the first two. To understand its verifiability, one must distinguish between the Nitro host and the Stylus execution environment. The underlying node software (Nitro) is primarily written in Go, a choice driven by its origin as a fork of the Ethereum Geth client. While Go provides excellent concurrency for handling network interactions and sequencing, it does indeed introduce a complex runtime and garbage collection layer into the node’s infrastructure. 
 
-- Replace virtual calls with direct calls
-- Inline the now-known concrete implementation
-- Apply further optimizations to the result
+Go which is slightly less close to assembly language than the classic C/C++ pair due to its more complex runtime with native support for lightweight threads, but does not rely as heavily on advanced metaprogramming tools and complex typing as Rust. Due to the apparently greater expressiveness of the concurrent style of Go routines when handling network interactions, Nitro core is even more compact than Stellar - approximately 200k lines together with the Rust glue. It should be noted, however, that the central advantage of this platform which is the seamless interoperability with the Ethereum network, is achieved by including a full-scale implementation of the corresponding protocol in Go, adding another 400k lines to the project.
 
-This destroys the abstraction boundaries that made your architecture comprehensible.
+It should also be understood that when assessing the complexity of formal verification at the level of executable binaries, not all lines are created equal - the expressive power of Go is unfortunately not free. The runtime infrastructure that provides native concurrency not only becomes an additional target for verification with fairly complex semantics, but also creates an additional layer of abstraction between the source code and the assembly listing, making it harder to directly align.
 
-### 2.3 Link-Time Optimization (LTO): Amplified Challenges
+Another architectural decision that somewhat complicates verification is the choice of the EVM distributed ledger as the persistence model. The motivation here is quite clear since interoperability with the most popular smart contract platform at the moment is obviously a huge advantage. Unfortunately, this cryptographic ledger design seems to be popular more of a historical reasons than architectural merits because it requires a certain level of intermixing between contract business logic and the consensus mechanism that could have been avoided. To see how much this complicates things, it is enough to look at the implementation of persistence without regard to legacy in Stellar for comparison. There, the contract, completely isolated with its own data, is not concerned with indexing its state in the global trie at all. With this approach, the business logic is strictly separated from all infrastructure issues at the level of isolation in WebAssembly, which, of course, greatly facilitates both its specification and verification.
 
-Modern compilers offer _link-time optimization_, deferring optimization decisions until all compilation units become visible. Implications include:
+In light of the above, full verification of Arbitrum's runtime still seems to be a more difficult task compared to a similar undertaking for Stellar, but hopefully it is still within the realm of possibility.
 
-- Functions across module boundaries may be inlined
-- The _entire program_ becomes a unified optimization target
-- Call graphs appearing modular at source level may exhibit arbitrary entanglement at bytecode level
+# **Focusing on the essentials**
+![alt text](/img/monolithic-architecture-vs-fv/cottage%20or%20palace.jpg)
 
-With LTO enabled on monolithic codebases, **no compiler-respected boundaries remain**.
+Let us, however, lay aside plans for world domination for a while and talk about a more narrow perspective. For quite understandable reasons, it is rash to immediately try to apply tools built on truly innovative principles to the construction of palaces. Common sense dictates that we should first practice on small cottages. Even the most favorable of the objects considered, the Stellar core, is no less than the Louvre in this allegory. The question inevitably arises as to how can the work plan be narrowed down to obtain a smoother entry curve in terms of scale? The answer is obvious: it is well known that in terms of total financial damage, the vulnerabilities of the business logic of contracts totally dominate the vulnerabilities of the blockchain platforms themselves. So why not put aside questions of infrastructure reliability for now and try to focus solely on business logic?
 
-## 3. The Combinatorial Pain Point
+By the very nature of DeFi, the business logic of each blockchain must inevitably break down into strictly isolated atomic transactions with narrowly defined interaction semantics corresponding to mostly simple accounting operations. The contracts serving these transactions can thus act as a natural training target for testing new verification technologies. When viewed from this perspective, the overall picture changes only in scale:
 
-### 3.1 State Space Explosion
+1. Polkadot Substrate, which does not separate business logic from infrastructure, appears to be the most challenging target by a wide margin. Accounting pallets differ from system pallets only in meaning, and after being assembled into a single monolith, one should not even try to cover them with formal specifications. In such a situation, it is only possible to obtain any worthwhile guarantees of reliability by limiting oneself to verifying Ink! contracts written in a completely self-sufficient manner, relying only on a strictly limited subset of system pallets. This does not completely solve the problem of mixing accounting operations with the entire infrastructure, and such an approach can hardly be called a conventional way of using Substrate, but unfortunately, it still seems to be the only promising one regarding formal verification of business logic.  
+2. Stellar Soroban once again appears to be the benchmark for verifiability. Business logic and infrastructure are strictly separated along the physical boundaries of the WebAssembly sandbox, cross-border interfaces are ridiculously simple, and the consensus mechanism is completely abstracted. The executable contract module consists only of business logic with literally zero overhead.  
+3. Arbitrum Stylus is again somewhere in the middle. They clearly tried to get rid of excess overhead, but unfortunately, the EVM persistence model sets an insurmountable lower limit on complexity.
 
-Formal verification fundamentally requires exploration of a state space. For a program with $n$ boolean variables, the naive state space contains $2^n$ states. Real-world programs exhibit substantially larger state spaces due to:
+In this context, the scale of such an undertaking ceases to be intimidating. The relative compactness and isolation of the objects under consideration allows for experimentation with approaches without fear of getting bogged down in details. Work on Soroban contracts can begin immediately after receiving a functioning MVP, and even Polkadot is moving from the category of unthinkable to the category of “not easy, but possible.”
 
-- Integer variables with wide ranges
-- Pointer aliasing possibilities
-- Concurrent interleavings
-- Floating-point states
 
-Verification tools manage this complexity through _abstraction_—grouping states into equivalence classes and reasoning about representatives. Abstraction, however, requires _structure_: recognizable patterns, function boundaries, loop invariants, and module interfaces.
 
-**Compiler optimizations that eliminate structure correspondingly eliminate the verifier's ability to perform abstraction.**
+# **The Silver Bullet**
 
-### 3.2 The Monolithic Multiplier
+![alt text](/img/inference-logo.svg)
 
-Consider a monolithic system with $n$ modules, each with $m$ functions, where the compiler performs aggressive whole-program optimization. The verification state space growth can be modeled as:
+So how does this unusual new tool work? We hope to demonstrate its capabilities soon by using smart contract verification as a testing ground. It consists of three main components:
 
-$$S_{\text{mono}} = O\left(\prod_{i=1}^{n} \prod_{j=1}^{m} |s_{ij}|\right)$$
+1. The inference compiler (`infc` ) for the innovative high-level language [Inference](https://inference-lang.org/), combining the semantic transparency of C, a Rust-like syntax more familiar to modern developers, and a unique ingredient which is controlled non-determinism combined with quantifiers for generalizing statements about computations. This language will allow both the source code of the contract itself and its full formal specification to be formulated in a uniform syntax with the expressive power of higher-order logic.  
+2. Mechanization of the WebAssembly standard in the interactive theorem prover Rocq, enhanced by a new formalism; a definitional interpreter, proven to be isomorphic to the inductive definition of operational semantics. Using such an interpreter as a basic tactic will effectively turn the interactive Rocq mode into a full-fledged environment for symbolic computation in WebAssembly semantics.  
+3. A mathematical theory, also mechanized in Rocq, that allows any definitive interpreter to be generalized to an entire language of tactics, with which the properties formulated in the specifications of our new paradigm can be proven with an unprecedented level of comfort, completely abstracting away all the insignificant details of the analyzed code.
 
-where $|s_{ij}|$ is the state space of function $j$ in module $i$.
-
-In a _truly modular_ system where module boundaries are preserved, this becomes:
-
-$$S_{\text{modular}} = O\left(\sum_{i=1}^{n} \prod_{j=1}^{m} |s_{ij}|\right)$$
-
-The difference between product-of-products and sum-of-products is the difference between **tractable and impossible**.
-
-### 3.3 Why Monoliths Make It Worse
-
-In a monolithic architecture:
-
-1. **Everything can call everything.** Without enforced boundaries, the compiler's inlining and optimization decisions create cross-cutting dependencies that span the entire codebase.
-
-2. **Shared state multiplies.** Global variables, singletons, and shared mutable state create verification obligations that must consider all possible interleavings of all possible accessors.
-
-3. **Types propagate unboundedly.** A generic utility function at the "bottom" of your codebase may be monomorphized with types from the "top," creating verification obligations that require understanding the entire system.
-
-4. **Changes have non-local effects.** Modifying one function can change the optimization decisions for distant code, invalidating previous verification efforts.
-
-### 3.4 Concrete Complexity Estimates
-
-Consider the verification of memory safety for a function exhibiting the following characteristics:
-- Accepts $p$ pointer arguments
-- Contains a loop bounded by a 32-bit integer
-- Invokes several other functions (post-inlining)
-
-Under bounded model checking:
-- Each pointer introduces aliasing possibilities: $O(p^2)$ where $p$ represents pointer count
-- Loop bound exploration requires: $O(2^{32})$ worst case, or $O(k)$ with established invariant
-- Each inlined function multiplies the path count
-
-A verification query typically involves:
-
-$$\text{Paths} \approx (\text{branch factor})^{\text{depth}} \times \text{loop iterations} \times \text{aliasing configurations}$$
-
-In a monolithic system where a core function is inlined into 100 call sites, each within different contexts, the verification workload multiplies by a factor of 100—at minimum. In practice, the diverse contexts generate distinct path explosions, resulting in complexity increases measured in orders of magnitude.
-
----
-## 4. Concrete Examples
-
-Blockchain platforms provide an ideal lens for examining bytecode-level verification challenges. They are:
-- **High-stakes**: Bugs directly translate to financial losses, often irrecoverable
-- **Bytecode-executed**: Smart contracts run as bytecode on virtual machines
-- **Heavily optimized**: Gas costs create intense pressure to minimize bytecode size and execution
-- **Compositional by nature**: Contracts call other contracts, creating complex interaction patterns
-
-We examine three contemporary platforms that represent fundamentally different architectural philosophies: Polkadot Substrate, Stellar Soroban, and Arbitrum Stylus.
-
-### 4.1 Polkadot Substrate: The Monolithic Runtime Problem
-
-This analysis builds upon [research conducted](https://www.inferara.com/en/blog/preparing-polkadot-pallet-balances-for-formal-verification/) under a Web3 Foundation grant. The evaluation of `pallet_balances` for formal verifiability served as the primary catalyst for this article.
-
-**Architecture Overview**
-
-The Substrate framework provides an expanding collection of reusable, type-safe, and performant implementations addressing common blockchain accounting patterns. The architecture encourages developers to compose custom combinations of components and extend functionality as needed. A sophisticated build system consolidates all elements into a unified, heavily optimized WebAssembly module. Typical Substrate runtimes comprise:
-
-- **Pallets**: Modular components providing specific functionality (balances, staking, governance, etc.)
-- **Runtime composition**: All pallets compiled together into one Wasm binary
-- **Host functions**: Interface between the Wasm runtime and the node's native code
-
-```rust
-// Typical Substrate runtime composition
-construct_runtime!(
-    pub enum Runtime where
-        Block = Block,
-        NodeBlock = opaque::Block,
-        UncheckedExtrinsic = UncheckedExtrinsic
-    {
-        System: frame_system,
-        Timestamp: pallet_timestamp,
-        Balances: pallet_balances,
-        Staking: pallet_staking,
-        Democracy: pallet_democracy,
-        // ... potentially dozens more pallets
-    }
-);
-```
-**The Verification Challenge**
-
-This architecture creates severe verification challenges:
-
-**1. Monomorphization Explosion**
-
-Substrate makes heavy use of Rust generics for flexibility. A pallet is typically generic over:
-
-```rust
-pub trait Config: frame_system::Config {
-    type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-    type Currency: ReservableCurrency<Self::AccountId>;
-    type WeightInfo: WeightInfo;
-    // ... many more associated types
-}
-```
-
-When the runtime is compiled, each pallet's generic code is monomorphized with the concrete runtime types. A single utility function in `frame_support` might be instantiated hundreds of times with different type parameters.
-
-Consider a simplified example of state access:
-
-```rust
-// In frame_support
-pub fn get<T: Decode>(key: &[u8]) -> Option<T> {
-    storage::get(key).and_then(|v| T::decode(&mut &v[..]).ok())
-}
-```
-
-This innocent-looking function, after monomorphization across all storage types in all pallets, might generate 50+ distinct bytecode implementations. Each requires separate verification.
-
-**2. Cross-Pallet Coupling**
-
-Pallets interact through trait bounds and runtime composition:
-
-```rust
-// Staking pallet depends on Currency
-impl<T: Config> Pallet<T> {
-    pub fn bond(origin: OriginFor<T>, value: BalanceOf<T>) -> DispatchResult {
-        let stash = ensure_signed(origin)?;
-        // This call goes to pallet_balances, but after compilation,
-        // the boundary may be erased entirely
-        T::Currency::reserve(&stash, value)?;
-        // ...
-    }
-}
-```
-
-At source level, this looks modular. At bytecode level, after LTO (which Substrate uses aggressively for performance), the `reserve` call may be inlined, and the "boundary" between staking and balances logic ceases to exist.
-
-**3. State Space Multiplication**
-
-The verification state space for a Substrate runtime can be approximated as:
-
-$$S_{\text{substrate}} \approx \prod_{p \in \text{pallets}} |S_p| \times |\text{interleavings}|$$
-
-For a runtime with 30 pallets, even if each pallet has a "modest" state space of $10^6$ states, the combined space exceeds $10^{180}$ — vastly larger than the number of atoms in the observable universe.
-
-**Lessons for Verification Architecture**
-
-Substrate illustrates the verification cost of runtime flexibility:
-
-| Feature                   | Developer Benefit | Verification Cost          |
-| ------------------------- | ----------------- | -------------------------- |
-| Generic pallets           | Reusability       | Monomorphization explosion |
-| Tight coupling via traits | Type safety       | Boundary erasure           |
-| Whole-program LTO         | Performance       | Cross-cutting optimization |
-
-It must be noted, that benefits of flexibility are undoubtful virtues, deserving to be pursued. We just need to take into account the less obvious downsides of chasing them.
-
-### 4.2 Stellar Soroban: Designed for Verification Boundaries
-
-**Architecture Overview**
-
-Soroban, Stellar's smart contract platform, implements a fundamentally different architectural approach. Rather than unified compilation, Soroban enforces strict separation:
-
-```plaintext
-┌────────────────────────────────────────────────────────┐
-│                    Stellar Core                        │
-│  (Native code, handles consensus, ledger operations)   │
-├────────────────────────────────────────────────────────┤
-│                    Soroban Host                        │
-│  (Defines host functions, enforces boundaries)         │
-├──────────┬──────────┬──────────┬──────────┬────────────┤
-│Contract A│Contract B│Contract C│Contract D│ Contract E │
-│  (Wasm)  │  (Wasm)  │  (Wasm)  │  (Wasm)  │   (Wasm)   │
-└──────────┴──────────┴──────────┴──────────┴────────────┘
-```
-
-The protocol core functions as a peer-to-peer connected cryptographic ledger—an abstract state machine delegating all accounting particulars to hosted contracts. This design discourages core or host customization, as no meaningful functionality requires addition or removal at that level. All business logic (typically handled through Substrate pallets) falls under contract responsibility. Key architectural characteristics include:
-
-**1. Small, Independent Contracts**
-
-Each Soroban contract compiles to an independent Wasm module. No runtime composition merges contracts:
-
-```rust
-// Soroban contract - this compiles to an independent Wasm blob
-#[contract]
-pub struct TokenContract;
-
-#[contractimpl]
-impl TokenContract {
-    pub fn transfer(env: Env, from: Address, to: Address, amount: i128) {
-        from.require_auth();
-        // All storage access goes through env, not direct state access
-        let from_balance: i128 = env.storage().persistent().get(&from).unwrap_or(0);
-        // ...
-    }
-}
-```
-
-**2. Host Function Boundary**
-
-All external interaction proceeds through a defined host function interface:
-
-```rust
-// Exclusive mechanisms for contract-world interaction
-env.storage()       // Read/write contract storage
-env.events()        // Emit events  
-env.invoke_contract() // Call another contract (cross-contract call)
-env.crypto()        // Cryptographic operations
-```
-
-The host function boundary achieves **physical enforcement**: implementation through the Wasm import/export mechanism prevents compiler inlining, as host functions remain external to the Wasm module.
-
-**3. Eliminated Shared Mutable State**
-
-Contracts cannot share memory. All cross-contract communication requires explicit invocation:
-
-```rust
-// Contract A calling Contract B
-let result: i128 = env.invoke_contract(
-    &contract_b_address,
-    &Symbol::new(&env, "get_price"),
-    vec![&env, asset.into_val(&env)]
-);
-```
-
-This invocation exhibits:
-- Bytecode-level visibility as a host function call
-- Immunity to optimization or inlining
-- Explicit, formally specifiable parameters
-
-**4. Constrained Type System**
-
-Soroban deliberately restricts types crossing boundaries. Permissible types for host function parameters include:
-- `i32`, `u32`, `i64`, `u64`, `i128`, `u128`
-- `Bool`, `Symbol`, `Address`, `Bytes`, `String`
-- `Vec<T>`, `Map<K,V>` where T, K, V represent valid Soroban types
-
-This constraint eliminates an entire category of verification complexity: reasoning about arbitrary type layouts and representations.
-
-**Verification Tractability**
-
-Soroban's architecture transforms verification complexity:
-
-**1. Per-Contract Verification**
-
-Each contract is verified independently:
-
-$$S_{\text{soroban}} = \sum_{c \in \text{contracts}} |S_c| + \sum_{(c_i, c_j) \in \text{interactions}} |S_{\text{interface}_{ij}}|$$
-
-This is sum, not product. A bug in Contract A cannot affect Contract B's internal invariants (only the values Contract B receives via explicit calls).
-
-**2. Bounded Host Function Semantics**
-
-The host function interface has formally specifiable semantics:
-
-```rust
-// Formal specification of storage host function (pseudocode)
-host_function storage_get(key: Bytes) -> Option<Val>
-  requires: key.len() <= MAX_KEY_SIZE
-  ensures: result == STORAGE[contract_id][key]
-  
-host_function storage_put(key: Bytes, val: Val) -> ()
-  requires: key.len() <= MAX_KEY_SIZE && val.size() <= MAX_VAL_SIZE
-  modifies: STORAGE[contract_id][key]
-  ensures: STORAGE[contract_id][key] == val
-```
-
-Verification can assume these semantics rather than re-verifying them for each contract.
-
-**The Trade-off: Performance and Flexibility**
-
-Soroban's verification-friendly architecture incurs measurable costs:
-
-| Verification Benefit     | Performance/Flexibility Cost              |
-| ------------------------ | ----------------------------------------- |
-| Independent Wasm modules | Elimination of cross-contract inlining; call overhead |
-| Host function boundary   | Per-operation crossing cost        |
-| Eliminated shared memory         | Required data serialization/deserialization      |
-| Constrained types        | Restriction to specified Rust types           |
-
-Performance implications: Without comprehensive comparative benchmarking of WebAssembly-centered blockchains, quantitative assessment remains speculative. However, analysis suggests Soroban contracts, precluded from leveraging aggressive optimization techniques, may execute 2-5× slower than equivalent Substrate pallet code for compute-intensive operations. The verification advantage proves decisive: **Soroban contracts support verification in their current architectural state without significant modifications**.
-
-### 4.3 Arbitrum Stylus: The Hybrid Approach
-
-**Architecture Overview**
-
-Arbitrum Stylus, alongside Stellar Soroban, implements separation between framework and accounting logic within unified binary modules. Its multi-VM architecture, however, introduces distinct challenges:
-
-```plaintext
-┌────────────────────────────────────────────────────────────┐
-│                    Arbitrum Chain                          │
-├────────────────────────────────────────────────────────────┤
-│                    Stylus VM                               │
-│  ┌────────────────────┐    ┌────────────────────┐          │
-│  │    Wasm Contracts  │    │    EVM Contracts   │          │
-│  │  (Rust, C, C++)    │    │    (Solidity)      │          │
-│  └────────────────────┘    └────────────────────┘          │
-│              │                      │                      │
-│              └──────────┬───────────┘                      │
-│                         │                                  │
-│              ┌──────────▼───────────┐                      │
-│              │  Host I/O Interface  │                      │
-│              │   (Shared State)     │                      │
-│              └──────────────────────┘                      │
-└────────────────────────────────────────────────────────────┘
-```
-
-Key architectural decisions:
-
-**1. Separate Compilation, Shared State**
-
-Each Stylus contract compiles independently (Wasm or EVM bytecode), but contracts share the Ethereum-style state model:
-
-```rust
-// Stylus contract (Rust)
-sol_storage! {
-    #[entrypoint]
-    pub struct Counter {
-        uint256 count;
-        mapping(address => uint256) balances;
-    }
-}
-
-#[external]
-impl Counter {
-    pub fn increment(&mut self) {
-        let count = self.count.get();
-        self.count.set(count + U256::from(1));
-    }
-}
-```
-
-Storage layout follows Ethereum conventions, allowing interoperability with EVM contracts.
-
-**2. Cross-VM Calls**
-
-Stylus contracts can call both Wasm and EVM contracts through a unified interface:
-
-```rust
-// Calling an EVM contract from Wasm
-let result = call(
-    Call::new()
-        .gas(50000)
-        .value(U256::ZERO),
-    evm_contract_address,
-    &calldata
-)?;
-
-// Calling a Wasm contract from Wasm (same interface)
-let result = call(
-    Call::new()
-        .gas(50000),
-    wasm_contract_address,
-    &calldata
-)?;
-```
-
-**3. The HostIO Layer**
-
-All state access and cross-contract calls go through a Host I/O layer:
-
-```rust
-// From stylus-sdk: all storage operations are host calls
-extern "C" {
-    fn storage_load_bytes32(key: *const u8, dest: *mut u8);
-    fn storage_store_bytes32(key: *const u8, value: *const u8);
-    fn call_contract(
-        contract: *const u8,
-        calldata: *const u8,
-        calldata_len: usize,
-        value: *const u8,
-        gas: u64,
-        return_data_len: *mut usize,
-    ) -> u8;
-}
-```
-
-Like Soroban, this creates a physical boundary the compiler cannot cross.
-
-**The Hybrid Verification Challenge**
-
-Stylus introduces unique verification complexity due to its hybrid nature:
-
-**1. Cross-VM Semantics**
-
-When a Wasm contract calls an EVM contract, verification must reason about:
-- Wasm semantics for the caller
-- EVM semantics for the callee
-- The translation layer between them
-- Reentrancy across VM boundaries
-
-```plaintext
-Wasm Contract A                    EVM Contract B
-     │                                   │
-     │ ── call() ──────────────────────► │
-     │                                   │
-     │    ┌─────────────────────────┐    │
-     │    │ Semantic translation:   │    │
-     │    │ - Wasm→EVM ABI encoding │    │
-     │    │ - Gas accounting        │    │
-     │    │ - Error propagation     │    │
-     │    └─────────────────────────┘    │
-     │                                   │
-     │ ◄─── return ────────────────────  │
-     │                                   │
-```
-
-**2. Shared State Complexity**
-
-Unlike Soroban, Stylus contracts share the global Ethereum state trie. This reintroduces state space multiplication:
-
-$$S_{\text{stylus}} = \sum_{c \in \text{contracts}} |S_c| + |S_{\text{shared}}|^{|\text{contracts accessing it}|}$$
-
-When multiple contracts can modify the same storage slot, verification must consider all interleavings.
-
-**3. Monomorphization Within Contracts**
-
-While contracts are independently compiled, the Stylus SDK uses Rust generics internally:
-
-```rust
-// This generic impl generates multiple bytecode paths
-impl<T: TopLevelStorage> StorageCache for T {
-    fn flush(&mut self) {
-        // Generic code monomorphized per storage type
-    }
-}
-```
-
-Each contract may contain monomorphized code for all its storage types, increasing intra-contract verification complexity.
-
-**4. The Reentrancy Matrix**
-
-Stylus inherits Ethereum's reentrancy model. Any external call can result in a callback. The verification space for reentrancy scenarios grows as:
-
-$$R = |\text{external calls}| \times |\text{public functions}| \times |\text{call depth limit}|$$
-
-With Arbitrum's generous gas limits, deep call stacks are possible.
-
-**Stylus: Verification Complexity Compared**
-
-| Aspect | Substrate | Soroban | Stylus |
-|--------|-----------|---------|--------|
-| Compilation unit | Entire runtime | Single contract | Single contract |
-| Cross-unit boundaries | Erased by LTO | Physical (host functions) | Physical (host functions) |
-| Shared state | Full access within runtime | None | Ethereum state trie |
-| Monomorphization | Extreme | Minimal | Moderate |
-| Verification tractability | Low | High | Medium |
-| Reentrancy concern | N/A (sequential) | Explicit control | Full Ethereum model |
-
-### 4.4 Synthesis: What the Examples Teach Us
-
-These three platforms illuminate a spectrum of architectural choices and their verification consequences:
-
-#### The Boundary Principle Validated
-
-Soroban demonstrates that **physical boundaries enable tractable verification**. The host function interface creates an uncrossable barrier that:
-- Prevents compiler optimizations from destroying abstraction
-- Forces explicit interface contracts
-- Enables compositional reasoning
-
-Substrate demonstrates the converse: **logical boundaries are insufficient**. Despite Rust's module system and FRAME's pallet architecture, the compiler's whole-program view eliminates verification boundaries.
-
-#### The Performance-Verification Trade-off is Real
-
-Soroban pays for verification tractability with:
-- Execution overhead for host function crossing
-- Restricted expressiveness (no arbitrary Rust types)
-- No cross-contract optimization
-
-Stylus attempts to minimize this trade-off but inherits EVM's shared-state complexity.
-
-Substrate maximizes performance but renders bytecode-level verification impractical for the full runtime.
-
-#### Architectural Decisions are Verification Decisions
-
-The most important insight: **the time to decide on verification architecture is before writing the first line of code**. 
-
-- Soroban's verification tractability is the result of deliberate architectural constraints imposed from the beginning.
-- Substrate's verification challenges are not failures, they're the predictable consequence of prioritizing flexibility over verifiability.
-
-## 5. Why Microservices/Modular Boundaries Help
-
-### 5.1 The Verification Boundary Principle
-
-**A verification boundary is only useful if the compiler respects it.**
-
-Source-level modules provide logical organization but no verification benefit if the compiler erases them. To create meaningful verification boundaries, you need:
-
-1. **Physical separation**: Separate compilation units, ideally separate processes
-2. **Interface contracts**: Formally specified preconditions, postconditions, and invariants at the boundary
-3. **No shared mutable state**: Communication through well-defined channels only
-4. **Runtime enforcement**: The boundary exists at bytecode level, not just in the developer's mind
-
-Microservices naturally provide all four properties. Other architectural patterns can provide subsets.
-
-### 5.2 Compositional Verification
-
-With proper boundaries, verification becomes *compositional*:
-
-1. **Verify each module against its interface contract**
-2. **Prove that module composition preserves properties** (given that each module satisfies its contract)
-
-The key insight: you verify module A assuming module B satisfies its contract, and verify module B assuming module A satisfies its contract. You never need to consider the full state space of A × B simultaneously.
-
-This transforms the complexity from:
-
-$$S = S_A \times S_B$$
-
-to:
-
-$$S = S_A + S_B + S_{\text{interface}}$$
-
-where $S_{\text{interface}}$ is the (typically much smaller) state space of the interface contract verification.
-
-### 5.3 The Microservice Verification Advantage
-
-Microservices provide verification advantages beyond mere modularity:
-
-**Independent Deployment = Independent Verification**
-
-Each microservice can be verified independently of others. When Service A is updated, only Service A needs re-verification (assuming interface contracts are unchanged).
-
-**Technology Heterogeneity**
-
-Different services can use different languages optimized for verifiability. Your critical payment calculation might run in a formally verified DSL, while your user interface runs in JavaScript. The network boundary ensures the unverified code cannot corrupt the verified code's invariants.
-
-**Forced Interface Explicitness**
-
-Network boundaries force interfaces to be explicit and serializable. You *cannot* accidentally pass a reference that creates hidden coupling. The interface contract is literally the wire protocol.
-
-**State Isolation**
-Each microservice owns its state exclusively. Concurrent access patterns are constrained to message passing. This eliminates entire categories of concurrency verification obligations.
-
-### 5.4 The Cost of Boundaries
-
-Boundaries impose non-trivial costs. Verification advantages accrue alongside:
-
-- **Distributed systems complexity**: Network failures, partial failures, consistency challenges
-- **Interface versioning requirements**: Contract modifications demand coordination
-- **Performance overhead**: Serialization, network latency, boundary-crossing penalties
-
-The architectural decision involves trading _verification complexity_ for _operational complexity_. For safety-critical systems prioritizing correctness, this exchange frequently proves advantageous.
-
-## 6. Practical Architectural Strategies
-
-Following examination of how architectural decisions in Substrate, Soroban, and Stylus affect verification tractability, this section derives actionable implementation strategies.
-
-#### Identify Verification Targets Early
-
-Prior to code development, explicitly categorize each component:
-
-| Classification | Examples | Verification Approach |
-|---------------|----------|----------------------|
-| **Safety-Critical** | Fund transfers, cryptographic signatures, consensus logic | Full formal verification at bytecode level |
-| **Security-Critical** | Access control, authentication, rate limiting | Formal verification of key properties + extensive testing |
-| **Correctness-Critical** | Business logic, calculations, state transitions | Model checking + property-based testing |
-| **Quality-Critical** | User interfaces, logging, non-essential features | Standard testing practices |
-
-#### The Verification Kernel Pattern
-
-Inspired by microkernel OS design, structure your system with a minimal verified core:
-
-```plaintext
-┌────────────────────────────────────────────────────────────┐
-│                 Application / Interface Layer              │
-│         (Complex, frequently changing, not verified)       │
-│                                                            │
-│   ┌─────────────────────────────────────────────────────┐  │
-│   │                Adapter / Glue Layer                 │  │
-│   │      (Translates between app and kernel)            │  │
-│   └──────────────────────┬──────────────────────────────┘  │
-│                          │                                 │
-│   ╔══════════════════════╧════════════════════════════╗    │
-│   ║            Verification Kernel                    ║    │
-│   ║   ┌──────────┐ ┌──────────┐ ┌──────────────┐      ║    │
-│   ║   │ Transfer │ │ Escrow   │ │ Multi-sig    │      ║    │
-│   ║   │ Logic    │ │ Logic    │ │ Verification │      ║    │
-│   ║   └──────────┘ └──────────┘ └──────────────┘      ║    │
-│   ║                                                   ║    │
-│   ║   Properties: total_supply_conserved,             ║    │
-│   ║               all_transfers_authorized,           ║    │
-│   ║               no_double_spend                     ║    │
-│   ╚═══════════════════════════════════════════════════╝    │
-└────────────────────────────────────────────────────────────┘
-```
-
-**Key Principles:**
-1. The kernel is **physically separate** (own binary module, own deployment)
-2. The kernel has **minimal functionality** (only what needs verification)
-3. The kernel has **no dependencies on unverified code**
-4. The kernel's **interface is the verification contract**
-
-#### Design Boundaries the Compiler Cannot Cross
-
-Source-level boundaries (modules, visibility) are suggestions to the compiler. Only physical boundaries are guaranteed:
-
-| Boundary Type | Compiler Respects? | Verification Useful? | Example |
-|--------------|-------------------|---------------------|---------|
-| Private function | No | No | `fn helper()` |
-| Module | No (with LTO) | No | `mod utils { }` |
-| Crate | Sometimes | Weak | Separate Cargo package |
-| Wasm import/export | **Yes** | **Yes** | Host functions |
-| Process | **Yes** | **Yes** | Microservice |
-| Network | **Yes** | **Yes** | Service boundary |
-
-#### Minimize Generics in Verification Targets
-
-Generic code creates monomorphization. In verification targets, prefer concrete types:
-
-**Why This Helps:**
-- Each function is verified once, not once per type instantiation
-- The verification tool sees concrete types, enabling stronger reasoning
-- Code duplication is explicit and visible (you know what you're verifying)
-
-**When Generics Are Acceptable:**
-- Outside verification targets
-- When the number of instantiations is small and known
-- When the generic is over a trait with a single implementation
-
-#### Thoughtful Compilation and Building
-
-- **Verification-Compatible Compiler Settings**: Compiler optimizations must be managed differently for verified vs. unverified code.
-- **Ensuring Bytecode Reproducibility**: Verification is only useful if you can verify the exact bytecode that executes. Non-reproducible builds mean you verify one thing and deploy another.
-- **Separate Compilation Units**: Structure your build to produce separate artifacts for verified and unverified code.
-
-#### Specification as Documentation Foundation
-
-Key infrastructure components warrant formal specification integrated with documentation from project inception. This recommendation challenges mainstream development methodology, as it demands mathematical rigor during early project phases, typically staffed by small teams lacking specialized formal methods expertise.
-
-Fortunately, current developments at Inferara aim to reduce formal methods barriers for practitioners without advanced degrees. The emerging Inferara verification framework leverages the innovative concept of [non-deterministic specification](https://www.inferara.com/en/papers/specifying-algorithms-using-non-deterministic-computations/), enabling complex property specification without separate mathematical notation, utilizing slightly extended imperative paradigms familiar to programmers.
-
-The [Inference programming language specification](https://github.com/Inferara/inference-language-spec) provides additional detail.
-
-## 7. Conclusion
-
-**The Fundamental Trade-off**
-
-Formal verification at the bytecode level offers guarantees that no other quality assurance technique can match. But it is not free, and its costs are not linear. The complexity of verification scales with:
-
-- The **size** of the verification target
-- The **density of interactions** between components
-- The **optimization aggression** of the compiler
-- The **absence of exploitable structure** in the code
-
-Monolithic architectures systematically make all four factors worse. Microservice and modular architectures can systematically make them better - but only if designed with verification in mind from the beginning.
-
-**The Architectural Imperative**
-
-The title of this post states that the compiler becomes your adversary when verifying monolithic systems. This is true but perhaps unfair to the compiler. The compiler is doing its job: making your code fast. **The adversarial relationship exists because monolithic architecture creates goals that are fundamentally in tension**.
-
-The compiler wants to:
-
-- Erase boundaries for cross-boundary optimization
-- Duplicate code for specialization
-- Eliminate structure for efficiency
-
-The verifier needs:
-
-- Clear boundaries for compositional reasoning
-- Minimal code copies to reduce verification obligations
-- Preserved structure for abstraction
-
-**There is no compiler flag that resolves this tension.** The only resolution is architectural: create boundaries the compiler cannot erase, because they are physical boundaries between separate processes, separate deployment units, separate systems.
-
-**Recommendations**
-
-For organizations considering formal verification of critical systems:
-
-1. **Verify early, verify small.** The best time to decide on verification boundaries is before writing code. The second best time is now.
-2. **Isolate verification targets.** Every line of code in the verification scope multiplies complexity. Minimize ruthlessly.
-3. **Make boundaries physical.** Module boundaries in source code are suggestions. Process boundaries are enforced by the operating system. Network boundaries are enforced by physics.
-4. **Accept the trade-off explicitly.** You are trading operational complexity (distributed systems challenges) for verification complexity (state space explosion). Make this trade consciously.
-5. **Budget for verification.** A rough heuristic: expect to spend effort proportional to the square of code size on verification. Plan accordingly.
-6. **Reverify after changes.** Verification is not a one-time activity. Any change to verified code—or its dependencies, or compiler versions, or optimization settings—potentially invalidates previous verification.
-
-**Final Thoughts**
-
-The dream of formal verification is mathematical certainty about software behavior. This dream is achievable - seL4, CompCert, and other projects have demonstrated it. But achieving it requires treating verifiability as a first-class architectural concern, not an afterthought to be handled once the code is "done."
-
-The compiler is not your adversary if you respect its nature. The compiler will optimize across any boundary you give it permission to cross. The solution is simple in principle, if challenging in practice: **don't give it permission**. Build systems where the critical paths are isolated, the boundaries are physical, and the verification targets are small enough that mathematical certainty remains within reach.
-
-In an era where software failures cost billions and can cost lives, the investment in verification-ready architecture is not merely prudent - it is, increasingly, a professional obligation.
+We hope that, after testing these innovations in the smart contract sandbox, we will be able to scale up our approach in the future to improve the reliability of the platforms themselves. To our understanding, there are no fundamental obstacles to this at present.
+
+<!--Zoho Campaigns Web-Optin Form's Header Code Starts Here-->
+
+<script type="text/javascript" src="https://fed-zcmp.maillist-manage.jp/js/optin.min.js" onload="setupSF('sf3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6','ZCFORMVIEW',false,'light',false,'0')"></script>
+<script type="text/javascript">
+	function runOnFormSubmit_sf3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6(th){
+		/*Before submit, if you want to trigger your event, "include your code here"*/
+	};
+</script>
+
+<style>.quick_form_12_css * { -webkit-box-sizing: border-box !important; -moz-box-sizing: border-box !important; box-sizing: border-box !important; overflow-wrap: break-word }@media only screen and (max-width: 600px) {.quick_form_12_css[name="SIGNUP_BODY"] { width: 100% !important; min-width: 100% !important; margin: 0px auto !important; padding: 0px !important } .SIGNUP_FLD { width: 90% !important; margin: 10px 5% !important; padding: 0px !important } .SIGNUP_FLD input { margin: 0 !important; border-radius: 25px !important } }</style>
+
+<!--Zoho Campaigns Web-Optin Form's Header Code Ends Here--><!--Zoho Campaigns Web-Optin Form Starts Here-->
+
+<div id="sf3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6" data-type="signupform" style="opacity: 1;">
+	<div id="customForm">
+		<div class="quick_form_12_css" style="background-color: rgb(245, 245, 245); width: 350px; z-index: 2; font-family: Arial; border-width: 1px; border-style: solid; border-color: rgb(235, 235, 235); overflow: hidden" name="SIGNUP_BODY">
+			<div>
+				<div style="font-size: 14px; font-family: Arial; font-weight: bold; color: rgb(30, 30, 30); text-align: left; padding: 10px 15px 5px; width: 601px; display: block" id="SIGNUP_HEADING">Join Our Newsletter for New Blog Posts</div>
+				<div style="position:relative;">
+					<div id="Zc_SignupSuccess" style="display:none;position:absolute;margin-left:4%;width:90%;background-color: white; padding: 3px; border: 3px solid rgb(194, 225, 154);  margin-top: 10px;margin-bottom:10px;word-break:break-all">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0">
+							<tbody>
+								<tr>
+									<td width="10%">
+										<img class="successicon" src="https://fed-zcmp.maillist-manage.jp/images/challangeiconenable.jpg" align="absmiddle">
+									</td>
+									<td>
+										<span id="signupSuccessMsg" style="color: rgb(73, 140, 132); font-family: sans-serif; font-size: 14px;word-break:break-word">&nbsp;&nbsp;Thank you for Signing Up</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<form method="POST" id="zcampaignOptinForm" style="margin: 0px; width: 100%; padding: 0px 15px" action="https://fed-zcmp.maillist-manage.jp/weboptin.zc" target="_zcSignup">
+					<div style="background-color: rgb(255, 235, 232); padding: 10px; color: rgb(210, 0, 0); font-size: 11px; margin: 20px 10px 0px; border: 1px solid rgb(255, 217, 211); opacity: 1; display: none" id="errorMsgDiv">Please correct the marked field(s) below.</div>
+					<div style="position: relative; margin: 10px 0 15px; width: 225px; height: 30px; display: inline-block" class="SIGNUP_FLD">
+						<input type="text" style="font-size: 14px; border: 1px solid rgb(134, 55, 55); border-radius: 50px 0px 0px 50px; width: 100%; height: 100%; z-index: 4; outline: none; padding: 5px 10px; color: rgb(255, 255, 255); text-align: left; font-family: Arial; background-color: transparent; box-sizing: border-box" placeholder="Email" changeitem="SIGNUP_FORM_FIELD" name="CONTACT_EMAIL" id="EMBED_FORM_EMAIL_LABEL">
+					</div>
+					<div style="position: relative; width: 98px; height: 30px; margin: 0px 0px 15px; text-align: left; display: inline-block" class="SIGNUP_FLD">
+						<input type="button" style="text-align: center; width: 100%; height: 100%; z-index: 5; border: 0px; color: rgb(255, 255, 255); cursor: pointer; outline: none; font-size: 14px; background-color: rgb(134, 55, 55); margin: 0px 0px 0px -5px; border-radius: 0px 50px 50px 0px" name="SIGNUP_SUBMIT_BUTTON" id="zcWebOptin" value="Join Now">
+					</div>
+					<input type="hidden" id="fieldBorder" value="">
+					<input type="hidden" id="submitType" name="submitType" value="optinCustomView">
+					<input type="hidden" id="emailReportId" name="emailReportId" value="">
+					<input type="hidden" id="formType" name="formType" value="QuickForm">
+					<input type="hidden" name="zx" id="cmpZuid" value="114f48f293f">
+					<input type="hidden" name="zcvers" value="2.0">
+					<input type="hidden" name="oldListIds" id="allCheckedListIds" value="">
+					<input type="hidden" id="mode" name="mode" value="OptinCreateView">
+					<input type="hidden" id="zcld" name="zcld" value="145d163cf21611b">
+					<input type="hidden" id="zctd" name="zctd" value="145d163cf216127">
+					<input type="hidden" id="document_domain" value="">
+					<input type="hidden" id="zc_Url" value="fed-zcmp.maillist-manage.jp">
+					<input type="hidden" id="new_optin_response_in" value="0">
+					<input type="hidden" id="duplicate_optin_response_in" value="0">
+					<input type="hidden" name="zc_trackCode" id="zc_trackCode" value="ZCFORMVIEW">
+					<input type="hidden" id="zc_formIx" name="zc_formIx" value="3z3bab36f8ac87814c06755c9b985e290f9cfd82500bfef716a99b9c45d018c2c6">
+					<input type="hidden" id="viewFrom" value="URL_ACTION">
+					<span style="display: none" id="dt_CONTACT_EMAIL">1,true,6,Contact Email,2</span>
+				</form>
+			</div>
+		</div>
+	</div>
+	<img src="https://fed-zcmp.maillist-manage.jp/images/spacer.gif" id="refImage" onload="referenceSetter(this)" style="display:none;">
+</div>
+<input type="hidden" id="signupFormType" value="QuickForm_Horizontal">
+<div id="zcOptinOverLay" oncontextmenu="return false" style="display:none;text-align: center; background-color: rgb(0, 0, 0); opacity: 0.5; z-index: 100; position: fixed; width: 100%; top: 0px; left: 0px; height: 988px;"></div>
+<div id="zcOptinSuccessPopup" style="display:none;z-index: 9999;width: 800px; height: 40%;top: 84px;position: fixed; left: 26%;background-color: #FFFFFF;border-color: #E6E6E6; border-style: solid; border-width: 1px;  box-shadow: 0 1px 10px #424242;padding: 35px;">
+	<span style="position: absolute;top: -16px;right:-14px;z-index:99999;cursor: pointer;" id="closeSuccess">
+		<img src="https://fed-zcmp.maillist-manage.jp/images/videoclose.png">
+	</span>
+	<div id="zcOptinSuccessPanel"></div>
+</div>
+
+<!--Zoho Campaigns Web-Optin Form Ends Here-->
