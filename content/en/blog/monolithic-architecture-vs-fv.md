@@ -107,3 +107,5 @@ So how does this unusual new tool work? We hope to demonstrate its capabilities 
 3. A mathematical theory, also mechanized in Rocq, that allows any definitive interpreter to be generalized to an entire language of tactics, with which the properties formulated in the specifications of our new paradigm can be proven with an unprecedented level of comfort, completely abstracting away all the insignificant details of the analyzed code.
 
 We hope that, after testing these innovations in the smart contract sandbox, we will be able to scale up our approach in the future to improve the reliability of the platforms themselves. To our understanding, there are no fundamental obstacles to this at present.
+
+{{<post-socials page_content_type="blog" telegram_post_id="39" x_post_id="2011356492210065631">}}
