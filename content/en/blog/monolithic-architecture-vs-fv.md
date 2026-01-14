@@ -1,6 +1,6 @@
 +++
 title = "Monolithic Architecture vs. Formal Verification: The Combinatorial Explosion Problem"
-date = 2025-12-17T15:56:00+09:00
+date = 2026-01-14T15:56:00+09:00
 draft = false
 math = "katex"
 summary = "Monolithic architectures create combinatorial explosions in verification complexity. Modular boundaries tame this growth, making bytecode-level formal verification tractable."
@@ -10,7 +10,7 @@ aliases = ["/blog/monolithic-architecture-vs-fv"]
 
 # **A Hammer in Search of Nails**
 
-![alt text](/img/monolithic-architecture-vs-fv/hammertime4real.png)
+![alt text](/img/monolithic-architecture-vs-fv/hammer%20in%20search%20of%20nails.png)
 
 In the process of developing a new tool, a reasonable need inevitably arises at some point to test it outside of one's own workshop, in the uncontrolled environment of the real world. Our innovative framework for specifying and verifying programs known as [**Inference**](https://inference-lang.org/) is reaching exactly this stage - calling us as its creators to try this futuristic hammer on every nail they encounter. However, since there are only 24 hours in a day and the number of projects on GitHub to which formal methods could theoretically be applied is substantially larger than makes sense to count, one has to somehow filter the potential territory of work.
 

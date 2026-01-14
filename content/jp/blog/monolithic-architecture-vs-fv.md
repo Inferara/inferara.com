@@ -1,6 +1,16 @@
++++
+title = "モノリシックアーキテクチャ vs 形式検証：組み合わせ爆発の問題"
+date = 2026-01-14T15:56:00+09:00
+draft = false
+math = "katex"
+summary = "モノリシックアーキテクチャは、検証の複雑さにおける組み合わせ爆発を引き起こします。モジュラー境界はこの増大を抑制し、バイトコードレベルの形式検証を実現可能なものにします。"
+tags = ["アーキテクチャ", "形式検証", "Stellar", "Polkadot", "Arbitrum"]
+aliases = ["/blog/monolithic-architecture-vs-fv"]
++++
+
 # **釘を探すハンマー**
 
-![alt text](/img/monolithic-architecture-vs-fv/hammertime4real.png)
+![alt text](/img/monolithic-architecture-vs-fv/hammer%20in%20search%20of%20nails.png)
 
 新しいツールを開発する過程において、ある時点で自分の作業場（ワークショップ）から出て、制御されていない現実世界の環境でそれをテストしたいという妥当な欲求が必然的に生じます。[**Inference**](https://inference-lang.org/)と呼ばれる、プログラムの仕様記述と検証のための私たちの革新的なフレームワークは、まさにこの段階に差し掛かっています。開発者である私たちに対し、この未来的なハンマーを、目につくすべての釘に対して試してみるよう促しているのです。しかし、1日は24時間しかなく、GitHub上で理論的に形式手法を適用できるプロジェクトの数は、数える意味がないほど膨大であるため、潜在的な作業領域を何らかの方法でフィルタリングする必要があります。
 
