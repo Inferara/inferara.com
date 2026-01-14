@@ -51,7 +51,7 @@ Is it possible to somehow compensate for the above problems with little effort w
 ![alt text](/img/monolithic-architecture-vs-fv/Stellar%20Logo%20Final%20RGB.png)
 
 
-When encountering this platform after Substrate, the first thing that catches the eye is its radical minimalism. The dedicated core of the cryptographic ledger contains only 500 thousand lines of a very orthodox subset of C/C++ code. There is no excesses, only the basic functionality of the network protocol and and an algorithm that implements distributed consensus. There are no optional components, as every function is necessary for the system to work. Metaprogramming and polymorphism are rarely used, and classic procedural code operates straightforwardly on explicitly defined data structures. 
+When encountering this platform after Substrate, the first thing that catches the eye is its radical minimalism. The dedicated core of the cryptographic ledger contains only 500 thousand lines of a very orthodox subset of C/C++ code. There are no excesses, only the basic functionality of the network protocol and an algorithm that implements distributed consensus. There are no optional components, as every function is necessary for the system to work. Metaprogramming and polymorphism are rarely used, and classic procedural code operates straightforwardly on explicitly defined data structures. 
 
 >"That's how our grandfathers and great-grandfathers wrote code"
 
