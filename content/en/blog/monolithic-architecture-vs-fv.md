@@ -4,7 +4,7 @@ date = 2026-01-14T15:56:00+09:00
 draft = false
 math = "katex"
 summary = "Monolithic architectures create combinatorial explosions in verification complexity. Modular boundaries tame this growth, making bytecode-level formal verification tractable."
-tags = ["Architecture", "Formal Verification", "Stellar", "Polkadot", "Arbitrum"]
+tags = ["Architecture", "Formal Verification", "Stellar", "Polkadot", "Arbitrum","Formal Specification"]
 aliases = ["/blog/monolithic-architecture-vs-fv"]
 +++
 

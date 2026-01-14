@@ -4,7 +4,7 @@ date = 2026-01-14T15:56:00+09:00
 draft = false
 math = "katex"
 summary = "モノリシックアーキテクチャは、検証の複雑さにおける組み合わせ爆発を引き起こします。モジュラー境界はこの増大を抑制し、バイトコードレベルの形式検証を実現可能なものにします。"
-tags = ["アーキテクチャ", "形式検証", "Stellar", "Polkadot", "Arbitrum"]
+tags = ["アーキテクチャ", "形式検証", "Stellar", "Polkadot", "Arbitrum","形式仕様"]
 aliases = ["/blog/monolithic-architecture-vs-fv"]
 +++
 
