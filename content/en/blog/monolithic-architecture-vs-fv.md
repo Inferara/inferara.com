@@ -59,7 +59,7 @@ you might joke, and you would not be far from the truth. Indeed, with the except
 
 However, it would be a big mistake to mistake this minimalism for archaism. Some development methodologies change little over the years for the same reason that crocodiles do not evolve, because they are perfectly adapted to their ecological niche. As paradoxical as it may sound, if you are planning a system that is subject to formal verification at the level of an executable binary, the classic procedural style of straightforward operation with clearly defined data structures is your best (and, as the system grows, your only) chance.
 
-![alt text](/img/monolithic-architecture-vs-fv/crocodile%20in%20my%20own%20lane.png)
+![alt text](/img/monolithic-architecture-vs-fv/Stellar-croc.jpg)
 
 The fact is that this seemingly archaic development method is optimized from the point of view of the main parameter affecting the verifiability of the system as a whole, which is the structural distance between the source code and the assembly listing. By consciously giving up the comfort and flexibility that modern programmers are used to, we receive in exchange an invaluable advantage for reasoning about algorithms. The ability to juxtapose, line by line, the statements and expressions of the language used by the programmer with the compact groups of machine instructions that come out of the assembly process. The clarity of the developer's thought, which is completely lost when minced by additional layers of abstraction in meat grinder of more sophisticated modern compiler, remains relatively intact through the transparent compilation process of orthodox C/C++ and can be read by a trained eye, often even after applying fairly aggressive optimization techniques.
 
